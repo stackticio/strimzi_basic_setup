@@ -1,0 +1,84 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: kafka-connect
+  namespace: strimzi
+  labels:
+    strimzi.io/cluster: kafka
+spec:
+  authentication:
+    type: tls
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnect
+metadata:
+  name: kafka-connect
+  namespace: strimzi
+  labels:
+    strimzi.io/cluster: kafka-connect
+  annotations:
+    strimzi.io/use-connector-resources: "true"
+spec:
+  replicas: 1
+  bootstrapServers: kafka-kafka-bootstrap:9093
+  metricsConfig:
+    type: jmxPrometheusExporter
+    valueFrom:
+      configMapKeyRef:
+        name: connect-metrics
+        key: metrics-config.yml
+
+  build:
+    output:
+      type: docker
+      image:  index.docker.io/stacktic/kafka-connect:3.9.0
+      pushSecret: registry-credential
+    plugins:
+      - name: sink-plugin
+        artifacts:
+              - type: jar
+                url: "https://repo1.maven.org/maven2/org/mongodb/kafka/mongo-kafka-connect/1.15.0/mongo-kafka-connect-1.15.0-all.jar"
+              - type: tgz
+                url: "https://repo.maven.apache.org/maven2/org/apache/camel/kafkaconnector/camel-minio-sink-kafka-connector/4.8.5/camel-minio-sink-kafka-connector-4.8.5-package.tar.gz"
+              - type: tgz
+                url: "https://repo.maven.apache.org/maven2/org/apache/camel/kafkaconnector/camel-postgresql-sink-kafka-connector/4.8.5/camel-postgresql-sink-kafka-connector-4.8.5-package.tar.gz"
+              - type: jar
+                url: "https://repo.maven.apache.org/maven2/org/apache/camel/camel-sql/4.8.5/camel-sql-4.8.5.jar"
+              - type: jar
+                url: "https://repo.maven.apache.org/maven2/org/postgresql/postgresql/42.5.4/postgresql-42.5.4.jar"
+              - type: jar
+                url: "https://repo.maven.apache.org/maven2/org/apache/commons/commons-dbcp2/2.13.0/commons-dbcp2-2.13.0.jar"
+              - type: jar
+                url: "https://repo.maven.apache.org/maven2/org/apache/camel/kamelets/camel-kamelets/4.8.5/camel-kamelets-4.8.5.jar"
+
+  tls:
+    trustedCertificates:
+      - secretName: kafka-cluster-ca-cert
+        pattern: "*.crt"
+
+  authentication:
+    type: tls
+    certificateAndKey:
+      secretName: kafka-connect
+      certificate: user.crt
+      key: user.key
+
+  config:
+    group.id: connect-cluster
+    offset.storage.topic: connect-cluster-offsets
+    config.storage.topic: connect-cluster-configs
+    status.storage.topic: connect-cluster-status
+
+    offset.storage.replication.factor: 1
+    config.storage.replication.factor: 1
+    status.storage.replication.factor: 1
+
+    offset.storage.partitions: 1
+    config.storage.partitions: 1
+    status.storage.partitions: 1
+
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    key.converter.schemas.enable: "false"
+
+    value.converter: org.apache.kafka.connect.storage.StringConverter
+    value.converter.schemas.enable: "false"

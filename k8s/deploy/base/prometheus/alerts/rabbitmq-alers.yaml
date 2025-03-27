@@ -1,0 +1,125 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: rabbitmq-application-rules
+  namespace: "prometheus"
+spec:
+  groups:
+    - name: rabbitmq.rules
+      rules:
+
+        # 1) High Memory Usage
+        # Checks rabbitmq_process_resident_memory_bytes (actual memory usage in bytes).
+        # Threshold set at 200MB (2e8). Adjust to your environment.
+        - alert: RabbitMQHighMemoryUsage
+          expr: rabbitmq_process_resident_memory_bytes > 2e8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node : High memory usage"
+            description: "Resident memory usage is above 200MB on node ."
+
+        # 2) High File Descriptor Usage
+        # Because open_fds is 44 and max_fds is 1,048,576 in your environment,
+        # that ratio is ~0.0000419, far below typical "80%." So here's a smaller threshold (>= 0.0001).
+        - alert: RabbitMQHighFileDescriptorUsage
+          expr: (rabbitmq_process_open_fds / rabbitmq_process_max_fds) > 0.0001
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node: High file descriptor usage"
+            description: "File descriptor usage exceeded 0.01% on node low threshold for test."
+
+        # 3) Low Free Disk Space (based on actual metrics)
+        # rabbitmq_disk_space_available_bytes is total disk space available
+        # rabbitmq_disk_space_available_limit_bytes is your configured watermark (50,000,000).
+        # Check if actual free disk is under 10% of limit => ratio < 0.1
+        - alert: RabbitMQLowDiskSpace
+          expr: (rabbitmq_disk_space_available_bytes / rabbitmq_disk_space_available_limit_bytes) < 0.1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node: Low disk space"
+            description: "Free disk space is under 10% of the configured disk watermark on node ."
+
+        # 4) Queue Backlog
+        # rabbitmq_queue_messages = sum of ready + unacked for all queues
+        # This checks if it exceeds 100 for 5 minutes.
+        - alert: RabbitMQQueueBacklog
+          expr: rabbitmq_queue_messages > 100
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node: Queue backlog"
+            description: "Queue messages exceed 100 on node (sum of ready + unacked)."
+
+        # 5) Zero Queue Consumers
+        # rabbitmq_queue_consumers = 0 => no consumers attached
+        - alert: RabbitMQNoQueueConsumers
+          expr: rabbitmq_queue_consumers == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node queue has no consumers"
+            description: "Queue on has zero consumers, messages will accumulate."
+
+        # 6) Frequent Garbage Collections
+        # rabbitmq_erlang_gc_runs_total counts total GC runs. If it increases >200 in 5m, we consider that "frequent GC."
+        - alert: RabbitMQFrequentGC
+          expr: increase(rabbitmq_erlang_gc_runs_total[5m]) > 200
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node : Frequent garbage collections"
+            description: "Over 200 GC runs occurred in the last 5 minutes on node , possibly indicating memory churn."
+
+        # 7) Node Recently Restarted
+        # rabbitmq_erlang_uptime_seconds: If less than 300s => restarted within last 5 minutes
+        - alert: RabbitMQNodeRecentlyRestarted
+          expr: rabbitmq_erlang_uptime_seconds < 300
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node  restarted recently"
+            description: "Uptime is under 5 minutes on node ."
+
+        # 8) File Descriptor Alarm Active
+        # rabbitmq_alarms_file_descriptor_limit = 1 means the FD limit alarm is triggered
+        - alert: RabbitMQFDAlarm
+          expr: rabbitmq_alarms_file_descriptor_limit == 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node : File descriptor limit alarm"
+            description: "RabbitMQ FD limit alarm is active on node ."
+
+        # 9) High Auth Failure Rate
+        # If there is any activity, check the fraction of failed vs total attempts
+        - alert: RabbitMQHighAuthFailureRate
+          expr: increase(rabbitmq_auth_attempts_failed_total[5m])
+                / ignoring(instance) increase(rabbitmq_auth_attempts_total[5m]) > 0.2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node : High authentication failure rate"
+            description: "Over 20% of auth attempts failed in the last 5 minutes on ."
+
+        # 10) Memory Watermark Alarm
+        # rabbitmq_alarms_memory_used_watermark = 1 means the memory watermark alarm is triggered
+        - alert: RabbitMQMemoryAlarm
+          expr: rabbitmq_alarms_memory_used_watermark == 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ node: Memory watermark alarm"
+            description: "Memory watermark alarm is active on node ."

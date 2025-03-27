@@ -1,0 +1,241 @@
+
+---
+################################################################################
+# 1) ApisixUpstream for main Minio subdomain (port 9001 in cluster)
+################################################################################
+apiVersion: apisix.apache.org/v2
+kind: ApisixUpstream
+metadata:
+  name: minio-upstream
+  namespace: ingress-apisix
+  labels:
+    app.kubernetes.io/name: "apisix"
+    app.kubernetes.io/instance: "apisix"
+    app.kubernetes.io/component: "minio"
+    app.kubernetes.io/part-of: "basic-kafka-setup"
+    app.kubernetes.io/managed-by: "stacktic"
+spec:
+  externalNodes:
+    - type: Domain
+      name: minio.minio.svc.cluster.local
+      port: 9001
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: minio-route
+  namespace: ingress-apisix
+  annotations:
+    k8s.apisix.apache.org/ingress-class: "apisix"
+  labels:
+    app.kubernetes.io/name: "apisix"
+    app.kubernetes.io/instance: "apisix"
+    app.kubernetes.io/component: "minio"
+    app.kubernetes.io/part-of: "basic-kafka-setup"
+    app.kubernetes.io/managed-by: "stacktic"
+spec:
+  http:
+    - name: minio
+      match:
+        hosts:
+          - "minio.apps.source-lab.io"
+        paths:
+          - "/*"
+      plugins:
+        - name: proxy-rewrite
+          enable: true
+          config:
+            headers:
+              X-Forwarded-Proto: https
+              X-Forwarded-Port: 443
+      upstreams:
+        - name: minio-upstream
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: minio-tls
+  namespace: ingress-apisix
+  annotations:
+    k8s.apisix.apache.org/ingress-class: "apisix"
+  labels:
+    app.kubernetes.io/name: "apisix"
+    app.kubernetes.io/instance: "apisix"
+    app.kubernetes.io/component: "minio"
+    app.kubernetes.io/part-of: "basic-kafka-setup"
+    app.kubernetes.io/managed-by: "stacktic"
+spec:
+  hosts:
+    - "minio.apps.source-lab.io"
+  secret:
+    name: wildcard-tls-secret
+    namespace: cert-manager
+---
+################################################################################
+# 2) ApisixUpstream + Route + TLS for "api." subdomain (same port, 9000)
+################################################################################
+apiVersion: apisix.apache.org/v2
+kind: ApisixUpstream
+metadata:
+  name: minio-api-upstream
+  namespace: ingress-apisix
+  labels:
+    app.kubernetes.io/name: "apisix"
+    app.kubernetes.io/instance: "apisix"
+    app.kubernetes.io/component: "minio"
+    app.kubernetes.io/part-of: "basic-kafka-setup"
+    app.kubernetes.io/managed-by: "stacktic"
+spec:
+  externalNodes:
+    - type: Domain
+      name: minio.minio.svc.cluster.local
+      port: 9000
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: minio-api-route
+  namespace: ingress-apisix
+  annotations:
+    k8s.apisix.apache.org/ingress-class: "apisix"
+  labels:
+    app.kubernetes.io/name: "apisix"
+    app.kubernetes.io/instance: "apisix"
+    app.kubernetes.io/component: "minio"
+    app.kubernetes.io/part-of: "basic-kafka-setup"
+    app.kubernetes.io/managed-by: "stacktic"
+spec:
+  http:
+    - name: minio-api
+      match:
+        hosts:
+          - "api.minio.apps.source-lab.io"
+        paths:
+          - "/*"
+      plugins:
+        - name: proxy-rewrite
+          enable: true
+          config:
+            headers:
+              X-Forwarded-Proto: https
+              X-Forwarded-Port: 443
+      upstreams:
+        - name: minio-api-upstream
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: minio-api-tls
+  namespace: ingress-apisix
+  annotations:
+    k8s.apisix.apache.org/ingress-class: "apisix"
+  labels:
+    app.kubernetes.io/name: "apisix"
+    app.kubernetes.io/instance: "apisix"
+    app.kubernetes.io/component: "minio"
+    app.kubernetes.io/part-of: "basic-kafka-setup"
+    app.kubernetes.io/managed-by: "stacktic"
+spec:
+  hosts:
+    - "api.minio.apps.source-lab.io"
+  secret:
+    name: wildcard-tls-secret
+    namespace: cert-manager
+---
+########################################
+# ApisixUpstream for bridge
+########################################
+apiVersion: apisix.apache.org/v2
+kind: ApisixUpstream
+metadata:
+  name: bridge-upstream
+  namespace: ingress-apisix
+  labels:
+    app.kubernetes.io/name: "apisix"
+    app.kubernetes.io/instance: "apisix"
+    app.kubernetes.io/component: "bridge"
+    app.kubernetes.io/part-of: "basic-kafka-setup"
+    app.kubernetes.io/managed-by: "stacktic"
+spec:
+  externalNodes:
+    - type: Domain
+      name: kafka-bridge-bridge-service.strimzi.svc.cluster.local
+      port: 8080
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixRoute
+metadata:
+  name: bridge-route
+  namespace: ingress-apisix
+  annotations:
+    k8s.apisix.apache.org/ingress-class: "apisix"
+  labels:
+    app.kubernetes.io/name: "apisix"
+    app.kubernetes.io/instance: "apisix"
+    app.kubernetes.io/component: "bridge"
+    app.kubernetes.io/part-of: "basic-kafka-setup"
+    app.kubernetes.io/managed-by: "stacktic"
+spec:
+  http:
+    - name: bridge
+      match:
+        hosts:
+          - "bridge.apps.source-lab.io"
+        paths:
+          - "/*"
+      
+      plugins:
+        - name: limit-count
+          enable: true
+          config:
+            count: 100
+            time_window: 60
+            key: remote_addr
+            policy: local
+            rejected_code: 429
+        - name: cors
+          enable: true
+          config:
+            allow_origins: "*"
+            allow_methods: "*"
+            allow_headers: "*"
+            # adjust or add more CORS settings as needed
+        - name: ip-restriction
+          enable: true
+          config:
+            whitelist:
+              - 0.0.0.0/0
+              - 127.0.0.0/24
+        
+        - name: proxy-rewrite
+          enable: true
+          config:
+            headers:
+              X-Forwarded-Proto: https
+              X-Forwarded-Port: 443
+        
+      
+      upstreams:
+        - name: bridge-upstream
+---
+apiVersion: apisix.apache.org/v2
+kind: ApisixTls
+metadata:
+  name: bridge-tls
+  namespace: ingress-apisix
+  annotations:
+    k8s.apisix.apache.org/ingress-class: "apisix"
+  labels:
+    app.kubernetes.io/name: "apisix"
+    app.kubernetes.io/instance: "apisix"
+    app.kubernetes.io/component: "bridge"
+    app.kubernetes.io/part-of: "basic-kafka-setup"
+    app.kubernetes.io/managed-by: "stacktic"
+spec:
+  hosts:
+    - "bridge.apps.source-lab.io"
+  secret:
+    name: wildcard-tls-secret
+    namespace: cert-manager
+---
+

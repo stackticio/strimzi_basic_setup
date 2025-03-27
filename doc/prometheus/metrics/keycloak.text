@@ -1,0 +1,604 @@
+# HELP agroal_acquire_count Number of times an acquire operation succeeded.
+# HELP agroal_active_count Number of active connections. These connections are in use and not available to be acquired.
+# HELP agroal_available_count Number of idle connections in the pool, available to be acquired.
+# HELP agroal_awaiting_count Approximate number of threads blocked, waiting to acquire a connection.
+# HELP agroal_blocking_time_average_milliseconds Average time an application waited to acquire a connection.
+# HELP agroal_blocking_time_max_milliseconds Maximum time an application waited to acquire a connection.
+# HELP agroal_blocking_time_total_milliseconds Total time applications waited to acquire a connection.
+# HELP agroal_creation_count Number of created connections.
+# HELP agroal_creation_time_average_milliseconds Average time for a connection to be created.
+# HELP agroal_creation_time_max_milliseconds Maximum time for a connection to be created.
+# HELP agroal_creation_time_total_milliseconds Total time waiting for connections to be created.
+# HELP agroal_destroy_count Number of destroyed connections.
+# HELP agroal_flush_count Number of connections removed from the pool, not counting invalid / idle.
+# HELP agroal_invalid_count Number of connections removed from the pool for being idle.
+# HELP agroal_leak_detection_count Number of times a leak was detected. A single connection can be detected multiple times.
+# HELP agroal_max_used_count Maximum number of connections active simultaneously.
+# HELP agroal_reap_count Number of connections removed from the pool for being idle.
+# HELP base_classloader_loadedClasses Displays the total number of classes that have been loaded since the Java virtual machine has started execution.
+# HELP base_classloader_loadedClasses_count Displays the number of classes that are currently loaded in the Java virtual machine.
+# HELP base_classloader_unloadedClasses Displays the total number of classes unloaded since the Java virtual machine has started execution.
+# HELP base_cpu_availableProcessors Displays the number of processors available to the Java virtual machine. This value may change during a particular invocation of the virtual machine.
+# HELP base_cpu_processCpuLoad Displays the \"recent cpu usage\" for the Java virtual machine process.
+# HELP base_cpu_processCpuTime Displays the CPU time, in nanoseconds, used by the process on which the Java virtual machine is running.
+# HELP base_cpu_systemLoadAverage Displays the system load average for the last minute. The system load average is the sum of the number of runnable entities queued to the available processors and the number of runnable entities running on the available processors averaged over a period of time. The way in which the load average is calculated is operating system specific but is typically a damped time-dependent average. If the load average is not available, a negative value is displayed. This attribute is designed to provide a hint about the system load and may be queried frequently. The load average might be unavailable on some platforms where it is expensive to implement this method.
+# HELP base_gc Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
+# HELP base_gc_time Displays the approximate accumulated collection elapsed time in milliseconds. This attribute displays -1 if the collection elapsed time is undefined for this collector. The Java virtual machine implementation may use a high resolution timer to measure the elapsed time. This attribute might display the same value even if the collection count has been incremented if the collection elapsed time is very short.
+# HELP base_jvm_uptime Displays the uptime of the Java virtual machine.
+# HELP base_memory_committedHeap_bytes Displays the amount of memory that is committed for the Java virtual machine to use.
+# HELP base_memory_committedNonHeap_bytes Displays the amount of memory that is committed for the Java virtual machine to use.
+# HELP base_memory_initHeap_bytes Displays the initial amount of allocated heap memory in bytes.
+# HELP base_memory_initNonHeap_bytes Displays the initial amount of allocated memory, in bytes, for off-heap storage.
+# HELP base_memory_maxHeap_bytes Displays the maximum amount of memory, in bytes, that can be used for memory management.
+# HELP base_memory_maxNonHeap_bytes Displays the maximum amount of memory in bytes that can be used for memory management.
+# HELP base_memory_usedHeap_bytes Displays the amount of used memory.
+# HELP base_memory_usedNonHeap_bytes Displays the amount of used memory.
+# HELP base_thread_count Displays the current thread count.
+# HELP base_thread_daemon_count Displays the current number of live daemon threads.
+# HELP base_thread_max_count Displays the peak live thread count since the Java virtual machine started or peak was reset. This includes daemon and non-daemon threads.
+# HELP base_thread_totalStarted Displays the total number of started threads.
+# HELP http_server_active_requests  
+# HELP http_server_bytes_read Number of bytes received by the server
+# HELP http_server_bytes_read_max Number of bytes received by the server
+# HELP http_server_bytes_written Number of bytes sent by the server
+# HELP http_server_bytes_written_max Number of bytes sent by the server
+# HELP http_server_connections_seconds The duration of the connections
+# HELP http_server_connections_seconds_max The duration of the connections
+# HELP http_server_requests_seconds HTTP server request processing time
+# HELP http_server_requests_seconds_max HTTP server request processing time
+# HELP jvm_buffer_count_buffers An estimate of the number of buffers in the pool
+# HELP jvm_buffer_memory_used_bytes An estimate of the memory that the Java virtual machine is using for this buffer pool
+# HELP jvm_buffer_total_capacity_bytes An estimate of the total capacity of the buffers in this pool
+# HELP jvm_classes_loaded_classes The number of classes that are currently loaded in the Java virtual machine
+# HELP jvm_classes_unloaded_classes The total number of classes unloaded since the Java virtual machine has started execution
+# HELP jvm_gc_concurrent_phase_time_seconds Time spent in concurrent phase
+# HELP jvm_gc_concurrent_phase_time_seconds_max Time spent in concurrent phase
+# HELP jvm_gc_live_data_size_bytes Size of long-lived heap memory pool after reclamation
+# HELP jvm_gc_max_data_size_bytes Max size of long-lived heap memory pool
+# HELP jvm_gc_memory_allocated_bytes Incremented for an increase in the size of the (young) heap memory pool after one GC to before the next
+# HELP jvm_gc_memory_promoted_bytes Count of positive increases in the size of the old generation memory pool before GC to after GC
+# HELP jvm_gc_overhead An approximation of the percent of CPU time used by GC activities over the last lookback period or since monitoring began, whichever is shorter, in the range [0..1]
+# HELP jvm_gc_pause_seconds Time spent in GC pause
+# HELP jvm_gc_pause_seconds_max Time spent in GC pause
+# HELP jvm_info JVM version info
+# HELP jvm_memory_committed_bytes The amount of memory in bytes that is committed for the Java virtual machine to use
+# HELP jvm_memory_max_bytes The maximum amount of memory in bytes that can be used for memory management
+# HELP jvm_memory_usage_after_gc The percentage of long-lived heap pool used after the last GC event, in the range [0..1]
+# HELP jvm_memory_used_bytes The amount of used memory
+# HELP jvm_threads_daemon_threads The current number of live daemon threads
+# HELP jvm_threads_live_threads The current number of live threads including both daemon and non-daemon threads
+# HELP jvm_threads_peak_threads The peak live thread count since the Java virtual machine started or peak was reset
+# HELP jvm_threads_started_threads The total number of application threads started in the JVM
+# HELP jvm_threads_states_threads The current number of threads
+# HELP netty_allocator_memory_pinned  
+# HELP netty_allocator_memory_used  
+# HELP netty_allocator_pooled_arenas  
+# HELP netty_allocator_pooled_cache_size  
+# HELP netty_allocator_pooled_chunk_size  
+# HELP netty_allocator_pooled_threadlocal_caches  
+# HELP netty_eventexecutor_tasks_pending  
+# HELP process_cpu_time_ns The \"cpu time\" used by the Java Virtual Machine process
+# HELP process_cpu_usage The \"recent cpu usage\" for the Java Virtual Machine process
+# HELP process_files_max_files The maximum file descriptor count
+# HELP process_files_open_files The open file descriptor count
+# HELP process_start_time_seconds Start time of the process since unix epoch.
+# HELP process_uptime_seconds The uptime of the Java virtual machine
+# HELP system_cpu_count The number of processors available to the Java virtual machine
+# HELP system_cpu_usage The \"recent cpu usage\" of the system the application is running in
+# HELP system_load_average_1m The sum of the number of runnable entities queued to available processors and the number of runnable entities running on the available processors averaged over a period of time
+# HELP vendor_BufferPool_used_memory_direct_bytes The memory used by the NIO pool:direct
+# HELP vendor_BufferPool_used_memory_mapped_bytes The memory used by the NIO pool:mapped
+# HELP vendor_BufferPool_used_memory_mapped_non_volatile_memory_bytes The memory used by the NIO pool:mapped - 'non-volatile memory'
+# HELP vendor_cache_container_health_free_memory_kb The amount of free memory (KB) in the host
+# HELP vendor_cache_container_health_number_of_cpus Number of CPUs in the host
+# HELP vendor_cache_container_health_number_of_nodes Total nodes in the cluster
+# HELP vendor_cache_container_health_total_memory_kb The amount of total memory (KB) in the host
+# HELP vendor_cache_container_stats_average_read_time Cache container total average number of milliseconds for all read operation in this cache container
+# HELP vendor_cache_container_stats_average_read_time_nanos Cache container total average number of nanoseconds for all read operation in this cache container
+# HELP vendor_cache_container_stats_average_remove_time Cache container total average number of milliseconds for all remove operation in this cache container
+# HELP vendor_cache_container_stats_average_remove_time_nanos Cache container total average number of nanoseconds for all remove operation in this cache container
+# HELP vendor_cache_container_stats_average_write_time Cache container average number of milliseconds for all write operation in this cache container
+# HELP vendor_cache_container_stats_average_write_time_nanos Cache container average number of nanoseconds for all write operation in this cache container
+# HELP vendor_cache_container_stats_current_number_of_entries_in_memory Cache container total number of entries currently in-memory for all caches in this cache container
+# HELP vendor_cache_container_stats_data_memory_used Amount in bytes of memory used in a given cache container for entries with eviction
+# HELP vendor_cache_container_stats_evictions Cache container total number of cache eviction operations
+# HELP vendor_cache_container_stats_hit_ratio Cache container total percentage hit/(hit+miss) ratio for this cache
+# HELP vendor_cache_container_stats_hits Cache container total number of cache attribute hits
+# HELP vendor_cache_container_stats_misses Cache container total number of cache attribute misses
+# HELP vendor_cache_container_stats_number_of_entries Cache container total number of entries currently in all caches from this cache container
+# HELP vendor_cache_container_stats_off_heap_memory_used Amount in bytes of off-heap memory used by this cache container
+# HELP vendor_cache_container_stats_read_write_ratio Cache container read/writes ratio in all caches from this cache container
+# HELP vendor_cache_container_stats_remove_hits Cache container total number of cache removal hits
+# HELP vendor_cache_container_stats_remove_misses Cache container total number of cache removals where keys were not found
+# HELP vendor_cache_container_stats_required_minimum_number_of_nodes Required minimum number of nodes to hold current cache data
+# HELP vendor_cache_container_stats_stores Cache container total number of cache put operations
+# HELP vendor_cache_container_stats_time_since_reset Number of seconds since the cache container statistics were last reset
+# HELP vendor_cache_container_stats_time_since_start Number of seconds since cache started
+# HELP vendor_cluster_size Size of the cluster in number of nodes
+# HELP vendor_configuration_eviction_size Gets the eviction size for the cache
+# HELP vendor_jgroups_fd_sock2_get_actual_bind_port Actual port the server is listening on
+# HELP vendor_jgroups_fd_sock2_get_num_suspected_members The number of currently suspected members
+# HELP vendor_jgroups_frag4_get_number_of_received_fragments Number of received fragments
+# HELP vendor_jgroups_frag4_get_number_of_sent_fragments Number of sent fragments
+# HELP vendor_jgroups_gms_get_view_handler_size 
+# HELP vendor_jgroups_merge3_get_num_merge_events Number of times a MERGE event was sent up the stack
+# HELP vendor_jgroups_merge3_get_views Number of cached ViewIds
+# HELP vendor_jgroups_mfc_get_average_time_blocked Average time blocked (in ms) in flow control when trying to send a message
+# HELP vendor_jgroups_mfc_get_number_of_blockings Number of times flow control blocks sender
+# HELP vendor_jgroups_mfc_get_number_of_credit_requests_received 
+# HELP vendor_jgroups_mfc_get_number_of_credit_requests_sent 
+# HELP vendor_jgroups_mfc_get_number_of_credit_responses_received 
+# HELP vendor_jgroups_mfc_get_number_of_credit_responses_sent 
+# HELP vendor_jgroups_nakack2_get_become_server_queue_size_actual Actual size of the become_server_queue
+# HELP vendor_jgroups_nakack2_get_current_seqno 
+# HELP vendor_jgroups_nakack2_get_non_member_messages Number of messages from non-members
+# HELP vendor_jgroups_nakack2_get_num_messages_received Number of messages received
+# HELP vendor_jgroups_nakack2_get_num_messages_sent Number of messages sent
+# HELP vendor_jgroups_nakack2_get_size_of_all_messages Returns the number of bytes of all messages in all retransmit buffers. To compute the size, Message.getLength() is used
+# HELP vendor_jgroups_nakack2_get_size_of_all_messages_incl_headers Returns the number of bytes of all messages in all retransmit buffers. To compute the size, Message.size() is used
+# HELP vendor_jgroups_nakack2_get_xmit_table_capacity Capacity of the retransmit buffer. Computed as xmit_table_num_rows * xmit_table_msgs_per_row
+# HELP vendor_jgroups_nakack2_get_xmit_table_missing_messages Total number of missing (= not received) messages in all retransmit buffers
+# HELP vendor_jgroups_nakack2_get_xmit_table_num_compactions Number of retransmit table compactions
+# HELP vendor_jgroups_nakack2_get_xmit_table_num_current_rows Prints the number of rows currently allocated in the matrix. This value will not be lower than xmit_table_now_rows
+# HELP vendor_jgroups_nakack2_get_xmit_table_num_moves Number of retransmit table moves
+# HELP vendor_jgroups_nakack2_get_xmit_table_num_purges Number of retransmit table purges
+# HELP vendor_jgroups_nakack2_get_xmit_table_num_resizes Number of retransmit table resizes
+# HELP vendor_jgroups_nakack2_get_xmit_table_undelivered_msgs Total number of undelivered messages in all retransmit buffers
+# HELP vendor_jgroups_red_get_drop_rate Percentage of all messages that were dropped
+# HELP vendor_jgroups_red_get_dropped_messages 
+# HELP vendor_jgroups_red_get_total_messages 
+# HELP vendor_jgroups_stable_get_num_votes The number of votes for the current digest
+# HELP vendor_jgroups_stable_get_stability_received 
+# HELP vendor_jgroups_stable_get_stability_sent 
+# HELP vendor_jgroups_stable_get_stable_received 
+# HELP vendor_jgroups_stable_get_stable_sent 
+# HELP vendor_jgroups_tcp_get_different_cluster_messages Number of messages from members in a different cluster
+# HELP vendor_jgroups_tcp_get_different_version_messages Number of messages from members with a different JGroups version
+# HELP vendor_jgroups_tcp_get_largest_size Largest number of threads in the thread pool
+# HELP vendor_jgroups_tcp_get_num_batches_received Number of batches received (by the transport)
+# HELP vendor_jgroups_tcp_get_num_batches_sent Number of batches sent (by the bundler)
+# HELP vendor_jgroups_tcp_get_num_bytes_received Total number of bytes received (unicast + multicast)
+# HELP vendor_jgroups_tcp_get_num_bytes_sent Total number of bytes sent (unicast + multicast bytes)
+# HELP vendor_jgroups_tcp_get_num_mcast_bytes_received Number of multicast bytes received
+# HELP vendor_jgroups_tcp_get_num_mcast_bytes_sent Number of multicast bytes sent
+# HELP vendor_jgroups_tcp_get_num_mcast_msgs_received 
+# HELP vendor_jgroups_tcp_get_num_mcast_msgs_sent 
+# HELP vendor_jgroups_tcp_get_num_mcasts_received Total number of multicast messages received
+# HELP vendor_jgroups_tcp_get_num_mcasts_sent Number of multicast messages sent
+# HELP vendor_jgroups_tcp_get_num_msgs_received Number of messages received (mcasts and ucasts received)
+# HELP vendor_jgroups_tcp_get_num_msgs_sent Number of messages sent (mcasts and ucasts sent)
+# HELP vendor_jgroups_tcp_get_num_rejected_msgs 
+# HELP vendor_jgroups_tcp_get_num_single_msgs_sent Number of single messages sent (by the bundler)
+# HELP vendor_jgroups_tcp_get_num_timer_tasks Number of timer tasks queued up for execution
+# HELP vendor_jgroups_tcp_get_num_ucast_bytes_received Number of unicast bytes received
+# HELP vendor_jgroups_tcp_get_num_ucast_bytes_sent Number of unicast bytes sent
+# HELP vendor_jgroups_tcp_get_num_ucast_msgs_received 
+# HELP vendor_jgroups_tcp_get_num_ucast_msgs_sent 
+# HELP vendor_jgroups_tcp_get_num_ucasts_received Number of unicast messages received
+# HELP vendor_jgroups_tcp_get_num_ucasts_sent Number of unicast messages sent
+# HELP vendor_jgroups_tcp_get_number_of_thread_dumps 
+# HELP vendor_jgroups_tcp_get_open_connections 
+# HELP vendor_jgroups_tcp_get_thread_pool_size Current number of threads in the thread pool
+# HELP vendor_jgroups_tcp_get_thread_pool_size_active Current number of active threads in the thread pool
+# HELP vendor_jgroups_tcp_get_timer_threads Number of threads currently in the pool
+# HELP vendor_jgroups_ufc_get_average_time_blocked Average time blocked (in ms) in flow control when trying to send a message
+# HELP vendor_jgroups_ufc_get_number_of_blockings Number of times flow control blocks sender
+# HELP vendor_jgroups_ufc_get_number_of_credit_requests_received 
+# HELP vendor_jgroups_ufc_get_number_of_credit_requests_sent 
+# HELP vendor_jgroups_ufc_get_number_of_credit_responses_received 
+# HELP vendor_jgroups_ufc_get_number_of_credit_responses_sent 
+# HELP vendor_jgroups_unicast3_get_age_out_cache_size 
+# HELP vendor_jgroups_unicast3_get_num_acks_received Number of acks received
+# HELP vendor_jgroups_unicast3_get_num_acks_sent Number of acks sent
+# HELP vendor_jgroups_unicast3_get_num_connections Returns the total number of outgoing (send) and incoming (receive) connections
+# HELP vendor_jgroups_unicast3_get_num_loopbacks Number of unicast messages to self looped back up
+# HELP vendor_jgroups_unicast3_get_num_messages_received 
+# HELP vendor_jgroups_unicast3_get_num_messages_sent 
+# HELP vendor_jgroups_unicast3_get_num_receive_connections Returns the number of incoming (receive) connections
+# HELP vendor_jgroups_unicast3_get_num_send_connections Returns the number of outgoing (send) connections
+# HELP vendor_jgroups_unicast3_get_num_unacked_messages 
+# HELP vendor_jgroups_unicast3_get_num_xmits Number of retransmitted messages
+# HELP vendor_jgroups_unicast3_get_timestamper Next seqno issued by the timestamper
+# HELP vendor_jgroups_unicast3_get_xmit_table_deliverable_messages Total number of deliverable messages in all receive windows
+# HELP vendor_jgroups_unicast3_get_xmit_table_missing_messages Total number of missing messages in all receive windows
+# HELP vendor_jgroups_unicast3_get_xmit_table_num_compactions Number of compactions in all (receive and send) windows
+# HELP vendor_jgroups_unicast3_get_xmit_table_num_moves Number of moves in all (receive and send) windows
+# HELP vendor_jgroups_unicast3_get_xmit_table_num_purges Number of purges in all (receive and send) windows
+# HELP vendor_jgroups_unicast3_get_xmit_table_num_resizes Number of resizes in all (receive and send) windows
+# HELP vendor_jgroups_unicast3_get_xmit_table_undelivered_messages Total number of undelivered messages in all receive windows
+# HELP vendor_local_container_stats_memory_available The maximum amount of free memory in bytes in local JVM
+# HELP vendor_local_container_stats_memory_max The maximum amount of memory in local JVM will attempt to utilise in bytes
+# HELP vendor_local_container_stats_memory_total The total amount of memory in the local JVM in bytes
+# HELP vendor_local_container_stats_memory_used The amount of memory used by the local JVM in bytes
+# HELP vendor_local_container_stats_time_since_reset Number of seconds since the statistics were last reset
+# HELP vendor_lock_manager_number_of_locks_available The number of exclusive locks that are available.
+# HELP vendor_lock_manager_number_of_locks_held The number of exclusive locks that are held.
+# HELP vendor_memoryPool_CodeHeap_non_nmethods_usage_bytes Current usage of the CodeHeap 'non-nmethods' memory pool
+# HELP vendor_memoryPool_CodeHeap_non_nmethods_usage_max_bytes Peak usage of the CodeHeap 'non-nmethods' memory pool
+# HELP vendor_memoryPool_CodeHeap_non_profiled_nmethods_usage_bytes Current usage of the CodeHeap 'non-profiled nmethods' memory pool
+# HELP vendor_memoryPool_CodeHeap_non_profiled_nmethods_usage_max_bytes Peak usage of the CodeHeap 'non-profiled nmethods' memory pool
+# HELP vendor_memoryPool_CodeHeap_profiled_nmethods_usage_bytes Current usage of the CodeHeap 'profiled nmethods' memory pool
+# HELP vendor_memoryPool_CodeHeap_profiled_nmethods_usage_max_bytes Peak usage of the CodeHeap 'profiled nmethods' memory pool
+# HELP vendor_memoryPool_Compressed_Class_Space_usage_bytes Current usage of the Compressed Class Space memory pool
+# HELP vendor_memoryPool_Compressed_Class_Space_usage_max_bytes Peak usage of the Compressed Class Space memory pool
+# HELP vendor_memoryPool_G1_Eden_Space_usage_bytes Current usage of the G1 Eden Space memory pool
+# HELP vendor_memoryPool_G1_Eden_Space_usage_max_bytes Peak usage of the G1 Eden Space memory pool
+# HELP vendor_memoryPool_G1_Old_Gen_usage_bytes Current usage of the G1 Old Gen memory pool
+# HELP vendor_memoryPool_G1_Old_Gen_usage_max_bytes Peak usage of the G1 Old Gen memory pool
+# HELP vendor_memoryPool_G1_Survivor_Space_usage_bytes Current usage of the G1 Survivor Space memory pool
+# HELP vendor_memoryPool_G1_Survivor_Space_usage_max_bytes Peak usage of the G1 Survivor Space memory pool
+# HELP vendor_memoryPool_Metaspace_usage_bytes Current usage of the Metaspace memory pool
+# HELP vendor_memoryPool_Metaspace_usage_max_bytes Peak usage of the Metaspace memory pool
+# HELP vendor_number_of_cache_configurations The total number of defined cache configurations.
+# HELP vendor_number_of_created_caches The total number of created caches, including the default cache.
+# HELP vendor_number_of_running_caches The total number of running caches, including the default cache.
+# HELP vendor_passivation_passivations Number of passivation events
+# HELP vendor_rpc_manager_average_replication_time The average time spent in the transport layer, in milliseconds
+# HELP vendor_rpc_manager_average_xsite_replication_time Returns the average replication time, in milliseconds, for a cross-site replication request
+# HELP vendor_rpc_manager_cross_site_replication_times_seconds Cross Site Replication Times
+# HELP vendor_rpc_manager_maximum_xsite_replication_time Returns the maximum replication time, in milliseconds, for a cross-site replication request
+# HELP vendor_rpc_manager_minimum_xsite_replication_time Returns the minimum replication time, in milliseconds, for a cross-site replication request
+# HELP vendor_rpc_manager_number_xsite_requests Returns the number of sync cross-site requests
+# HELP vendor_rpc_manager_number_xsite_requests_received Returns the number of cross-site requests received from all nodes
+# HELP vendor_rpc_manager_replication_count Number of successful replications
+# HELP vendor_rpc_manager_replication_failures Number of failed replications
+# HELP vendor_rpc_manager_success_ratio_floating_point Successful replications as a ratio of total replications in numeric double format
+# HELP vendor_state_transfer_manager_inflight_segment_transfer_count The number of in-flight segments the local node requested from other nodes
+# HELP vendor_state_transfer_manager_inflight_transactional_segment_count The number of in-flight transactional segments the local node requested from other nodes
+# HELP vendor_statistics_approximate_entries Approximate number of entries currently in the cache, including persisted and expired entries
+# HELP vendor_statistics_approximate_entries_in_memory Approximate number of entries currently in memory, including expired entries
+# HELP vendor_statistics_approximate_entries_unique Approximate number of entries currently in the cache for which the local node is a primary owner, including persisted and expired entries
+# HELP vendor_statistics_average_read_time Average number of milliseconds for a read operation on the cache
+# HELP vendor_statistics_average_read_time_nanos Average number of nanoseconds for a read operation on the cache
+# HELP vendor_statistics_average_remove_time Average number of milliseconds for a remove operation in the cache
+# HELP vendor_statistics_average_remove_time_nanos Average number of nanoseconds for a remove operation in the cache
+# HELP vendor_statistics_average_write_time Average number of milliseconds for a write operation in the cache
+# HELP vendor_statistics_average_write_time_nanos Average number of nanoseconds for a write operation in the cache
+# HELP vendor_statistics_current_number_of_entries_in_memory Number of entries currently in-memory excluding expired entries
+# HELP vendor_statistics_data_memory_used Amount of memory in bytes allocated for use in eviction for data in the cache
+# HELP vendor_statistics_evictions Number of cache eviction operations
+# HELP vendor_statistics_hit_backup_owner The number of single key read hits when this node is the backup owner
+# HELP vendor_statistics_hit_non_owner The number of single key read hits when this node is not an owner
+# HELP vendor_statistics_hit_primary_owner The number of single key read hits when this node is the primary owner
+# HELP vendor_statistics_hit_ratio Percentage hit/(hit+miss) ratio for the cache
+# HELP vendor_statistics_hit_times_seconds The read hits times
+# HELP vendor_statistics_hits Number of cache attribute hits
+# HELP vendor_statistics_miss_backup_owner The number of single key read misses when this node is the backup owner
+# HELP vendor_statistics_miss_non_owner The number of single key read misses when this node is not an owner
+# HELP vendor_statistics_miss_primary_owner The number of single key read misses when this node is the primary owner
+# HELP vendor_statistics_miss_times_seconds The read misses times
+# HELP vendor_statistics_misses Number of cache attribute misses
+# HELP vendor_statistics_number_of_entries Number of entries in the cache including passivated entries
+# HELP vendor_statistics_number_of_entries_in_memory Number of entries currently in-memory excluding expired entries
+# HELP vendor_statistics_off_heap_memory_used Amount off-heap memory used by this cache (bytes)
+# HELP vendor_statistics_read_write_ratio Read/writes ratio for the cache
+# HELP vendor_statistics_remove_hit_backup_owner The number of single key remove hits when this node is the backup owner
+# HELP vendor_statistics_remove_hit_non_owner The number of single key remove hits when this node is not an owner
+# HELP vendor_statistics_remove_hit_primary_owner The number of single key remove hits when this node is the primary owner
+# HELP vendor_statistics_remove_hit_times_seconds The remove hits times
+# HELP vendor_statistics_remove_hits Number of cache removal hits
+# HELP vendor_statistics_remove_miss_backup_owner The number of single key remove misses when this node is the backup owner
+# HELP vendor_statistics_remove_miss_non_owner The number of single key remove misses when this node is not an owner
+# HELP vendor_statistics_remove_miss_primary_owner The number of single key remove misses when this node is the primary owner
+# HELP vendor_statistics_remove_miss_times_seconds The remove misses times
+# HELP vendor_statistics_remove_misses Number of cache removals where keys were not found
+# HELP vendor_statistics_required_minimum_number_of_nodes Amount of nodes required to guarantee data consistency
+# HELP vendor_statistics_store_backup_owner The number of single key stores when this node is the backup owner
+# HELP vendor_statistics_store_non_owner The number of single key stores when this node is not an owner
+# HELP vendor_statistics_store_primary_owner The number of single key stores when this node is the primary owner
+# HELP vendor_statistics_store_times_seconds The stores times
+# HELP vendor_statistics_stores Number of cache attribute put operations
+# HELP vendor_statistics_time_since_reset Number of seconds since the cache statistics were last reset
+# HELP vendor_statistics_time_since_start Number of seconds since cache started
+# HELP worker_pool_active The number of resources from the pool currently used
+# HELP worker_pool_completed Number of times resources from the pool have been acquired
+# HELP worker_pool_idle The number of resources from the pool currently used
+# HELP worker_pool_queue_delay_seconds Time spent in the waiting queue before being processed
+# HELP worker_pool_queue_delay_seconds_max Time spent in the waiting queue before being processed
+# HELP worker_pool_queue_size Number of pending elements in the waiting queue
+# HELP worker_pool_ratio Pool usage ratio
+# HELP worker_pool_rejected Number of times submissions to the pool have been rejected
+# HELP worker_pool_usage_seconds Time spent using resources from the pool
+# HELP worker_pool_usage_seconds_max Time spent using resources from the pool
+# TYPE agroal_acquire_count counter
+# TYPE agroal_active_count gauge
+# TYPE agroal_available_count gauge
+# TYPE agroal_awaiting_count gauge
+# TYPE agroal_blocking_time_average_milliseconds gauge
+# TYPE agroal_blocking_time_max_milliseconds gauge
+# TYPE agroal_blocking_time_total_milliseconds gauge
+# TYPE agroal_creation_count counter
+# TYPE agroal_creation_time_average_milliseconds gauge
+# TYPE agroal_creation_time_max_milliseconds gauge
+# TYPE agroal_creation_time_total_milliseconds gauge
+# TYPE agroal_destroy_count counter
+# TYPE agroal_flush_count counter
+# TYPE agroal_invalid_count counter
+# TYPE agroal_leak_detection_count counter
+# TYPE agroal_max_used_count gauge
+# TYPE agroal_reap_count counter
+# TYPE base_classloader_loadedClasses counter
+# TYPE base_classloader_loadedClasses_count gauge
+# TYPE base_classloader_unloadedClasses counter
+# TYPE base_cpu_availableProcessors gauge
+# TYPE base_cpu_processCpuLoad gauge
+# TYPE base_cpu_processCpuTime gauge
+# TYPE base_cpu_systemLoadAverage gauge
+# TYPE base_gc counter
+# TYPE base_gc_time counter
+# TYPE base_jvm_uptime gauge
+# TYPE base_memory_committedHeap_bytes gauge
+# TYPE base_memory_committedNonHeap_bytes gauge
+# TYPE base_memory_initHeap_bytes gauge
+# TYPE base_memory_initNonHeap_bytes gauge
+# TYPE base_memory_maxHeap_bytes gauge
+# TYPE base_memory_maxNonHeap_bytes gauge
+# TYPE base_memory_usedHeap_bytes gauge
+# TYPE base_memory_usedNonHeap_bytes gauge
+# TYPE base_thread_count gauge
+# TYPE base_thread_daemon_count gauge
+# TYPE base_thread_max_count gauge
+# TYPE base_thread_totalStarted gauge
+# TYPE http_server_active_requests gauge
+# TYPE http_server_bytes_read summary
+# TYPE http_server_bytes_read_max gauge
+# TYPE http_server_bytes_written summary
+# TYPE http_server_bytes_written_max gauge
+# TYPE http_server_connections_seconds summary
+# TYPE http_server_connections_seconds_max gauge
+# TYPE http_server_requests_seconds summary
+# TYPE http_server_requests_seconds_max gauge
+# TYPE jvm_buffer_count_buffers gauge
+# TYPE jvm_buffer_memory_used_bytes gauge
+# TYPE jvm_buffer_total_capacity_bytes gauge
+# TYPE jvm_classes_loaded_classes gauge
+# TYPE jvm_classes_unloaded_classes counter
+# TYPE jvm_gc_concurrent_phase_time_seconds summary
+# TYPE jvm_gc_concurrent_phase_time_seconds_max gauge
+# TYPE jvm_gc_live_data_size_bytes gauge
+# TYPE jvm_gc_max_data_size_bytes gauge
+# TYPE jvm_gc_memory_allocated_bytes counter
+# TYPE jvm_gc_memory_promoted_bytes counter
+# TYPE jvm_gc_overhead gauge
+# TYPE jvm_gc_pause_seconds summary
+# TYPE jvm_gc_pause_seconds_max gauge
+# TYPE jvm_info counter
+# TYPE jvm_memory_committed_bytes gauge
+# TYPE jvm_memory_max_bytes gauge
+# TYPE jvm_memory_usage_after_gc gauge
+# TYPE jvm_memory_used_bytes gauge
+# TYPE jvm_threads_daemon_threads gauge
+# TYPE jvm_threads_live_threads gauge
+# TYPE jvm_threads_peak_threads gauge
+# TYPE jvm_threads_started_threads counter
+# TYPE jvm_threads_states_threads gauge
+# TYPE netty_allocator_memory_pinned gauge
+# TYPE netty_allocator_memory_used gauge
+# TYPE netty_allocator_pooled_arenas gauge
+# TYPE netty_allocator_pooled_cache_size gauge
+# TYPE netty_allocator_pooled_chunk_size gauge
+# TYPE netty_allocator_pooled_threadlocal_caches gauge
+# TYPE netty_eventexecutor_tasks_pending gauge
+# TYPE process_cpu_time_ns counter
+# TYPE process_cpu_usage gauge
+# TYPE process_files_max_files gauge
+# TYPE process_files_open_files gauge
+# TYPE process_start_time_seconds gauge
+# TYPE process_uptime_seconds gauge
+# TYPE system_cpu_count gauge
+# TYPE system_cpu_usage gauge
+# TYPE system_load_average_1m gauge
+# TYPE vendor_BufferPool_used_memory_direct_bytes gauge
+# TYPE vendor_BufferPool_used_memory_mapped_bytes gauge
+# TYPE vendor_BufferPool_used_memory_mapped_non_volatile_memory_bytes gauge
+# TYPE vendor_cache_container_health_free_memory_kb gauge
+# TYPE vendor_cache_container_health_number_of_cpus gauge
+# TYPE vendor_cache_container_health_number_of_nodes gauge
+# TYPE vendor_cache_container_health_total_memory_kb gauge
+# TYPE vendor_cache_container_stats_average_read_time gauge
+# TYPE vendor_cache_container_stats_average_read_time_nanos gauge
+# TYPE vendor_cache_container_stats_average_remove_time gauge
+# TYPE vendor_cache_container_stats_average_remove_time_nanos gauge
+# TYPE vendor_cache_container_stats_average_write_time gauge
+# TYPE vendor_cache_container_stats_average_write_time_nanos gauge
+# TYPE vendor_cache_container_stats_current_number_of_entries_in_memory gauge
+# TYPE vendor_cache_container_stats_data_memory_used gauge
+# TYPE vendor_cache_container_stats_evictions gauge
+# TYPE vendor_cache_container_stats_hit_ratio gauge
+# TYPE vendor_cache_container_stats_hits gauge
+# TYPE vendor_cache_container_stats_misses gauge
+# TYPE vendor_cache_container_stats_number_of_entries gauge
+# TYPE vendor_cache_container_stats_off_heap_memory_used gauge
+# TYPE vendor_cache_container_stats_read_write_ratio gauge
+# TYPE vendor_cache_container_stats_remove_hits gauge
+# TYPE vendor_cache_container_stats_remove_misses gauge
+# TYPE vendor_cache_container_stats_required_minimum_number_of_nodes gauge
+# TYPE vendor_cache_container_stats_stores gauge
+# TYPE vendor_cache_container_stats_time_since_reset gauge
+# TYPE vendor_cache_container_stats_time_since_start gauge
+# TYPE vendor_cluster_size gauge
+# TYPE vendor_configuration_eviction_size gauge
+# TYPE vendor_jgroups_fd_sock2_get_actual_bind_port gauge
+# TYPE vendor_jgroups_fd_sock2_get_num_suspected_members gauge
+# TYPE vendor_jgroups_frag4_get_number_of_received_fragments gauge
+# TYPE vendor_jgroups_frag4_get_number_of_sent_fragments gauge
+# TYPE vendor_jgroups_gms_get_view_handler_size gauge
+# TYPE vendor_jgroups_merge3_get_num_merge_events gauge
+# TYPE vendor_jgroups_merge3_get_views gauge
+# TYPE vendor_jgroups_mfc_get_average_time_blocked gauge
+# TYPE vendor_jgroups_mfc_get_number_of_blockings gauge
+# TYPE vendor_jgroups_mfc_get_number_of_credit_requests_received gauge
+# TYPE vendor_jgroups_mfc_get_number_of_credit_requests_sent gauge
+# TYPE vendor_jgroups_mfc_get_number_of_credit_responses_received gauge
+# TYPE vendor_jgroups_mfc_get_number_of_credit_responses_sent gauge
+# TYPE vendor_jgroups_nakack2_get_become_server_queue_size_actual gauge
+# TYPE vendor_jgroups_nakack2_get_current_seqno gauge
+# TYPE vendor_jgroups_nakack2_get_non_member_messages gauge
+# TYPE vendor_jgroups_nakack2_get_num_messages_received gauge
+# TYPE vendor_jgroups_nakack2_get_num_messages_sent gauge
+# TYPE vendor_jgroups_nakack2_get_size_of_all_messages gauge
+# TYPE vendor_jgroups_nakack2_get_size_of_all_messages_incl_headers gauge
+# TYPE vendor_jgroups_nakack2_get_xmit_table_capacity gauge
+# TYPE vendor_jgroups_nakack2_get_xmit_table_missing_messages gauge
+# TYPE vendor_jgroups_nakack2_get_xmit_table_num_compactions gauge
+# TYPE vendor_jgroups_nakack2_get_xmit_table_num_current_rows gauge
+# TYPE vendor_jgroups_nakack2_get_xmit_table_num_moves gauge
+# TYPE vendor_jgroups_nakack2_get_xmit_table_num_purges gauge
+# TYPE vendor_jgroups_nakack2_get_xmit_table_num_resizes gauge
+# TYPE vendor_jgroups_nakack2_get_xmit_table_undelivered_msgs gauge
+# TYPE vendor_jgroups_red_get_drop_rate gauge
+# TYPE vendor_jgroups_red_get_dropped_messages gauge
+# TYPE vendor_jgroups_red_get_total_messages gauge
+# TYPE vendor_jgroups_stable_get_num_votes gauge
+# TYPE vendor_jgroups_stable_get_stability_received gauge
+# TYPE vendor_jgroups_stable_get_stability_sent gauge
+# TYPE vendor_jgroups_stable_get_stable_received gauge
+# TYPE vendor_jgroups_stable_get_stable_sent gauge
+# TYPE vendor_jgroups_tcp_get_different_cluster_messages gauge
+# TYPE vendor_jgroups_tcp_get_different_version_messages gauge
+# TYPE vendor_jgroups_tcp_get_largest_size gauge
+# TYPE vendor_jgroups_tcp_get_num_batches_received gauge
+# TYPE vendor_jgroups_tcp_get_num_batches_sent gauge
+# TYPE vendor_jgroups_tcp_get_num_bytes_received gauge
+# TYPE vendor_jgroups_tcp_get_num_bytes_sent gauge
+# TYPE vendor_jgroups_tcp_get_num_mcast_bytes_received gauge
+# TYPE vendor_jgroups_tcp_get_num_mcast_bytes_sent gauge
+# TYPE vendor_jgroups_tcp_get_num_mcast_msgs_received gauge
+# TYPE vendor_jgroups_tcp_get_num_mcast_msgs_sent gauge
+# TYPE vendor_jgroups_tcp_get_num_mcasts_received gauge
+# TYPE vendor_jgroups_tcp_get_num_mcasts_sent gauge
+# TYPE vendor_jgroups_tcp_get_num_msgs_received gauge
+# TYPE vendor_jgroups_tcp_get_num_msgs_sent gauge
+# TYPE vendor_jgroups_tcp_get_num_rejected_msgs gauge
+# TYPE vendor_jgroups_tcp_get_num_single_msgs_sent gauge
+# TYPE vendor_jgroups_tcp_get_num_timer_tasks gauge
+# TYPE vendor_jgroups_tcp_get_num_ucast_bytes_received gauge
+# TYPE vendor_jgroups_tcp_get_num_ucast_bytes_sent gauge
+# TYPE vendor_jgroups_tcp_get_num_ucast_msgs_received gauge
+# TYPE vendor_jgroups_tcp_get_num_ucast_msgs_sent gauge
+# TYPE vendor_jgroups_tcp_get_num_ucasts_received gauge
+# TYPE vendor_jgroups_tcp_get_num_ucasts_sent gauge
+# TYPE vendor_jgroups_tcp_get_number_of_thread_dumps gauge
+# TYPE vendor_jgroups_tcp_get_open_connections gauge
+# TYPE vendor_jgroups_tcp_get_thread_pool_size gauge
+# TYPE vendor_jgroups_tcp_get_thread_pool_size_active gauge
+# TYPE vendor_jgroups_tcp_get_timer_threads gauge
+# TYPE vendor_jgroups_ufc_get_average_time_blocked gauge
+# TYPE vendor_jgroups_ufc_get_number_of_blockings gauge
+# TYPE vendor_jgroups_ufc_get_number_of_credit_requests_received gauge
+# TYPE vendor_jgroups_ufc_get_number_of_credit_requests_sent gauge
+# TYPE vendor_jgroups_ufc_get_number_of_credit_responses_received gauge
+# TYPE vendor_jgroups_ufc_get_number_of_credit_responses_sent gauge
+# TYPE vendor_jgroups_unicast3_get_age_out_cache_size gauge
+# TYPE vendor_jgroups_unicast3_get_num_acks_received gauge
+# TYPE vendor_jgroups_unicast3_get_num_acks_sent gauge
+# TYPE vendor_jgroups_unicast3_get_num_connections gauge
+# TYPE vendor_jgroups_unicast3_get_num_loopbacks gauge
+# TYPE vendor_jgroups_unicast3_get_num_messages_received gauge
+# TYPE vendor_jgroups_unicast3_get_num_messages_sent gauge
+# TYPE vendor_jgroups_unicast3_get_num_receive_connections gauge
+# TYPE vendor_jgroups_unicast3_get_num_send_connections gauge
+# TYPE vendor_jgroups_unicast3_get_num_unacked_messages gauge
+# TYPE vendor_jgroups_unicast3_get_num_xmits gauge
+# TYPE vendor_jgroups_unicast3_get_timestamper gauge
+# TYPE vendor_jgroups_unicast3_get_xmit_table_deliverable_messages gauge
+# TYPE vendor_jgroups_unicast3_get_xmit_table_missing_messages gauge
+# TYPE vendor_jgroups_unicast3_get_xmit_table_num_compactions gauge
+# TYPE vendor_jgroups_unicast3_get_xmit_table_num_moves gauge
+# TYPE vendor_jgroups_unicast3_get_xmit_table_num_purges gauge
+# TYPE vendor_jgroups_unicast3_get_xmit_table_num_resizes gauge
+# TYPE vendor_jgroups_unicast3_get_xmit_table_undelivered_messages gauge
+# TYPE vendor_local_container_stats_memory_available gauge
+# TYPE vendor_local_container_stats_memory_max gauge
+# TYPE vendor_local_container_stats_memory_total gauge
+# TYPE vendor_local_container_stats_memory_used gauge
+# TYPE vendor_local_container_stats_time_since_reset gauge
+# TYPE vendor_lock_manager_number_of_locks_available gauge
+# TYPE vendor_lock_manager_number_of_locks_held gauge
+# TYPE vendor_memoryPool_CodeHeap_non_nmethods_usage_bytes gauge
+# TYPE vendor_memoryPool_CodeHeap_non_nmethods_usage_max_bytes gauge
+# TYPE vendor_memoryPool_CodeHeap_non_profiled_nmethods_usage_bytes gauge
+# TYPE vendor_memoryPool_CodeHeap_non_profiled_nmethods_usage_max_bytes gauge
+# TYPE vendor_memoryPool_CodeHeap_profiled_nmethods_usage_bytes gauge
+# TYPE vendor_memoryPool_CodeHeap_profiled_nmethods_usage_max_bytes gauge
+# TYPE vendor_memoryPool_Compressed_Class_Space_usage_bytes gauge
+# TYPE vendor_memoryPool_Compressed_Class_Space_usage_max_bytes gauge
+# TYPE vendor_memoryPool_G1_Eden_Space_usage_bytes gauge
+# TYPE vendor_memoryPool_G1_Eden_Space_usage_max_bytes gauge
+# TYPE vendor_memoryPool_G1_Old_Gen_usage_bytes gauge
+# TYPE vendor_memoryPool_G1_Old_Gen_usage_max_bytes gauge
+# TYPE vendor_memoryPool_G1_Survivor_Space_usage_bytes gauge
+# TYPE vendor_memoryPool_G1_Survivor_Space_usage_max_bytes gauge
+# TYPE vendor_memoryPool_Metaspace_usage_bytes gauge
+# TYPE vendor_memoryPool_Metaspace_usage_max_bytes gauge
+# TYPE vendor_number_of_cache_configurations gauge
+# TYPE vendor_number_of_created_caches gauge
+# TYPE vendor_number_of_running_caches gauge
+# TYPE vendor_passivation_passivations gauge
+# TYPE vendor_rpc_manager_average_replication_time gauge
+# TYPE vendor_rpc_manager_average_xsite_replication_time gauge
+# TYPE vendor_rpc_manager_cross_site_replication_times_seconds summary
+# TYPE vendor_rpc_manager_maximum_xsite_replication_time gauge
+# TYPE vendor_rpc_manager_minimum_xsite_replication_time gauge
+# TYPE vendor_rpc_manager_number_xsite_requests gauge
+# TYPE vendor_rpc_manager_number_xsite_requests_received gauge
+# TYPE vendor_rpc_manager_replication_count gauge
+# TYPE vendor_rpc_manager_replication_failures gauge
+# TYPE vendor_rpc_manager_success_ratio_floating_point gauge
+# TYPE vendor_state_transfer_manager_inflight_segment_transfer_count gauge
+# TYPE vendor_state_transfer_manager_inflight_transactional_segment_count gauge
+# TYPE vendor_statistics_approximate_entries gauge
+# TYPE vendor_statistics_approximate_entries_in_memory gauge
+# TYPE vendor_statistics_approximate_entries_unique gauge
+# TYPE vendor_statistics_average_read_time gauge
+# TYPE vendor_statistics_average_read_time_nanos gauge
+# TYPE vendor_statistics_average_remove_time gauge
+# TYPE vendor_statistics_average_remove_time_nanos gauge
+# TYPE vendor_statistics_average_write_time gauge
+# TYPE vendor_statistics_average_write_time_nanos gauge
+# TYPE vendor_statistics_current_number_of_entries_in_memory gauge
+# TYPE vendor_statistics_data_memory_used gauge
+# TYPE vendor_statistics_evictions gauge
+# TYPE vendor_statistics_hit_backup_owner counter
+# TYPE vendor_statistics_hit_non_owner counter
+# TYPE vendor_statistics_hit_primary_owner counter
+# TYPE vendor_statistics_hit_ratio gauge
+# TYPE vendor_statistics_hit_times_seconds summary
+# TYPE vendor_statistics_hits gauge
+# TYPE vendor_statistics_miss_backup_owner counter
+# TYPE vendor_statistics_miss_non_owner counter
+# TYPE vendor_statistics_miss_primary_owner counter
+# TYPE vendor_statistics_miss_times_seconds summary
+# TYPE vendor_statistics_misses gauge
+# TYPE vendor_statistics_number_of_entries gauge
+# TYPE vendor_statistics_number_of_entries_in_memory gauge
+# TYPE vendor_statistics_off_heap_memory_used gauge
+# TYPE vendor_statistics_read_write_ratio gauge
+# TYPE vendor_statistics_remove_hit_backup_owner counter
+# TYPE vendor_statistics_remove_hit_non_owner counter
+# TYPE vendor_statistics_remove_hit_primary_owner counter
+# TYPE vendor_statistics_remove_hit_times_seconds summary
+# TYPE vendor_statistics_remove_hits gauge
+# TYPE vendor_statistics_remove_miss_backup_owner counter
+# TYPE vendor_statistics_remove_miss_non_owner counter
+# TYPE vendor_statistics_remove_miss_primary_owner counter
+# TYPE vendor_statistics_remove_miss_times_seconds summary
+# TYPE vendor_statistics_remove_misses gauge
+# TYPE vendor_statistics_required_minimum_number_of_nodes gauge
+# TYPE vendor_statistics_store_backup_owner counter
+# TYPE vendor_statistics_store_non_owner counter
+# TYPE vendor_statistics_store_primary_owner counter
+# TYPE vendor_statistics_store_times_seconds summary
+# TYPE vendor_statistics_stores gauge
+# TYPE vendor_statistics_time_since_reset gauge
+# TYPE vendor_statistics_time_since_start gauge
+# TYPE worker_pool_active gauge
+# TYPE worker_pool_completed counter
+# TYPE worker_pool_idle gauge
+# TYPE worker_pool_queue_delay_seconds summary
+# TYPE worker_pool_queue_delay_seconds_max gauge
+# TYPE worker_pool_queue_size gauge
+# TYPE worker_pool_ratio gauge
+# TYPE worker_pool_rejected counter
+# TYPE worker_pool_usage_seconds summary
+# TYPE worker_pool_usage_seconds_max gauge

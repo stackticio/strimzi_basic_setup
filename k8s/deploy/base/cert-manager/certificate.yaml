@@ -1,0 +1,16 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-certificate
+  namespace: cert-manager
+spec:
+  secretName: wildcard-tls-secret
+  commonName: "apps.source-lab.io"
+  dnsNames:
+  - "minio.apps.source-lab.io"
+  - "apps.source-lab.io"
+  issuerRef:
+    name: issuer
+    kind: ClusterIssuer
+    group: cert-manager.io

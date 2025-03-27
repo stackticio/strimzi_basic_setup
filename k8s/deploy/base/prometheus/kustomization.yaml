@@ -1,0 +1,19 @@
+resources:
+  - namespace.yaml
+  - prometheus.yaml
+  - pushgateway.yaml
+
+secretGenerator:
+  - name: prometheus-configmap
+    namespace: prometheus
+    envs:
+      - secret/alert.env
+    options:
+      disableNameSuffixHash: true
+
+labels:
+  - pairs:
+      stacktic.io/app: "prometheus"
+      stacktic.io/group: "temporal_db"
+      stacktic.io/namespace: "prometheus"
+    includeTemplates: true

@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: minio--exception--app--ingress--ports--9001--nr17
+  namespace: minio
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          stacktic.io/namespace: ingress-apisix
+    ports:
+    - protocol: TCP
+      port: 9001

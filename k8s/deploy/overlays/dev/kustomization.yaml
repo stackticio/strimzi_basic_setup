@@ -1,0 +1,10 @@
+resources:
+  - jupyterhub
+  - postgresql
+  - grafana
+  - cert-manager
+  - kafka
+  - minio
+  - apisix
+  - prometheus
+  - mongodb

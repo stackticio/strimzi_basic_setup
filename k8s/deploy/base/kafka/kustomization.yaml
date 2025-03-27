@@ -1,0 +1,57 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespace.yaml
+  - kafka-cluster.yaml
+  - connectors/kafka-connect.yaml
+  - bridge.yaml
+  - strimzi-control.yaml
+  - topic.yaml
+  - connectors/mongodb-sink.yaml
+  - connectors/minio-sink.yaml
+  - connectors/psql-sink.yaml
+  - monitor/cm-kafka-metrics.yaml
+  - monitor/pod-monitor.yaml
+  - monitor/cm-connect-metrics.yaml
+  
+secretGenerator:
+  - name: prometheus-user
+    namespace: strimzi
+    files:
+      - user.crt=secret/user.crt
+      - user.key=secret/user.key
+      - ca.crt=secret/ca.crt
+    type: Opaque
+
+  - name: kafka-bridge
+    namespace: strimzi
+    files:
+      - user.crt=secret/user.crt
+      - user.key=secret/user.key
+      - ca.crt=secret/ca.crt
+    type: Opaque
+
+  - name: registry-credential
+    namespace: strimzi
+    files:
+      - .dockerconfigjson=secret/registry.json
+    type: kubernetes.io/dockerconfigjson
+    options:
+      disableNameSuffixHash: true
+
+  - name: kafka-cm
+    namespace:  strimzi
+    envs:
+      - secret/cloud.env
+    options:
+      disableNameSuffixHash: true
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+labels:
+  - pairs:
+      stacktic.io/app: "kafka"
+      stacktic.io/group: "kafka"
+      stacktic.io/namespace: "strimzi"
+    includeTemplates: true

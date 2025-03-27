@@ -1,0 +1,74 @@
+# Chart Info:
+#   chart_name: cert-manager
+#   chart_repo: jetstack
+#   chart_version: 1.16.2
+#   app_version: v1.16.2
+
+# CRD
+crds:
+  enabled: true
+  keep: true
+
+global:
+  # Logging
+  logLevel: 2
+  rbac:
+    create: true
+    aggregateClusterRoles: true
+
+# Replicas
+replicaCount: 1
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  maxUnavailable: 1
+
+# Resources
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 200m
+    memory: 512Mi
+
+# Metrics
+
+
+## Webhook
+webhook:
+  # Network Policy
+  networkPolicy:
+    enabled: false
+  # Replicas
+  replicaCount: 1
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    maxUnavailable: 1
+  # Resources
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi
+
+## CA Injector
+cainjector:
+  enabled: true
+  # Replicas
+  replicaCount: 1
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+    maxUnavailable: 1
+  # Resources
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 256Mi

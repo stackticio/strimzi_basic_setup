@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pushgateway
+  namespace: prometheus
+  labels:
+    app: pushgateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pushgateway
+  template:
+    metadata:
+      labels:
+        app: pushgateway
+    spec:
+      containers:
+        - name: pushgateway
+          image: bitnami/pushgateway:1.11.0-debian-12-r4
+          ports:
+            - containerPort: 9091
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pushgateway
+  namespace: prometheus
+  labels:
+    app: pushgateway
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9091
+      targetPort: 9091
+      protocol: TCP
+      name: http
+  selector:
+    app: pushgateway
+---
+# Source: postgresql/templates/primary/servicemonitor.yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: pushgateway
+  namespace: prometheus
+  labels:
+    app.kubernetes.io/name: pushgateway
+    app.kubernetes.io/instance: pushgateway
+    app.kubernetes.io/component: metrics
+spec:
+  selector:
+    matchLabels:
+      app: pushgateway
+  endpoints:
+    - port: http
+      interval: 15s
+  namespaceSelector:
+    matchNames:
+      - prometheus

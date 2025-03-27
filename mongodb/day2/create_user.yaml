@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-grant-permissions-job
+  namespace: "mongodb"
+    labels:
+      app.kubernetes.io/name: "mongodb"
+  spec:
+spec:
+  template:
+    spec:
+      containers:
+        - name: mongodb-grant-permissions
+          image: docker.io/bitnami/mongodb:4.4.10-debian-10-r0
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -x
+              echo "Connecting to MongoDB at mongodb.mongodb.svc.cluster.local"
+              mongo --host mongodb.mongodb.svc.cluster.local --authenticationDatabase admin -u root -p "$MONGODB_ROOT_PASSWORD" <<EOF
+              use python_db;
+              db.createUser({user: "python", pwd: "password", roles: [{role: "dbAdmin", db: "python_db"}]});
+              db.grantRolesToUser("python", [{role: "dbAdmin", db: "python_db"}]);
+              EOF
+              echo "MongoDB command exit status: $?"
+          env:
+            - name: MONGODB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-auth-secret
+                  key: mongodb-root-password
+      restartPolicy: Never

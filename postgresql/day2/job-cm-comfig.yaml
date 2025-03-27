@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-db-init-job
+  namespace: postgresql
+spec:
+  template:
+    spec:
+      containers:
+        - name: init-db
+          image: postgres:latest  # Consider specifying a version
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              export PGPASSWORD=$POSTGRES_PASSWORD;
+              psql -h postgresql.postgresql.svc.cluster.local -U $POSTGRES_USER -d $POSTGRES_DB -a -f /scripts/init_db.sql
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-admin-password
+                  key: postgres-password
+            - name: POSTGRES_USER
+              value: "python"
+            - name: POSTGRES_DB
+              value: "python_db"
+          volumeMounts:
+            - name: script-volume
+              mountPath: /scripts
+      volumes:
+        - name: script-volume
+          configMap:
+            name: postgres-init-scripts
+      restartPolicy: OnFailure

@@ -1,0 +1,74 @@
+# Chart Info:
+#   chart_name: minio
+#   chart_repo: bitnami
+#   chart_version: 16.6.0
+#   app_version: 2024.5.10
+#   chart_release_date: 21/05/2024
+#   stacktic_update_date: 29/05/2024
+
+
+# Deployment architecture
+mode: standalone
+
+# Replication
+statefulset:
+  podManagementPolicy: Parallel
+  # Pods per zone. Should be even and `>= 4`
+  replicaCount: 4
+  zones: 1
+  drivesPerNode: 1
+
+# Authentication
+auth:
+  existingSecret: "minio-credentials"
+  forcePassword: false
+  useCredentialsFiles: false
+  forceNewKeys: false
+
+# Network Policy
+networkPolicy:
+  enabled: false
+
+# Service
+service:
+  ports:
+    api: 9000
+    console: 9001
+# Velero configuration
+
+# Resources
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 375m
+    memory: 384Mi
+
+# Anti-Affinity
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/instance: minio
+              app.kubernetes.io/name: minio
+          topologyKey: kubernetes.io/hostname
+
+# Environment variables
+extraEnvVars:
+  - name: MINIO_API_REQUESTS_SIGNATURE
+    value: "relaxed"
+
+# Metrics
+
+
+# Default bucket name
+
+
+# Ingress
+
+
+

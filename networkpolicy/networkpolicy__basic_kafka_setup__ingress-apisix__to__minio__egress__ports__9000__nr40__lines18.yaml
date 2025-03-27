@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ingress-apisix--to--minio--egress--ports--9000--nr40
+  namespace: ingress-apisix
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          stacktic.io/namespace: minio
+    ports:
+    - protocol: TCP
+      port: 9000

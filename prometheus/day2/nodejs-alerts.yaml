@@ -1,0 +1,75 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nodejs-application-rules
+  namespace: prometheus
+spec:
+  groups:
+    - name: nodejs.rules
+      rules:
+        - alert: NodeJSHighCPUUsage
+          expr: process_cpu_seconds_total{app="nodejs"} > 8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Node.js instance high CPU usage"
+            description: "Node.js CPU usage is high, indicating potential performance issues."
+
+        - alert: NodeJSMajorGCDuration
+          expr: nodejs_gc_duration_seconds_sum{kind="major", app="nodejs"} > 0.07
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Node.js major GC duration is high"
+            description: "Node.js garbage collection duration for 'major' collections is higher than expected, indicating potential memory pressure."
+
+        - alert: NodeJSHighMemoryUsage
+          expr: process_resident_memory_bytes{app="nodejs"} > 50000000
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Node.js instance high memory usage"
+            description: "Node.js memory usage is high, indicating potential memory leaks or memory pressure."
+
+        - alert: NodeJSHighOpenFileDescriptors
+          expr: process_open_fds{app="nodejs"} > 20
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Node.js high number of open file descriptors"
+            description: "Node.js has a high number of open file descriptors, indicating potential resource leaks."
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: nodejs-alertmanager-config
+  namespace: prometheus
+spec:
+  route:
+    groupBy: ['alertname', 'severity']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: 'slack-notifications'
+    routes:
+      - match:
+          severity: 'warning'
+        receiver: 'slack-notifications'
+      - match:
+          severity: 'critical'
+        receiver: 'slack-notifications'
+  receivers:
+    - name: 'slack-notifications'
+      slackConfigs:
+        - sendResolved: true
+          text: "Alert description: "
+          username: 'Alertmanager'
+          channel: '#alerts-channel'
+          apiURL:
+            name: 'slack-webhook-url'
+            key: 'url'

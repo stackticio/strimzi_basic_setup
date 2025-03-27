@@ -1,0 +1,121 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: elasticsearch-application-rules
+  namespace: "prometheus"
+spec:
+  groups:
+    - name: elasticsearch.rules
+      rules:
+        # 1) Cluster Health Status Yellow or Red
+        # elasticsearch_cluster_health_status: (0=green, 1=yellow, 2=red)
+        - alert: ElasticsearchClusterHealthNotGreen
+          expr: elasticsearch_cluster_health_status > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch cluster health is not green ()"
+            description: "Cluster health has been yellow or red for 5 minutes, indicating shard/recovery issues."
+
+        # 2) Too Many Unassigned Shards
+        # elasticsearch_cluster_health_unassigned_shards: total number of unassigned shards
+        - alert: ElasticsearchHighUnassignedShards
+          expr: elasticsearch_cluster_health_unassigned_shards > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch (): Unassigned shards"
+            description: "One or more shards remain unassigned for over 5 minutes."
+
+        # 3) High CPU Usage (Process)
+        # elasticsearch_process_cpu_percent is the % CPU used by the ES process
+        - alert: ElasticsearchHighProcessCPU
+          expr: elasticsearch_process_cpu_percent > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch (): High CPU usage"
+            description: "Process CPU usage has exceeded 80% for 5 minutes."
+
+        # 4) Node Low Data Node Count
+        # elasticsearch_cluster_health_number_of_data_nodes: how many data nodes in cluster
+        - alert: ElasticsearchLowDataNodes
+          expr: elasticsearch_cluster_health_number_of_data_nodes < 2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch cluster: Low data node count"
+            description: "Fewer than 2 data nodes in the cluster, which may reduce redundancy/performance."
+
+        # 5) High Pending Tasks
+        # elasticsearch_cluster_health_number_of_pending_tasks: cluster-level changes not yet executed
+        - alert: ElasticsearchHighPendingTasks
+          expr: elasticsearch_cluster_health_number_of_pending_tasks > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch (): High pending tasks"
+            description: "Over 10 pending tasks in the cluster queue for 5 minutes—cluster state updates may be delayed."
+
+        # 6) High Thread Pool Queue (Write)
+        # elasticsearch_thread_pool_queue_count{thread_pool="write"}
+        - alert: ElasticsearchHighWriteThreadPool
+          expr: elasticsearch_thread_pool_queue_count{thread_pool="write"} > 100
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch (): High write thread pool queue"
+            description: "Write thread pool queue length exceeded 100 for 5 minutes—node is under heavy indexing load."
+
+        # 7) High Thread Pool Rejections (Search)
+        # elasticsearch_thread_pool_rejected_count{thread_pool="search"} increments when new tasks are rejected
+        - alert: ElasticsearchSearchThreadPoolRejections
+          expr: increase(elasticsearch_thread_pool_rejected_count{thread_pool="search"}[5m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch (): Search thread pool rejections"
+            description: "Search thread pool has rejected tasks in the last 5 minutes—node may be overloaded."
+
+        # 8) Fielddata Evictions
+        # elasticsearch_indices_fielddata_evictions increments on fielddata cache evictions
+        - alert: ElasticsearchHighFielddataEvictions
+          expr: increase(elasticsearch_indices_fielddata_evictions[5m]) > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch (): Frequent fielddata cache evictions"
+            description: "Over 10 fielddata evictions in last 5 minutes, possibly indicating memory pressure or large aggregations."
+
+        # 9) JVM Memory Usage
+        # elasticsearch_jvm_memory_used_bytes{area="heap"} / elasticsearch_jvm_memory_max_bytes{area="heap"} => fraction
+        - alert: ElasticsearchHighJVMMemory
+          expr: (
+            elasticsearch_jvm_memory_used_bytes{area="heap"} 
+            / ignoring(area) elasticsearch_jvm_memory_max_bytes{area="heap"}
+          ) > 0.85
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch (): High JVM heap usage"
+            description: "Elasticsearch JVM heap usage above 85% for 5 minutes—possible memory pressure."
+
+        # 10) Node Recently Restarted
+        # elasticsearch_jvm_uptime_seconds: node's JVM uptime in seconds
+        - alert: ElasticsearchNodeRecentlyRestarted
+          expr: elasticsearch_jvm_uptime_seconds < 300
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Elasticsearch: Node recently restarted"
+            description: "Uptime is under 5 minutes—node may have crashed or restarted recently."

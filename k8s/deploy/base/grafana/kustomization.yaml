@@ -1,0 +1,59 @@
+resources:
+  - namespace.yaml
+  - grafana.yaml
+
+secretGenerator:
+  - name: grafana-datasources
+    namespace: grafana
+    files:
+      - config/datasources.yaml
+  - name: grafana-admin-password
+    namespace: grafana
+    envs:
+      - secret/grafana.env
+
+configMapGenerator:
+  - name: dashboard-kubernetes
+    namespace: grafana
+    files:
+      - dashboard/kubernetes.json
+  - name: dashboard-jvm
+    namespace: grafana
+    files:
+      - dashboard/jvm.json
+  - name: dashboard-kube-state-metrics
+    namespace: grafana
+    files:
+      - dashboard/kube-state-metrics.json
+  - name: dashboard-mongodb
+    namespace: grafana
+    files:
+      - dashboard/mongodb.json
+  - name: dashboard-kafka-broker
+    namespace: grafana
+    files:
+      - dashboard/kafka-broker.json
+  - name: dashboard-kafka-kraft
+    namespace: grafana
+    files:
+      - dashboard/kafka-kraft.json
+  - name: dashboard-kafka-exporter
+    namespace: grafana
+    files:
+      - dashboard/kafka-exporter.json
+  - name: dashboard-kafka-connect
+    namespace: grafana
+    files:
+      - dashboard/kafka-connect.json
+  - name: dashboard-kafka-bridge
+    namespace: grafana
+    files:
+      - dashboard/kafka-bridge.json
+  - name: dashboard-kafka-operators
+    namespace: grafana
+    files:
+      - dashboard/kafka-operators.json
+
+generatorOptions:
+  disableNameSuffixHash: true
+

@@ -1,0 +1,4 @@
+namespace: build
+
+resources:
+  - kaniko.yaml

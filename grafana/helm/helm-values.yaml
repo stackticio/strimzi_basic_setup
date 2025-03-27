@@ -1,0 +1,71 @@
+# Chart Info:
+#   chart_name: grafana
+#   chart_repo: bitnami
+#   chart_version: 11.2.0
+#   app_version: 11.0.0
+#   chart_release_date: 22/05/2024
+#   stacktic_update_date: 29/05/2024
+#   https://github.com/bitnami/charts/tree/main/bitnami/grafana
+
+
+# Configuration
+grafana:
+  replicaCount: 1
+  # Resources
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 375m
+      memory: 384Mi
+
+# For the datasources we can use just one secret with all the files
+datasources:
+  secretName: "grafana-datasources"
+
+# Load default dashboards
+dashboardsProvider:
+  enabled: true
+
+# Import datasources from an externally-managed secret
+# For the dashboards we need one ConfigMap per file
+dashboardsConfigMaps:
+  - configMapName: dashboard-kubernetes
+    fileName: kubernetes.json
+  - configMapName: dashboard-jvm
+    fileName: jvm.json
+  - configMapName: dashboard-kube-state-metrics
+    fileName: kube-state-metrics.json
+  - configMapName: dashboard-mongodb
+    fileName: mongodb.json
+  - configMapName: dashboard-kafka-broker
+    fileName: kafka-broker.json
+  - configMapName: dashboard-kafka-kraft
+    fileName: kafka-kraft.json
+  - configMapName: dashboard-kafka-exporter
+    fileName: kafka-exporter.json
+  - configMapName: dashboard-kafka-connect
+    fileName: kafka-connect.json
+  - configMapName: dashboard-kafka-bridge
+    fileName: kafka-bridge.json
+  - configMapName: dashboard-kafka-operators
+    fileName: kafka-operators.json
+
+# Service parameters
+service:
+  type: "ClusterIP"
+  ports:
+    grafana: 3000
+# Network Policy
+networkPolicy:
+  enabled: false
+
+## Ingress
+
+# Grafana admin username
+admin:
+  existingSecret: "grafana-admin-password"
+
+# Metrics
+

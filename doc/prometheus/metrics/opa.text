@@ -1,0 +1,100 @@
+# HELP gatekeeper_mutation_request_count_total The number of requests that are routed to mutation webhook
+# HELP gatekeeper_mutation_request_duration_seconds The response time in seconds
+# HELP gatekeeper_mutation_system_iterations The distribution of Mutation System iterations before convergence
+# HELP gatekeeper_mutator_conflicting_count The current number of conflicting Mutator objects
+# HELP gatekeeper_sync_last_run_time_seconds Timestamp of last sync operation
+# HELP gatekeeper_validation_request_count_total The number of requests that are routed to validation webhook
+# HELP gatekeeper_validation_request_duration_seconds The response time in seconds
+# HELP gatekeeper_watch_manager_intended_watch_gvk The total number of Group/Version/Kinds that the watch manager has instructions to watch. This could differ from the actual count due to resources being pending, non-existent, or a failure of the watch manager to restart
+# HELP gatekeeper_watch_manager_watched_gvk The total number of Group/Version/Kinds currently watched by the watch manager
+# HELP go_gc_duration_seconds A summary of the wall-time pause (stop-the-world) duration in garbage collection cycles.
+# HELP go_gc_gogc_percent Heap size target percentage configured by the user, otherwise 100. This value is set by the GOGC environment variable, and the runtime/debug.SetGCPercent function. Sourced from /gc/gogc:percent
+# HELP go_gc_gomemlimit_bytes Go runtime memory limit configured by the user, otherwise math.MaxInt64. This value is set by the GOMEMLIMIT environment variable, and the runtime/debug.SetMemoryLimit function. Sourced from /gc/gomemlimit:bytes
+# HELP go_goroutines Number of goroutines that currently exist.
+# HELP go_info Information about the Go environment.
+# HELP go_memstats_alloc_bytes Number of bytes allocated in heap and currently in use. Equals to /memory/classes/heap/objects:bytes.
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated in heap until now, even if released already. Equals to /gc/heap/allocs:bytes.
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table. Equals to /memory/classes/profiling/buckets:bytes.
+# HELP go_memstats_frees_total Total number of heap objects frees. Equals to /gc/heap/frees:objects + /gc/heap/tiny/allocs:objects.
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata. Equals to /memory/classes/metadata/other:bytes.
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and currently in use, same as go_memstats_alloc_bytes. Equals to /memory/classes/heap/objects:bytes.
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used. Equals to /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes
+# HELP go_memstats_heap_objects Number of currently allocated objects. Equals to /gc/heap/objects:objects.
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS. Equals to /memory/classes/heap/released:bytes.
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes + /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# HELP go_memstats_mallocs_total Total number of heap objects allocated, both live and gc-ed. Semantically a counter version for go_memstats_heap_objects gauge. Equals to /gc/heap/allocs:objects + /gc/heap/tiny/allocs:objects.
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures. Equals to /memory/classes/metadata/mcache/inuse:bytes.
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system. Equals to /memory/classes/metadata/mcache/inuse:bytes + /memory/classes/metadata/mcache/free:bytes.
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures. Equals to /memory/classes/metadata/mspan/inuse:bytes.
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system. Equals to /memory/classes/metadata/mspan/inuse:bytes + /memory/classes/metadata/mspan/free:bytes.
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place. Equals to /gc/heap/goal:bytes.
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations. Equals to /memory/classes/other:bytes.
+# HELP go_memstats_stack_inuse_bytes Number of bytes obtained from system for stack allocator in non-CGO environments. Equals to /memory/classes/heap/stacks:bytes.
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator. Equals to /memory/classes/heap/stacks:bytes + /memory/classes/os-stacks:bytes.
+# HELP go_memstats_sys_bytes Number of bytes obtained from system. Equals to /memory/classes/total:byte.
+# HELP go_sched_gomaxprocs_threads The current runtime.GOMAXPROCS setting, or the number of operating system threads that can execute user-level Go code simultaneously. Sourced from /sched/gomaxprocs:threads
+# HELP go_threads Number of OS threads created.
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# HELP process_max_fds Maximum number of open file descriptors.
+# HELP process_network_receive_bytes_total Number of bytes received by the process over the network.
+# HELP process_network_transmit_bytes_total Number of bytes sent by the process over the network.
+# HELP process_open_fds Number of open file descriptors.
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# HELP promhttp_metric_handler_requests_in_flight Current number of scrapes being served.
+# HELP promhttp_metric_handler_requests_total Total number of scrapes by HTTP status code.
+# HELP target_info Target metadata
+# TYPE gatekeeper_mutation_request_count_total counter
+# TYPE gatekeeper_mutation_request_duration_seconds histogram
+# TYPE gatekeeper_mutation_system_iterations histogram
+# TYPE gatekeeper_mutator_conflicting_count gauge
+# TYPE gatekeeper_sync_last_run_time_seconds gauge
+# TYPE gatekeeper_validation_request_count_total counter
+# TYPE gatekeeper_validation_request_duration_seconds histogram
+# TYPE gatekeeper_watch_manager_intended_watch_gvk gauge
+# TYPE gatekeeper_watch_manager_watched_gvk gauge
+# TYPE go_gc_duration_seconds summary
+# TYPE go_gc_gogc_percent gauge
+# TYPE go_gc_gomemlimit_bytes gauge
+# TYPE go_goroutines gauge
+# TYPE go_info gauge
+# TYPE go_memstats_alloc_bytes gauge
+# TYPE go_memstats_alloc_bytes_total counter
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+# TYPE go_memstats_frees_total counter
+# TYPE go_memstats_gc_sys_bytes gauge
+# TYPE go_memstats_heap_alloc_bytes gauge
+# TYPE go_memstats_heap_idle_bytes gauge
+# TYPE go_memstats_heap_inuse_bytes gauge
+# TYPE go_memstats_heap_objects gauge
+# TYPE go_memstats_heap_released_bytes gauge
+# TYPE go_memstats_heap_sys_bytes gauge
+# TYPE go_memstats_last_gc_time_seconds gauge
+# TYPE go_memstats_mallocs_total counter
+# TYPE go_memstats_mcache_inuse_bytes gauge
+# TYPE go_memstats_mcache_sys_bytes gauge
+# TYPE go_memstats_mspan_inuse_bytes gauge
+# TYPE go_memstats_mspan_sys_bytes gauge
+# TYPE go_memstats_next_gc_bytes gauge
+# TYPE go_memstats_other_sys_bytes gauge
+# TYPE go_memstats_stack_inuse_bytes gauge
+# TYPE go_memstats_stack_sys_bytes gauge
+# TYPE go_memstats_sys_bytes gauge
+# TYPE go_sched_gomaxprocs_threads gauge
+# TYPE go_threads gauge
+# TYPE process_cpu_seconds_total counter
+# TYPE process_max_fds gauge
+# TYPE process_network_receive_bytes_total counter
+# TYPE process_network_transmit_bytes_total counter
+# TYPE process_open_fds gauge
+# TYPE process_resident_memory_bytes gauge
+# TYPE process_start_time_seconds gauge
+# TYPE process_virtual_memory_bytes gauge
+# TYPE process_virtual_memory_max_bytes gauge
+# TYPE promhttp_metric_handler_requests_in_flight gauge
+# TYPE promhttp_metric_handler_requests_total counter
+# TYPE target_info gauge

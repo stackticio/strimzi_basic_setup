@@ -1,0 +1,486 @@
+# HELP counter_memberlist_msg_alive counter_memberlist_msg_alive
+# HELP counter_memberlist_msg_dead counter_memberlist_msg_dead
+# HELP counter_memberlist_msg_suspect counter_memberlist_msg_suspect
+# HELP counter_memberlist_tcp_accept counter_memberlist_tcp_accept
+# HELP counter_memberlist_tcp_connect counter_memberlist_tcp_connect
+# HELP counter_memberlist_tcp_sent counter_memberlist_tcp_sent
+# HELP counter_memberlist_udp_sent counter_memberlist_udp_sent
+# HELP deprecated_flags_inuse_total The number of deprecated flags currently set.
+# HELP go_cgo_go_to_c_calls_calls_total Count of calls made from Go to C by the current process. Sourced from /cgo/go-to-c-calls:calls
+# HELP go_cpu_classes_gc_mark_assist_cpu_seconds_total Estimated total CPU time goroutines spent performing GC tasks to assist the GC and prevent it from falling behind the application. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sourced from /cpu/classes/gc/mark/assist:cpu-seconds
+# HELP go_cpu_classes_gc_mark_dedicated_cpu_seconds_total Estimated total CPU time spent performing GC tasks on processors (as defined by GOMAXPROCS) dedicated to those tasks. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sourced from /cpu/classes/gc/mark/dedicated:cpu-seconds
+# HELP go_cpu_classes_gc_mark_idle_cpu_seconds_total Estimated total CPU time spent performing GC tasks on spare CPU resources that the Go scheduler could not otherwise find a use for. This should be subtracted from the total GC CPU time to obtain a measure of compulsory GC CPU time. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sourced from /cpu/classes/gc/mark/idle:cpu-seconds
+# HELP go_cpu_classes_gc_pause_cpu_seconds_total Estimated total CPU time spent with the application paused by the GC. Even if only one thread is running during the pause, this is computed as GOMAXPROCS times the pause latency because nothing else can be executing. This is the exact sum of samples in /sched/pauses/total/gc:seconds if each sample is multiplied by GOMAXPROCS at the time it is taken. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sourced from /cpu/classes/gc/pause:cpu-seconds
+# HELP go_cpu_classes_gc_total_cpu_seconds_total Estimated total CPU time spent performing GC tasks. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sum of all metrics in /cpu/classes/gc. Sourced from /cpu/classes/gc/total:cpu-seconds
+# HELP go_cpu_classes_idle_cpu_seconds_total Estimated total available CPU time not spent executing any Go or Go runtime code. In other words, the part of /cpu/classes/total:cpu-seconds that was unused. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sourced from /cpu/classes/idle:cpu-seconds
+# HELP go_cpu_classes_scavenge_assist_cpu_seconds_total Estimated total CPU time spent returning unused memory to the underlying platform in response eagerly in response to memory pressure. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sourced from /cpu/classes/scavenge/assist:cpu-seconds
+# HELP go_cpu_classes_scavenge_background_cpu_seconds_total Estimated total CPU time spent performing background tasks to return unused memory to the underlying platform. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sourced from /cpu/classes/scavenge/background:cpu-seconds
+# HELP go_cpu_classes_scavenge_total_cpu_seconds_total Estimated total CPU time spent performing tasks that return unused memory to the underlying platform. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sum of all metrics in /cpu/classes/scavenge. Sourced from /cpu/classes/scavenge/total:cpu-seconds
+# HELP go_cpu_classes_total_cpu_seconds_total Estimated total available CPU time for user Go code or the Go runtime, as defined by GOMAXPROCS. In other words, GOMAXPROCS integrated over the wall-clock duration this process has been executing for. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sum of all metrics in /cpu/classes. Sourced from /cpu/classes/total:cpu-seconds
+# HELP go_cpu_classes_user_cpu_seconds_total Estimated total CPU time spent running user Go code. This may also include some small amount of time spent in the Go runtime. This metric is an overestimate, and not directly comparable to system CPU time measurements. Compare only with other /cpu/classes metrics. Sourced from /cpu/classes/user:cpu-seconds
+# HELP go_gc_cycles_automatic_gc_cycles_total Count of completed GC cycles generated by the Go runtime. Sourced from /gc/cycles/automatic:gc-cycles
+# HELP go_gc_cycles_forced_gc_cycles_total Count of completed GC cycles forced by the application. Sourced from /gc/cycles/forced:gc-cycles
+# HELP go_gc_cycles_total_gc_cycles_total Count of all completed GC cycles. Sourced from /gc/cycles/total:gc-cycles
+# HELP go_gc_duration_seconds A summary of the wall-time pause (stop-the-world) duration in garbage collection cycles.
+# HELP go_gc_gogc_percent Heap size target percentage configured by the user, otherwise 100. This value is set by the GOGC environment variable, and the runtime/debug.SetGCPercent function. Sourced from /gc/gogc:percent
+# HELP go_gc_gomemlimit_bytes Go runtime memory limit configured by the user, otherwise math.MaxInt64. This value is set by the GOMEMLIMIT environment variable, and the runtime/debug.SetMemoryLimit function. Sourced from /gc/gomemlimit:bytes
+# HELP go_gc_heap_allocs_by_size_bytes Distribution of heap allocations by approximate size. Bucket counts increase monotonically. Note that this does not include tiny objects as defined by /gc/heap/tiny/allocs:objects, only tiny blocks. Sourced from /gc/heap/allocs-by-size:bytes
+# HELP go_gc_heap_allocs_bytes_total Cumulative sum of memory allocated to the heap by the application. Sourced from /gc/heap/allocs:bytes
+# HELP go_gc_heap_allocs_objects_total Cumulative count of heap allocations triggered by the application. Note that this does not include tiny objects as defined by /gc/heap/tiny/allocs:objects, only tiny blocks. Sourced from /gc/heap/allocs:objects
+# HELP go_gc_heap_frees_by_size_bytes Distribution of freed heap allocations by approximate size. Bucket counts increase monotonically. Note that this does not include tiny objects as defined by /gc/heap/tiny/allocs:objects, only tiny blocks. Sourced from /gc/heap/frees-by-size:bytes
+# HELP go_gc_heap_frees_bytes_total Cumulative sum of heap memory freed by the garbage collector. Sourced from /gc/heap/frees:bytes
+# HELP go_gc_heap_frees_objects_total Cumulative count of heap allocations whose storage was freed by the garbage collector. Note that this does not include tiny objects as defined by /gc/heap/tiny/allocs:objects, only tiny blocks. Sourced from /gc/heap/frees:objects
+# HELP go_gc_heap_goal_bytes Heap size target for the end of the GC cycle. Sourced from /gc/heap/goal:bytes
+# HELP go_gc_heap_live_bytes Heap memory occupied by live objects that were marked by the previous GC. Sourced from /gc/heap/live:bytes
+# HELP go_gc_heap_objects_objects Number of objects, live or unswept, occupying heap memory. Sourced from /gc/heap/objects:objects
+# HELP go_gc_heap_tiny_allocs_objects_total Count of small allocations that are packed together into blocks. These allocations are counted separately from other allocations because each individual allocation is not tracked by the runtime, only their block. Each block is already accounted for in allocs-by-size and frees-by-size. Sourced from /gc/heap/tiny/allocs:objects
+# HELP go_gc_limiter_last_enabled_gc_cycle GC cycle the last time the GC CPU limiter was enabled. This metric is useful for diagnosing the root cause of an out-of-memory error, because the limiter trades memory for CPU time when the GC's CPU time gets too high. This is most likely to occur with use of SetMemoryLimit. The first GC cycle is cycle 1, so a value of 0 indicates that it was never enabled. Sourced from /gc/limiter/last-enabled:gc-cycle
+# HELP go_gc_pauses_seconds Deprecated. Prefer the identical /sched/pauses/total/gc:seconds. Sourced from /gc/pauses:seconds
+# HELP go_gc_scan_globals_bytes The total amount of global variable space that is scannable. Sourced from /gc/scan/globals:bytes
+# HELP go_gc_scan_heap_bytes The total amount of heap space that is scannable. Sourced from /gc/scan/heap:bytes
+# HELP go_gc_scan_stack_bytes The number of bytes of stack that were scanned last GC cycle. Sourced from /gc/scan/stack:bytes
+# HELP go_gc_scan_total_bytes The total amount space that is scannable. Sum of all metrics in /gc/scan. Sourced from /gc/scan/total:bytes
+# HELP go_gc_stack_starting_size_bytes The stack size of new goroutines. Sourced from /gc/stack/starting-size:bytes
+# HELP go_godebug_non_default_behavior_asynctimerchan_events_total The number of non-default behaviors executed by the time package due to a non-default GODEBUG=asynctimerchan=... setting. Sourced from /godebug/non-default-behavior/asynctimerchan:events
+# HELP go_godebug_non_default_behavior_execerrdot_events_total The number of non-default behaviors executed by the os/exec package due to a non-default GODEBUG=execerrdot=... setting. Sourced from /godebug/non-default-behavior/execerrdot:events
+# HELP go_godebug_non_default_behavior_gocachehash_events_total The number of non-default behaviors executed by the cmd/go package due to a non-default GODEBUG=gocachehash=... setting. Sourced from /godebug/non-default-behavior/gocachehash:events
+# HELP go_godebug_non_default_behavior_gocachetest_events_total The number of non-default behaviors executed by the cmd/go package due to a non-default GODEBUG=gocachetest=... setting. Sourced from /godebug/non-default-behavior/gocachetest:events
+# HELP go_godebug_non_default_behavior_gocacheverify_events_total The number of non-default behaviors executed by the cmd/go package due to a non-default GODEBUG=gocacheverify=... setting. Sourced from /godebug/non-default-behavior/gocacheverify:events
+# HELP go_godebug_non_default_behavior_gotypesalias_events_total The number of non-default behaviors executed by the go/types package due to a non-default GODEBUG=gotypesalias=... setting. Sourced from /godebug/non-default-behavior/gotypesalias:events
+# HELP go_godebug_non_default_behavior_http2client_events_total The number of non-default behaviors executed by the net/http package due to a non-default GODEBUG=http2client=... setting. Sourced from /godebug/non-default-behavior/http2client:events
+# HELP go_godebug_non_default_behavior_http2server_events_total The number of non-default behaviors executed by the net/http package due to a non-default GODEBUG=http2server=... setting. Sourced from /godebug/non-default-behavior/http2server:events
+# HELP go_godebug_non_default_behavior_httplaxcontentlength_events_total The number of non-default behaviors executed by the net/http package due to a non-default GODEBUG=httplaxcontentlength=... setting. Sourced from /godebug/non-default-behavior/httplaxcontentlength:events
+# HELP go_godebug_non_default_behavior_httpmuxgo121_events_total The number of non-default behaviors executed by the net/http package due to a non-default GODEBUG=httpmuxgo121=... setting. Sourced from /godebug/non-default-behavior/httpmuxgo121:events
+# HELP go_godebug_non_default_behavior_httpservecontentkeepheaders_events_total The number of non-default behaviors executed by the net/http package due to a non-default GODEBUG=httpservecontentkeepheaders=... setting. Sourced from /godebug/non-default-behavior/httpservecontentkeepheaders:events
+# HELP go_godebug_non_default_behavior_installgoroot_events_total The number of non-default behaviors executed by the go/build package due to a non-default GODEBUG=installgoroot=... setting. Sourced from /godebug/non-default-behavior/installgoroot:events
+# HELP go_godebug_non_default_behavior_multipartmaxheaders_events_total The number of non-default behaviors executed by the mime/multipart package due to a non-default GODEBUG=multipartmaxheaders=... setting. Sourced from /godebug/non-default-behavior/multipartmaxheaders:events
+# HELP go_godebug_non_default_behavior_multipartmaxparts_events_total The number of non-default behaviors executed by the mime/multipart package due to a non-default GODEBUG=multipartmaxparts=... setting. Sourced from /godebug/non-default-behavior/multipartmaxparts:events
+# HELP go_godebug_non_default_behavior_multipathtcp_events_total The number of non-default behaviors executed by the net package due to a non-default GODEBUG=multipathtcp=... setting. Sourced from /godebug/non-default-behavior/multipathtcp:events
+# HELP go_godebug_non_default_behavior_netedns0_events_total The number of non-default behaviors executed by the net package due to a non-default GODEBUG=netedns0=... setting. Sourced from /godebug/non-default-behavior/netedns0:events
+# HELP go_godebug_non_default_behavior_panicnil_events_total The number of non-default behaviors executed by the runtime package due to a non-default GODEBUG=panicnil=... setting. Sourced from /godebug/non-default-behavior/panicnil:events
+# HELP go_godebug_non_default_behavior_randautoseed_events_total The number of non-default behaviors executed by the math/rand package due to a non-default GODEBUG=randautoseed=... setting. Sourced from /godebug/non-default-behavior/randautoseed:events
+# HELP go_godebug_non_default_behavior_tarinsecurepath_events_total The number of non-default behaviors executed by the archive/tar package due to a non-default GODEBUG=tarinsecurepath=... setting. Sourced from /godebug/non-default-behavior/tarinsecurepath:events
+# HELP go_godebug_non_default_behavior_tls10server_events_total The number of non-default behaviors executed by the crypto/tls package due to a non-default GODEBUG=tls10server=... setting. Sourced from /godebug/non-default-behavior/tls10server:events
+# HELP go_godebug_non_default_behavior_tls3des_events_total The number of non-default behaviors executed by the crypto/tls package due to a non-default GODEBUG=tls3des=... setting. Sourced from /godebug/non-default-behavior/tls3des:events
+# HELP go_godebug_non_default_behavior_tlsmaxrsasize_events_total The number of non-default behaviors executed by the crypto/tls package due to a non-default GODEBUG=tlsmaxrsasize=... setting. Sourced from /godebug/non-default-behavior/tlsmaxrsasize:events
+# HELP go_godebug_non_default_behavior_tlsrsakex_events_total The number of non-default behaviors executed by the crypto/tls package due to a non-default GODEBUG=tlsrsakex=... setting. Sourced from /godebug/non-default-behavior/tlsrsakex:events
+# HELP go_godebug_non_default_behavior_tlsunsafeekm_events_total The number of non-default behaviors executed by the crypto/tls package due to a non-default GODEBUG=tlsunsafeekm=... setting. Sourced from /godebug/non-default-behavior/tlsunsafeekm:events
+# HELP go_godebug_non_default_behavior_winreadlinkvolume_events_total The number of non-default behaviors executed by the os package due to a non-default GODEBUG=winreadlinkvolume=... setting. Sourced from /godebug/non-default-behavior/winreadlinkvolume:events
+# HELP go_godebug_non_default_behavior_winsymlink_events_total The number of non-default behaviors executed by the os package due to a non-default GODEBUG=winsymlink=... setting. Sourced from /godebug/non-default-behavior/winsymlink:events
+# HELP go_godebug_non_default_behavior_x509keypairleaf_events_total The number of non-default behaviors executed by the crypto/tls package due to a non-default GODEBUG=x509keypairleaf=... setting. Sourced from /godebug/non-default-behavior/x509keypairleaf:events
+# HELP go_godebug_non_default_behavior_x509negativeserial_events_total The number of non-default behaviors executed by the crypto/x509 package due to a non-default GODEBUG=x509negativeserial=... setting. Sourced from /godebug/non-default-behavior/x509negativeserial:events
+# HELP go_godebug_non_default_behavior_x509sha1_events_total The number of non-default behaviors executed by the crypto/x509 package due to a non-default GODEBUG=x509sha1=... setting. Sourced from /godebug/non-default-behavior/x509sha1:events
+# HELP go_godebug_non_default_behavior_x509usefallbackroots_events_total The number of non-default behaviors executed by the crypto/x509 package due to a non-default GODEBUG=x509usefallbackroots=... setting. Sourced from /godebug/non-default-behavior/x509usefallbackroots:events
+# HELP go_godebug_non_default_behavior_x509usepolicies_events_total The number of non-default behaviors executed by the crypto/x509 package due to a non-default GODEBUG=x509usepolicies=... setting. Sourced from /godebug/non-default-behavior/x509usepolicies:events
+# HELP go_godebug_non_default_behavior_zipinsecurepath_events_total The number of non-default behaviors executed by the archive/zip package due to a non-default GODEBUG=zipinsecurepath=... setting. Sourced from /godebug/non-default-behavior/zipinsecurepath:events
+# HELP go_goroutines Number of goroutines that currently exist.
+# HELP go_info Information about the Go environment.
+# HELP go_memory_classes_heap_free_bytes Memory that is completely free and eligible to be returned to the underlying system, but has not been. This metric is the runtime's estimate of free address space that is backed by physical memory. Sourced from /memory/classes/heap/free:bytes
+# HELP go_memory_classes_heap_objects_bytes Memory occupied by live objects and dead objects that have not yet been marked free by the garbage collector. Sourced from /memory/classes/heap/objects:bytes
+# HELP go_memory_classes_heap_released_bytes Memory that is completely free and has been returned to the underlying system. This metric is the runtime's estimate of free address space that is still mapped into the process, but is not backed by physical memory. Sourced from /memory/classes/heap/released:bytes
+# HELP go_memory_classes_heap_stacks_bytes Memory allocated from the heap that is reserved for stack space, whether or not it is currently in-use. Currently, this represents all stack memory for goroutines. It also includes all OS thread stacks in non-cgo programs. Note that stacks may be allocated differently in the future, and this may change. Sourced from /memory/classes/heap/stacks:bytes
+# HELP go_memory_classes_heap_unused_bytes Memory that is reserved for heap objects but is not currently used to hold heap objects. Sourced from /memory/classes/heap/unused:bytes
+# HELP go_memory_classes_metadata_mcache_free_bytes Memory that is reserved for runtime mcache structures, but not in-use. Sourced from /memory/classes/metadata/mcache/free:bytes
+# HELP go_memory_classes_metadata_mcache_inuse_bytes Memory that is occupied by runtime mcache structures that are currently being used. Sourced from /memory/classes/metadata/mcache/inuse:bytes
+# HELP go_memory_classes_metadata_mspan_free_bytes Memory that is reserved for runtime mspan structures, but not in-use. Sourced from /memory/classes/metadata/mspan/free:bytes
+# HELP go_memory_classes_metadata_mspan_inuse_bytes Memory that is occupied by runtime mspan structures that are currently being used. Sourced from /memory/classes/metadata/mspan/inuse:bytes
+# HELP go_memory_classes_metadata_other_bytes Memory that is reserved for or used to hold runtime metadata. Sourced from /memory/classes/metadata/other:bytes
+# HELP go_memory_classes_os_stacks_bytes Stack memory allocated by the underlying operating system. In non-cgo programs this metric is currently zero. This may change in the future.In cgo programs this metric includes OS thread stacks allocated directly from the OS. Currently, this only accounts for one stack in c-shared and c-archive build modes, and other sources of stacks from the OS are not measured. This too may change in the future. Sourced from /memory/classes/os-stacks:bytes
+# HELP go_memory_classes_other_bytes Memory used by execution trace buffers, structures for debugging the runtime, finalizer and profiler specials, and more. Sourced from /memory/classes/other:bytes
+# HELP go_memory_classes_profiling_buckets_bytes Memory that is used by the stack trace hash map used for profiling. Sourced from /memory/classes/profiling/buckets:bytes
+# HELP go_memory_classes_total_bytes All memory mapped by the Go runtime into the current process as read-write. Note that this does not include memory mapped by code called via cgo or via the syscall package. Sum of all metrics in /memory/classes. Sourced from /memory/classes/total:bytes
+# HELP go_memstats_alloc_bytes Number of bytes allocated in heap and currently in use. Equals to /memory/classes/heap/objects:bytes.
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated in heap until now, even if released already. Equals to /gc/heap/allocs:bytes.
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table. Equals to /memory/classes/profiling/buckets:bytes.
+# HELP go_memstats_frees_total Total number of heap objects frees. Equals to /gc/heap/frees:objects + /gc/heap/tiny/allocs:objects.
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata. Equals to /memory/classes/metadata/other:bytes.
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and currently in use, same as go_memstats_alloc_bytes. Equals to /memory/classes/heap/objects:bytes.
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used. Equals to /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes
+# HELP go_memstats_heap_objects Number of currently allocated objects. Equals to /gc/heap/objects:objects.
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS. Equals to /memory/classes/heap/released:bytes.
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes + /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# HELP go_memstats_mallocs_total Total number of heap objects allocated, both live and gc-ed. Semantically a counter version for go_memstats_heap_objects gauge. Equals to /gc/heap/allocs:objects + /gc/heap/tiny/allocs:objects.
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures. Equals to /memory/classes/metadata/mcache/inuse:bytes.
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system. Equals to /memory/classes/metadata/mcache/inuse:bytes + /memory/classes/metadata/mcache/free:bytes.
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures. Equals to /memory/classes/metadata/mspan/inuse:bytes.
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system. Equals to /memory/classes/metadata/mspan/inuse:bytes + /memory/classes/metadata/mspan/free:bytes.
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place. Equals to /gc/heap/goal:bytes.
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations. Equals to /memory/classes/other:bytes.
+# HELP go_memstats_stack_inuse_bytes Number of bytes obtained from system for stack allocator in non-CGO environments. Equals to /memory/classes/heap/stacks:bytes.
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator. Equals to /memory/classes/heap/stacks:bytes + /memory/classes/os-stacks:bytes.
+# HELP go_memstats_sys_bytes Number of bytes obtained from system. Equals to /memory/classes/total:byte.
+# HELP go_sched_gomaxprocs_threads The current runtime.GOMAXPROCS setting, or the number of operating system threads that can execute user-level Go code simultaneously. Sourced from /sched/gomaxprocs:threads
+# HELP go_sched_goroutines_goroutines Count of live goroutines. Sourced from /sched/goroutines:goroutines
+# HELP go_sched_latencies_seconds Distribution of the time goroutines have spent in the scheduler in a runnable state before actually running. Bucket counts increase monotonically. Sourced from /sched/latencies:seconds
+# HELP go_sched_pauses_stopping_gc_seconds Distribution of individual GC-related stop-the-world stopping latencies. This is the time it takes from deciding to stop the world until all Ps are stopped. This is a subset of the total GC-related stop-the-world time (/sched/pauses/total/gc:seconds). During this time, some threads may be executing. Bucket counts increase monotonically. Sourced from /sched/pauses/stopping/gc:seconds
+# HELP go_sched_pauses_stopping_other_seconds Distribution of individual non-GC-related stop-the-world stopping latencies. This is the time it takes from deciding to stop the world until all Ps are stopped. This is a subset of the total non-GC-related stop-the-world time (/sched/pauses/total/other:seconds). During this time, some threads may be executing. Bucket counts increase monotonically. Sourced from /sched/pauses/stopping/other:seconds
+# HELP go_sched_pauses_total_gc_seconds Distribution of individual GC-related stop-the-world pause latencies. This is the time from deciding to stop the world until the world is started again. Some of this time is spent getting all threads to stop (this is measured directly in /sched/pauses/stopping/gc:seconds), during which some threads may still be running. Bucket counts increase monotonically. Sourced from /sched/pauses/total/gc:seconds
+# HELP go_sched_pauses_total_other_seconds Distribution of individual non-GC-related stop-the-world pause latencies. This is the time from deciding to stop the world until the world is started again. Some of this time is spent getting all threads to stop (measured directly in /sched/pauses/stopping/other:seconds). Bucket counts increase monotonically. Sourced from /sched/pauses/total/other:seconds
+# HELP go_sync_mutex_wait_total_seconds_total Approximate cumulative time goroutines have spent blocked on a sync.Mutex, sync.RWMutex, or runtime-internal lock. This metric is useful for identifying global changes in lock contention. Collect a mutex or block profile using the runtime/pprof package for more detailed contention data. Sourced from /sync/mutex/wait/total:seconds
+# HELP go_threads Number of OS threads created.
+# HELP jaeger_tracer_baggage_restrictions_updates_total Number of times baggage restrictions were successfully updated
+# HELP jaeger_tracer_baggage_truncations_total Number of times baggage was truncated as per baggage restrictions
+# HELP jaeger_tracer_baggage_updates_total Number of times baggage was successfully written or updated on spans
+# HELP jaeger_tracer_finished_spans_total Number of sampled spans finished by this tracer
+# HELP jaeger_tracer_reporter_queue_length Current number of spans in the reporter queue
+# HELP jaeger_tracer_reporter_spans_total Number of spans successfully reported
+# HELP jaeger_tracer_sampler_queries_total Number of times the Sampler succeeded to retrieve sampling strategy
+# HELP jaeger_tracer_sampler_updates_total Number of times the Sampler succeeded to retrieve and update sampling strategy
+# HELP jaeger_tracer_span_context_decoding_errors_total Number of errors decoding tracing context
+# HELP jaeger_tracer_started_spans_total Number of spans started by this tracer as sampled
+# HELP jaeger_tracer_throttled_debug_spans_total Number of times debug spans were throttled
+# HELP jaeger_tracer_throttler_updates_total Number of times throttler successfully updated
+# HELP jaeger_tracer_traces_total Number of traces started by this tracer as sampled
+# HELP loki_azure_blob_egress_bytes_total Total bytes downloaded from Azure Blob Storage.
+# HELP loki_boltdb_shipper_compact_tables_operation_duration_seconds Time (in seconds) spent in compacting all the tables
+# HELP loki_boltdb_shipper_compact_tables_operation_last_successful_run_timestamp_seconds Unix timestamp of the last successful compaction run
+# HELP loki_boltdb_shipper_compact_tables_operation_total Total number of tables compaction done by status
+# HELP loki_boltdb_shipper_compactor_running Value will be 1 if compactor is currently running on this instance
+# HELP loki_boltdb_shipper_retention_sweeper_marker_file_processing_current_time The current time of creation of the marker file being processed.
+# HELP loki_boltdb_shipper_retention_sweeper_marker_files_current The current total of marker files valid for deletion.
+# HELP loki_boltdb_shipper_retention_sweeper_marker_files_deleted_total The total of marker files deleted after being fully processed.
+# HELP loki_build_info A metric with a constant '1' value labeled by version, revision, branch, goversion from which loki was built, and the goos and goarch for the build.
+# HELP loki_bytes_per_line The total number of bytes per line.
+# HELP loki_cache_corrupt_chunks_total Total count of corrupt chunks found in cache.
+# HELP loki_chunk_store_chunks_per_query Distribution of #chunks per query.
+# HELP loki_chunk_store_deduped_bytes_total Count of bytes from chunks which were not stored because they have already been stored by another replica.
+# HELP loki_chunk_store_deduped_chunks_total Count of chunks which were not stored because they have already been stored by another replica.
+# HELP loki_chunk_store_index_entries_per_chunk Number of entries written to storage per chunk.
+# HELP loki_chunk_store_index_lookups_per_query Distribution of #index lookups per query.
+# HELP loki_chunk_store_series_post_intersection_per_query Distribution of #series (post intersection) per query.
+# HELP loki_chunk_store_series_pre_intersection_per_query Distribution of #series (pre intersection) per query.
+# HELP loki_compactor_apply_retention_last_successful_run_timestamp_seconds Unix timestamp of the last successful retention run
+# HELP loki_compactor_apply_retention_operation_duration_seconds Time (in seconds) spent in applying retention
+# HELP loki_compactor_apply_retention_operation_total Total number of attempts done to apply retention with status
+# HELP loki_compactor_delete_processing_fails_total Number of times the delete phase of compaction has failed
+# HELP loki_compactor_load_pending_requests_attempts_total Number of attempts that were made to load pending requests with status
+# HELP loki_compactor_oldest_pending_delete_request_age_seconds Age of oldest pending delete request in seconds since they are over their cancellation period
+# HELP loki_compactor_pending_delete_requests_count Count of delete requests which are over their cancellation period and have not finished processing yet
+# HELP loki_delete_request_lookups_failed_total Number times the client has failed to look up delete requests
+# HELP loki_delete_request_lookups_total Number times the client has looked up delete requests
+# HELP loki_dns_failures_total The number of DNS lookup failures
+# HELP loki_dns_lookups_total The number of DNS lookups resolutions attempts
+# HELP loki_experimental_features_in_use_total The number of experimental features in use.
+# HELP loki_inflight_requests Current number of inflight requests.
+# HELP loki_ingester_memory_streams_labels_bytes Total bytes of labels of the streams in memory.
+# HELP loki_ingester_not_owned_streams The total number of not owned streams in memory.
+# HELP loki_ingester_rf1_memory_streams_labels_bytes Total bytes of labels of the streams in memory.
+# HELP loki_internal_log_messages_total Total number of log messages created by Loki itself.
+# HELP loki_kv_request_duration_seconds Time spent on kv store requests.
+# HELP loki_log_flushes Histogram of log flushes using the line-buffered logger.
+# HELP loki_log_messages_total DEPRECATED. Use internal_log_messages_total for the same functionality. Total number of log messages created by Loki itself.
+# HELP loki_logql_querystats_duplicates_total Total count of duplicates found while executing LogQL queries.
+# HELP loki_logql_querystats_ingester_sent_lines_total Total count of lines sent from ingesters while executing LogQL queries.
+# HELP loki_memberlist_client_cas_attempt_total Attempted CAS operations
+# HELP loki_memberlist_client_cas_failure_total Failed CAS operations
+# HELP loki_memberlist_client_cas_success_total Successful CAS operations
+# HELP loki_memberlist_client_cluster_members_count Number of members in memberlist cluster
+# HELP loki_memberlist_client_cluster_node_health_score Health score of this cluster. Lower value is better. 0 = healthy
+# HELP loki_memberlist_client_kv_store_count Number of values in KV Store
+# HELP loki_memberlist_client_kv_store_value_tombstones Number of tombstones currently present in KV store values
+# HELP loki_memberlist_client_kv_store_value_tombstones_removed_total Total number of tombstones which have been removed from KV store values
+# HELP loki_memberlist_client_messages_in_broadcast_queue Number of user messages in the broadcast queue
+# HELP loki_memberlist_client_messages_in_broadcast_queue_bytes Total size of messages waiting in the broadcast queue
+# HELP loki_memberlist_client_messages_to_broadcast_dropped_total Number of broadcast messages intended to be sent but were dropped due to encoding errors or for being too big
+# HELP loki_memberlist_client_received_broadcasts_bytes_total Total size of received broadcast user messages
+# HELP loki_memberlist_client_received_broadcasts_dropped_total Number of received broadcast user messages that were dropped. Hopefully 0.
+# HELP loki_memberlist_client_received_broadcasts_invalid_total Number of received broadcast user messages that were invalid. Hopefully 0.
+# HELP loki_memberlist_client_received_broadcasts_total Number of received broadcast user messages
+# HELP loki_memberlist_client_state_pulls_bytes_total Total size of pulled state
+# HELP loki_memberlist_client_state_pulls_total How many times did this node pull full state from another node
+# HELP loki_memberlist_client_state_pushes_bytes_total Total size of pushed state
+# HELP loki_memberlist_client_state_pushes_total How many times did this node push its full state to another node
+# HELP loki_memberlist_tcp_transport_incoming_streams_total Number of incoming memberlist streams
+# HELP loki_memberlist_tcp_transport_outgoing_stream_errors_total Number of errors when opening memberlist stream to another node
+# HELP loki_memberlist_tcp_transport_outgoing_streams_total Number of outgoing streams
+# HELP loki_memberlist_tcp_transport_packets_received_bytes_total Total bytes received as packets
+# HELP loki_memberlist_tcp_transport_packets_received_errors_total Number of errors when receiving memberlist packets
+# HELP loki_memberlist_tcp_transport_packets_received_total Number of received memberlist packets
+# HELP loki_memberlist_tcp_transport_packets_sent_bytes_total Total bytes sent as packets
+# HELP loki_memberlist_tcp_transport_packets_sent_errors_total Number of errors when sending memberlist packets
+# HELP loki_memberlist_tcp_transport_packets_sent_total Number of memberlist packets sent
+# HELP loki_memberlist_tcp_transport_unknown_connections_total Number of unknown TCP connections (not a packet or stream)
+# HELP loki_objstore_bucket_last_successful_upload_time Second timestamp of the last successful upload to the bucket.
+# HELP loki_panic_total The total number of panic triggered
+# HELP loki_querier_index_cache_corruptions_total The number of cache corruptions for the index cache.
+# HELP loki_querier_index_cache_encode_errors_total The number of errors for the index cache while encoding the body.
+# HELP loki_querier_index_cache_gets_total The number of gets for the index cache.
+# HELP loki_querier_index_cache_hits_total The number of cache hits for the index cache.
+# HELP loki_querier_index_cache_puts_total The number of puts for the index cache.
+# HELP loki_request_duration_seconds Time (in seconds) spent serving HTTP requests.
+# HELP loki_request_message_bytes Size (in bytes) of messages received in the request.
+# HELP loki_response_message_bytes Size (in bytes) of messages sent in response.
+# HELP loki_ring_members Number of members in the ring
+# HELP loki_ring_oldest_member_timestamp Timestamp of the oldest member in the ring.
+# HELP loki_ring_tokens_total Number of tokens in the ring
+# HELP loki_s3_request_duration_seconds Time spent doing S3 requests.
+# HELP loki_tcp_connections Current number of accepted TCP connections.
+# HELP loki_tcp_connections_limit The max number of TCP connections that can be accepted (0 means no limit).
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# HELP process_max_fds Maximum number of open file descriptors.
+# HELP process_network_receive_bytes_total Number of bytes received by the process over the network.
+# HELP process_network_transmit_bytes_total Number of bytes sent by the process over the network.
+# HELP process_open_fds Number of open file descriptors.
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# HELP prometheus_remote_storage_exemplars_in_total Exemplars in to remote storage, compare to exemplars out for queue managers.
+# HELP prometheus_remote_storage_histograms_in_total HistogramSamples in to remote storage, compare to histograms out for queue managers.
+# HELP prometheus_remote_storage_samples_in_total Samples in to remote storage, compare to samples out for queue managers.
+# HELP prometheus_remote_storage_string_interner_zero_reference_releases_total The number of times release has been called for strings that are not interned.
+# HELP prometheus_sd_dns_lookup_failures_total The number of DNS-SD lookup failures.
+# HELP prometheus_sd_dns_lookups_total The number of DNS-SD lookups.
+# HELP prometheus_template_text_expansion_failures_total The total number of template text expansion failures.
+# HELP prometheus_template_text_expansions_total The total number of template text expansions.
+# HELP ring_member_heartbeats_total The total number of heartbeats sent.
+# HELP ring_member_tokens_owned The number of tokens owned in the ring.
+# HELP ring_member_tokens_to_own The number of tokens to own in the ring.
+# HELP timer_memberlist_gossip timer_memberlist_gossip
+# HELP timer_memberlist_probeNode timer_memberlist_probeNode
+# HELP timer_memberlist_pushPullNode timer_memberlist_pushPullNode
+# TYPE counter_memberlist_msg_alive counter
+# TYPE counter_memberlist_msg_dead counter
+# TYPE counter_memberlist_msg_suspect counter
+# TYPE counter_memberlist_tcp_accept counter
+# TYPE counter_memberlist_tcp_connect counter
+# TYPE counter_memberlist_tcp_sent counter
+# TYPE counter_memberlist_udp_sent counter
+# TYPE deprecated_flags_inuse_total counter
+# TYPE go_cgo_go_to_c_calls_calls_total counter
+# TYPE go_cpu_classes_gc_mark_assist_cpu_seconds_total counter
+# TYPE go_cpu_classes_gc_mark_dedicated_cpu_seconds_total counter
+# TYPE go_cpu_classes_gc_mark_idle_cpu_seconds_total counter
+# TYPE go_cpu_classes_gc_pause_cpu_seconds_total counter
+# TYPE go_cpu_classes_gc_total_cpu_seconds_total counter
+# TYPE go_cpu_classes_idle_cpu_seconds_total counter
+# TYPE go_cpu_classes_scavenge_assist_cpu_seconds_total counter
+# TYPE go_cpu_classes_scavenge_background_cpu_seconds_total counter
+# TYPE go_cpu_classes_scavenge_total_cpu_seconds_total counter
+# TYPE go_cpu_classes_total_cpu_seconds_total counter
+# TYPE go_cpu_classes_user_cpu_seconds_total counter
+# TYPE go_gc_cycles_automatic_gc_cycles_total counter
+# TYPE go_gc_cycles_forced_gc_cycles_total counter
+# TYPE go_gc_cycles_total_gc_cycles_total counter
+# TYPE go_gc_duration_seconds summary
+# TYPE go_gc_gogc_percent gauge
+# TYPE go_gc_gomemlimit_bytes gauge
+# TYPE go_gc_heap_allocs_by_size_bytes histogram
+# TYPE go_gc_heap_allocs_bytes_total counter
+# TYPE go_gc_heap_allocs_objects_total counter
+# TYPE go_gc_heap_frees_by_size_bytes histogram
+# TYPE go_gc_heap_frees_bytes_total counter
+# TYPE go_gc_heap_frees_objects_total counter
+# TYPE go_gc_heap_goal_bytes gauge
+# TYPE go_gc_heap_live_bytes gauge
+# TYPE go_gc_heap_objects_objects gauge
+# TYPE go_gc_heap_tiny_allocs_objects_total counter
+# TYPE go_gc_limiter_last_enabled_gc_cycle gauge
+# TYPE go_gc_pauses_seconds histogram
+# TYPE go_gc_scan_globals_bytes gauge
+# TYPE go_gc_scan_heap_bytes gauge
+# TYPE go_gc_scan_stack_bytes gauge
+# TYPE go_gc_scan_total_bytes gauge
+# TYPE go_gc_stack_starting_size_bytes gauge
+# TYPE go_godebug_non_default_behavior_asynctimerchan_events_total counter
+# TYPE go_godebug_non_default_behavior_execerrdot_events_total counter
+# TYPE go_godebug_non_default_behavior_gocachehash_events_total counter
+# TYPE go_godebug_non_default_behavior_gocachetest_events_total counter
+# TYPE go_godebug_non_default_behavior_gocacheverify_events_total counter
+# TYPE go_godebug_non_default_behavior_gotypesalias_events_total counter
+# TYPE go_godebug_non_default_behavior_http2client_events_total counter
+# TYPE go_godebug_non_default_behavior_http2server_events_total counter
+# TYPE go_godebug_non_default_behavior_httplaxcontentlength_events_total counter
+# TYPE go_godebug_non_default_behavior_httpmuxgo121_events_total counter
+# TYPE go_godebug_non_default_behavior_httpservecontentkeepheaders_events_total counter
+# TYPE go_godebug_non_default_behavior_installgoroot_events_total counter
+# TYPE go_godebug_non_default_behavior_multipartmaxheaders_events_total counter
+# TYPE go_godebug_non_default_behavior_multipartmaxparts_events_total counter
+# TYPE go_godebug_non_default_behavior_multipathtcp_events_total counter
+# TYPE go_godebug_non_default_behavior_netedns0_events_total counter
+# TYPE go_godebug_non_default_behavior_panicnil_events_total counter
+# TYPE go_godebug_non_default_behavior_randautoseed_events_total counter
+# TYPE go_godebug_non_default_behavior_tarinsecurepath_events_total counter
+# TYPE go_godebug_non_default_behavior_tls10server_events_total counter
+# TYPE go_godebug_non_default_behavior_tls3des_events_total counter
+# TYPE go_godebug_non_default_behavior_tlsmaxrsasize_events_total counter
+# TYPE go_godebug_non_default_behavior_tlsrsakex_events_total counter
+# TYPE go_godebug_non_default_behavior_tlsunsafeekm_events_total counter
+# TYPE go_godebug_non_default_behavior_winreadlinkvolume_events_total counter
+# TYPE go_godebug_non_default_behavior_winsymlink_events_total counter
+# TYPE go_godebug_non_default_behavior_x509keypairleaf_events_total counter
+# TYPE go_godebug_non_default_behavior_x509negativeserial_events_total counter
+# TYPE go_godebug_non_default_behavior_x509sha1_events_total counter
+# TYPE go_godebug_non_default_behavior_x509usefallbackroots_events_total counter
+# TYPE go_godebug_non_default_behavior_x509usepolicies_events_total counter
+# TYPE go_godebug_non_default_behavior_zipinsecurepath_events_total counter
+# TYPE go_goroutines gauge
+# TYPE go_info gauge
+# TYPE go_memory_classes_heap_free_bytes gauge
+# TYPE go_memory_classes_heap_objects_bytes gauge
+# TYPE go_memory_classes_heap_released_bytes gauge
+# TYPE go_memory_classes_heap_stacks_bytes gauge
+# TYPE go_memory_classes_heap_unused_bytes gauge
+# TYPE go_memory_classes_metadata_mcache_free_bytes gauge
+# TYPE go_memory_classes_metadata_mcache_inuse_bytes gauge
+# TYPE go_memory_classes_metadata_mspan_free_bytes gauge
+# TYPE go_memory_classes_metadata_mspan_inuse_bytes gauge
+# TYPE go_memory_classes_metadata_other_bytes gauge
+# TYPE go_memory_classes_os_stacks_bytes gauge
+# TYPE go_memory_classes_other_bytes gauge
+# TYPE go_memory_classes_profiling_buckets_bytes gauge
+# TYPE go_memory_classes_total_bytes gauge
+# TYPE go_memstats_alloc_bytes gauge
+# TYPE go_memstats_alloc_bytes_total counter
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+# TYPE go_memstats_frees_total counter
+# TYPE go_memstats_gc_sys_bytes gauge
+# TYPE go_memstats_heap_alloc_bytes gauge
+# TYPE go_memstats_heap_idle_bytes gauge
+# TYPE go_memstats_heap_inuse_bytes gauge
+# TYPE go_memstats_heap_objects gauge
+# TYPE go_memstats_heap_released_bytes gauge
+# TYPE go_memstats_heap_sys_bytes gauge
+# TYPE go_memstats_last_gc_time_seconds gauge
+# TYPE go_memstats_mallocs_total counter
+# TYPE go_memstats_mcache_inuse_bytes gauge
+# TYPE go_memstats_mcache_sys_bytes gauge
+# TYPE go_memstats_mspan_inuse_bytes gauge
+# TYPE go_memstats_mspan_sys_bytes gauge
+# TYPE go_memstats_next_gc_bytes gauge
+# TYPE go_memstats_other_sys_bytes gauge
+# TYPE go_memstats_stack_inuse_bytes gauge
+# TYPE go_memstats_stack_sys_bytes gauge
+# TYPE go_memstats_sys_bytes gauge
+# TYPE go_sched_gomaxprocs_threads gauge
+# TYPE go_sched_goroutines_goroutines gauge
+# TYPE go_sched_latencies_seconds histogram
+# TYPE go_sched_pauses_stopping_gc_seconds histogram
+# TYPE go_sched_pauses_stopping_other_seconds histogram
+# TYPE go_sched_pauses_total_gc_seconds histogram
+# TYPE go_sched_pauses_total_other_seconds histogram
+# TYPE go_sync_mutex_wait_total_seconds_total counter
+# TYPE go_threads gauge
+# TYPE jaeger_tracer_baggage_restrictions_updates_total counter
+# TYPE jaeger_tracer_baggage_truncations_total counter
+# TYPE jaeger_tracer_baggage_updates_total counter
+# TYPE jaeger_tracer_finished_spans_total counter
+# TYPE jaeger_tracer_reporter_queue_length gauge
+# TYPE jaeger_tracer_reporter_spans_total counter
+# TYPE jaeger_tracer_sampler_queries_total counter
+# TYPE jaeger_tracer_sampler_updates_total counter
+# TYPE jaeger_tracer_span_context_decoding_errors_total counter
+# TYPE jaeger_tracer_started_spans_total counter
+# TYPE jaeger_tracer_throttled_debug_spans_total counter
+# TYPE jaeger_tracer_throttler_updates_total counter
+# TYPE jaeger_tracer_traces_total counter
+# TYPE loki_azure_blob_egress_bytes_total counter
+# TYPE loki_boltdb_shipper_compact_tables_operation_duration_seconds gauge
+# TYPE loki_boltdb_shipper_compact_tables_operation_last_successful_run_timestamp_seconds gauge
+# TYPE loki_boltdb_shipper_compact_tables_operation_total counter
+# TYPE loki_boltdb_shipper_compactor_running gauge
+# TYPE loki_boltdb_shipper_retention_sweeper_marker_file_processing_current_time gauge
+# TYPE loki_boltdb_shipper_retention_sweeper_marker_files_current gauge
+# TYPE loki_boltdb_shipper_retention_sweeper_marker_files_deleted_total counter
+# TYPE loki_build_info gauge
+# TYPE loki_bytes_per_line histogram
+# TYPE loki_cache_corrupt_chunks_total counter
+# TYPE loki_chunk_store_chunks_per_query histogram
+# TYPE loki_chunk_store_deduped_bytes_total counter
+# TYPE loki_chunk_store_deduped_chunks_total counter
+# TYPE loki_chunk_store_index_entries_per_chunk histogram
+# TYPE loki_chunk_store_index_lookups_per_query histogram
+# TYPE loki_chunk_store_series_post_intersection_per_query histogram
+# TYPE loki_chunk_store_series_pre_intersection_per_query histogram
+# TYPE loki_compactor_apply_retention_last_successful_run_timestamp_seconds gauge
+# TYPE loki_compactor_apply_retention_operation_duration_seconds gauge
+# TYPE loki_compactor_apply_retention_operation_total counter
+# TYPE loki_compactor_delete_processing_fails_total counter
+# TYPE loki_compactor_load_pending_requests_attempts_total counter
+# TYPE loki_compactor_oldest_pending_delete_request_age_seconds gauge
+# TYPE loki_compactor_pending_delete_requests_count gauge
+# TYPE loki_delete_request_lookups_failed_total counter
+# TYPE loki_delete_request_lookups_total counter
+# TYPE loki_dns_failures_total counter
+# TYPE loki_dns_lookups_total counter
+# TYPE loki_experimental_features_in_use_total counter
+# TYPE loki_inflight_requests gauge
+# TYPE loki_ingester_memory_streams_labels_bytes gauge
+# TYPE loki_ingester_not_owned_streams gauge
+# TYPE loki_ingester_rf1_memory_streams_labels_bytes gauge
+# TYPE loki_internal_log_messages_total counter
+# TYPE loki_kv_request_duration_seconds histogram
+# TYPE loki_log_flushes histogram
+# TYPE loki_log_messages_total counter
+# TYPE loki_logql_querystats_duplicates_total counter
+# TYPE loki_logql_querystats_ingester_sent_lines_total counter
+# TYPE loki_memberlist_client_cas_attempt_total counter
+# TYPE loki_memberlist_client_cas_failure_total counter
+# TYPE loki_memberlist_client_cas_success_total counter
+# TYPE loki_memberlist_client_cluster_members_count gauge
+# TYPE loki_memberlist_client_cluster_node_health_score gauge
+# TYPE loki_memberlist_client_kv_store_count gauge
+# TYPE loki_memberlist_client_kv_store_value_tombstones gauge
+# TYPE loki_memberlist_client_kv_store_value_tombstones_removed_total counter
+# TYPE loki_memberlist_client_messages_in_broadcast_queue gauge
+# TYPE loki_memberlist_client_messages_in_broadcast_queue_bytes gauge
+# TYPE loki_memberlist_client_messages_to_broadcast_dropped_total counter
+# TYPE loki_memberlist_client_received_broadcasts_bytes_total counter
+# TYPE loki_memberlist_client_received_broadcasts_dropped_total counter
+# TYPE loki_memberlist_client_received_broadcasts_invalid_total counter
+# TYPE loki_memberlist_client_received_broadcasts_total counter
+# TYPE loki_memberlist_client_state_pulls_bytes_total counter
+# TYPE loki_memberlist_client_state_pulls_total counter
+# TYPE loki_memberlist_client_state_pushes_bytes_total counter
+# TYPE loki_memberlist_client_state_pushes_total counter
+# TYPE loki_memberlist_tcp_transport_incoming_streams_total counter
+# TYPE loki_memberlist_tcp_transport_outgoing_stream_errors_total counter
+# TYPE loki_memberlist_tcp_transport_outgoing_streams_total counter
+# TYPE loki_memberlist_tcp_transport_packets_received_bytes_total counter
+# TYPE loki_memberlist_tcp_transport_packets_received_errors_total counter
+# TYPE loki_memberlist_tcp_transport_packets_received_total counter
+# TYPE loki_memberlist_tcp_transport_packets_sent_bytes_total counter
+# TYPE loki_memberlist_tcp_transport_packets_sent_errors_total counter
+# TYPE loki_memberlist_tcp_transport_packets_sent_total counter
+# TYPE loki_memberlist_tcp_transport_unknown_connections_total counter
+# TYPE loki_objstore_bucket_last_successful_upload_time gauge
+# TYPE loki_panic_total counter
+# TYPE loki_querier_index_cache_corruptions_total counter
+# TYPE loki_querier_index_cache_encode_errors_total counter
+# TYPE loki_querier_index_cache_gets_total counter
+# TYPE loki_querier_index_cache_hits_total counter
+# TYPE loki_querier_index_cache_puts_total counter
+# TYPE loki_request_duration_seconds histogram
+# TYPE loki_request_message_bytes histogram
+# TYPE loki_response_message_bytes histogram
+# TYPE loki_ring_members gauge
+# TYPE loki_ring_oldest_member_timestamp gauge
+# TYPE loki_ring_tokens_total gauge
+# TYPE loki_s3_request_duration_seconds histogram
+# TYPE loki_tcp_connections gauge
+# TYPE loki_tcp_connections_limit gauge
+# TYPE process_cpu_seconds_total counter
+# TYPE process_max_fds gauge
+# TYPE process_network_receive_bytes_total counter
+# TYPE process_network_transmit_bytes_total counter
+# TYPE process_open_fds gauge
+# TYPE process_resident_memory_bytes gauge
+# TYPE process_start_time_seconds gauge
+# TYPE process_virtual_memory_bytes gauge
+# TYPE process_virtual_memory_max_bytes gauge
+# TYPE prometheus_remote_storage_exemplars_in_total counter
+# TYPE prometheus_remote_storage_histograms_in_total counter
+# TYPE prometheus_remote_storage_samples_in_total counter
+# TYPE prometheus_remote_storage_string_interner_zero_reference_releases_total counter
+# TYPE prometheus_sd_dns_lookup_failures_total counter
+# TYPE prometheus_sd_dns_lookups_total counter
+# TYPE prometheus_template_text_expansion_failures_total counter
+# TYPE prometheus_template_text_expansions_total counter
+# TYPE ring_member_heartbeats_total counter
+# TYPE ring_member_tokens_owned gauge
+# TYPE ring_member_tokens_to_own gauge
+# TYPE timer_memberlist_gossip summary
+# TYPE timer_memberlist_probeNode summary
+# TYPE timer_memberlist_pushPullNode summary

@@ -1,0 +1,22 @@
+resources:
+  - namespace.yaml
+  - jupyterhub-control.yaml
+
+secretGenerator:
+  - name: registry-credential
+    namespace: jupyterhub
+    files:
+      - .dockerconfigjson=secret/registry.json
+    type: kubernetes.io/dockerconfigjson
+    options:
+      disableNameSuffixHash: true
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+labels:
+  - pairs:
+      stacktic.io/app: "jupyterhub"
+      stacktic.io/group: "broker"
+      stacktic.io/namespace: "jupyterhub"
+    includeTemplates: true

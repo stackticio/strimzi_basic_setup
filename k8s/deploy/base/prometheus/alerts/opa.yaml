@@ -1,0 +1,148 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: gatekeeper-opa-rules
+  namespace: gatekeeper-system
+spec:
+  groups:
+    - name: gatekeeper.rules
+      rules:
+        ##################################################################
+        # 1) GatekeeperConflictingMutators
+        # gatekeeper_mutator_conflicting_count: gauge (current # of conflicts)
+        ##################################################################
+        - alert: GatekeeperConflictingMutators
+          expr: gatekeeper_mutator_conflicting_count > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OPA Gatekeeper: Conflicting mutators detected"
+            description: "There is at least one conflicting mutator. Conflicting mutators can break or override each other's changes."
+
+        ##################################################################
+        # 2) GatekeeperExcessiveMutationLatency
+        # gatekeeper_mutation_request_duration_seconds: histogram
+        # We'll check the 90th percentile over 5 minutes
+        ##################################################################
+        - alert: GatekeeperExcessiveMutationLatency
+          expr: histogram_quantile(0.90, rate(gatekeeper_mutation_request_duration_seconds_bucket[5m])) > 0.01
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OPA Gatekeeper: 90th percentile mutation latency > 0.01s"
+            description: "Mutation webhook is taking longer than expected (p90 latency above 10ms). This might indicate performance or concurrency issues."
+
+        ##################################################################
+        # 3) GatekeeperExcessiveValidationLatency
+        # gatekeeper_validation_request_duration_seconds: histogram
+        # We'll check the 95th percentile over 5 minutes
+        ##################################################################
+        - alert: GatekeeperExcessiveValidationLatency
+          expr: histogram_quantile(0.95, rate(gatekeeper_validation_request_duration_seconds_bucket[5m])) > 0.02
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OPA Gatekeeper: 95th percentile validation latency > 0.02s"
+            description: "Validation webhook is taking longer than expected (p95 latency above 20ms). Potential performance bottleneck or overhead."
+
+        ##################################################################
+        # 4) GatekeeperNoMutationRequests
+        # gatekeeper_mutation_request_count_total: counter
+        # If we expect steady mutation traffic, alert if it's zero for 10 mins
+        ##################################################################
+        - alert: GatekeeperNoMutationRequests
+          expr: increase(gatekeeper_mutation_request_count_total[10m]) < 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OPA Gatekeeper: No mutation requests in the last 10 minutes"
+            description: "Gatekeeper mutation webhook has not received any requests. Possibly something is wrong or all mutation traffic stopped unexpectedly."
+
+        ##################################################################
+        # 5) GatekeeperNoValidationRequests
+        # gatekeeper_validation_request_count_total: counter
+        # If we expect steady validation traffic, alert if it's zero for 10 mins
+        ##################################################################
+        - alert: GatekeeperNoValidationRequests
+          expr: increase(gatekeeper_validation_request_count_total[10m]) < 1
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OPA Gatekeeper: No validation requests in the last 10 minutes"
+            description: "Gatekeeper validation webhook has not received any requests. Possibly there's an issue in admission config or all traffic has stopped."
+
+        ##################################################################
+        # 6) GatekeeperHighCPULoad
+        # process_cpu_seconds_total => total CPU time spent
+        # If usage is above 60 CPU-seconds in 5m => ~0.2 cores average
+        ##################################################################
+        - alert: GatekeeperHighCPULoad
+          expr: increase(process_cpu_seconds_total[5m]) > 60
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OPA Gatekeeper: High CPU usage"
+            description: "Gatekeeper has used more than 60 CPU-seconds in the last 5 minutes, indicating sustained CPU usage."
+
+        ##################################################################
+        # 7) GatekeeperHighMemoryUsage
+        # process_resident_memory_bytes => current memory usage
+        # Example threshold: 200MB
+        ##################################################################
+        - alert: GatekeeperHighMemoryUsage
+          expr: process_resident_memory_bytes > 2e8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OPA Gatekeeper: High memory usage (>200MB)"
+            description: "Gatekeeper's resident memory usage exceeds 200MB. Consider investigating large policies, high concurrency, or memory leaks."
+
+        ##################################################################
+        # 8) GatekeeperMutationConvergenceIssues
+        # gatekeeper_mutation_system_iterations: histogram
+        # We want to detect if there's a non-zero count of success="false" or
+        # if iteration loops > some threshold. (We don't see 'false' in sample, but let's assume.)
+        ##################################################################
+        - alert: GatekeeperMutationConvergenceIssues
+          expr: increase(gatekeeper_mutation_system_iterations_count{success="false"}[5m]) > 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "OPA Gatekeeper: Mutation system non-convergence"
+            description: "Mutation system has failed to converge at least once in the last 5 minutes (success=\"false\")."
+
+        ##################################################################
+        # 9) GatekeeperStaleSync
+        # gatekeeper_sync_last_run_time_seconds: gauge of last sync time
+        # If it's older than 10 minutes => stale sync
+        ##################################################################
+        - alert: GatekeeperStaleSync
+          expr: (time() - gatekeeper_sync_last_run_time_seconds) > 600
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OPA Gatekeeper: Stale or missing sync operation"
+            description: "The last sync operation was more than 10 minutes ago, indicating a potential syncing issue or staleness."
+
+        ##################################################################
+        # 10) GatekeeperWatchManagerMismatch
+        # gatekeeper_watch_manager_intended_watch_gvk vs gatekeeper_watch_manager_watched_gvk
+        # If fewer watchers than intended => mismatch
+        ##################################################################
+        - alert: GatekeeperWatchManagerMismatch
+          expr: gatekeeper_watch_manager_intended_watch_gvk > gatekeeper_watch_manager_watched_gvk
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OPA Gatekeeper: Watch manager watchers do not match intended"
+            description: "The watch manager is not watching as many GVKs as intended, possibly indicating pending resources or watch errors."

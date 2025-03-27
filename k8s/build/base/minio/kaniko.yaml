@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-kaniko
+spec:
+  template:
+    spec:
+      containers:
+        - name: kaniko
+          image: gcr.io/kaniko-project/executor:v1.21.0
+          args:
+            - "--context=git://github.com/stackticio/strimzi_basic_setup.git#refs/heads/main"
+            - "--context-sub-path=minio"
+            - "--destination=index.docker.io/stacktic/minio:job1.9"
+          env:
+            - name: GIT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: git-credential
+                  key: password
+            - name: GIT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: git-credential
+                  key: username
+          volumeMounts:
+            - name: kaniko-secret
+              mountPath: /kaniko/.docker
+      restartPolicy: Never
+      volumes:
+        - name: kaniko-secret
+          secret:
+            secretName: registry-credential
+            items:
+              - key: .dockerconfigjson
+                path: config.json

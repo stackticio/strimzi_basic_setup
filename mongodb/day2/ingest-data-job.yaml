@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-data-ingestion
+  namespace: "mongodb"
+  labels:
+    app.kubernetes.io/name: "mongodb"
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "mongodb"
+    spec:
+      containers:
+        - name: mongodb-data-ingestion
+          image: docker.io/bitnami/mongodb:4.4.10-debian-10-r0
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              mongoimport --host mongodb.mongodb.svc.cluster.local --authenticationDatabase admin -u root -p "$MONGODB_ROOT_PASSWORD" --db your_db --collection your_collection --type json --file /path/to/yourData.json --jsonArray
+          env:
+            - name: MONGODB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-auth-secret
+                  key: mongodb-root-password
+      restartPolicy: OnFailure

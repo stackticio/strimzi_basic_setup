@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: mongodb--from--prometheus--ingress--ports--27017--nr42
+  namespace: mongodb
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          stacktic.io/namespace: prometheus
+    ports:
+    - protocol: TCP
+      port: 27017

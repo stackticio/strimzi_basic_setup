@@ -1,0 +1,24 @@
+
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata: 
+  name: psql-sink-connector-database
+  namespace: strimzi
+  labels:
+    strimzi.io/cluster: kafka-connect
+spec:              
+  class: org.apache.camel.kafkaconnector.postgresqlsink.CamelPostgresqlsinkSinkConnector
+  tasksMax: 1
+  config:
+    # Kafka Connect error handling
+    # The Kafka topic(s) to consume from:
+    topics: "topic-psql"
+  
+    # The official Camel PostgreSQL sink Kamelet properties:
+    camel.kamelet.postgresql-sink.serverName: "postgresql.postgresql.svc.cluster.local"
+    camel.kamelet.postgresql-sink.serverPort: "5432"
+    camel.kamelet.postgresql-sink.databaseName: "db1"
+    camel.kamelet.postgresql-sink.username: "user"
+    camel.kamelet.postgresql-sink.password: "pass_default1"
+    camel.kamelet.postgresql-sink.query: "INSERT INTO accounts (username,city) VALUES (:#username,:#city)"

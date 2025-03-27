@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: prometheus--exception--app--egress--ports--9153--nr25
+  namespace: prometheus
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          stacktic.io/namespace: kube-system
+    ports:
+    - protocol: TCP
+      port: 9153

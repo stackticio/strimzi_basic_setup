@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-backup-pvc
+  namespace: "mongodb"
+  labels:
+    app.kubernetes.io/name: "mongodb"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard  # Replace with your storage class
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-backup
+  namespace: mongodb
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "mongodb"
+    spec:
+      containers:
+      - name: mongodb-backup
+        image: docker.io/bitnami/mongodb:4.4.10-debian-10-r0
+        command: ["/bin/bash", "-c"]
+        args:
+        - mongodump --host mongodb.mongodb.svc.cluster.local --authenticationDatabase admin -u root -p "$MONGODB_ROOT_PASSWORD" --archive=/backup/mongodb-backup.gz --gzip
+        env:
+        - name: MONGODB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-auth-secret
+              key: mongodb-root-password
+        volumeMounts:
+        - name: backup-storage
+          mountPath: /backup
+        securityContext:
+          runAsUser: 0  # Running as root, adjust as necessary for your environment
+      restartPolicy: OnFailure
+      volumes:
+      - name: backup-storage
+        persistentVolumeClaim:
+          claimName: mongodb-backup-pvc

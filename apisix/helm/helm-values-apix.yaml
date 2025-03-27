@@ -1,0 +1,293 @@
+global:
+  imagePullSecrets: []
+
+image:
+  repository: apache/apisix
+  pullPolicy: IfNotPresent
+  tag: 3.11.0-debian
+
+useDaemonSet: false
+replicaCount: 1
+
+priorityClassName: ""
+podAnnotations: {}
+podSecurityContext: {}
+securityContext: {}
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 90%
+  maxUnavailable: 1
+
+resources: {}
+hostNetwork: false
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+
+timezone: ""
+extraEnvVars: []
+
+updateStrategy: {}
+extraDeploy: []
+extraVolumes: []
+extraVolumeMounts: []
+extraInitContainers: []
+extraContainers: []
+
+initContainer:
+  image: busybox
+  tag: 1.28
+
+autoscaling:
+  enabled: false
+  version: v2
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+rbac:
+  create: true
+
+# ---------------------------------------------------------------------------------
+# APISIX data-plane Service: expose HTTP (80) & HTTPS (443) via LoadBalancer
+# ---------------------------------------------------------------------------------
+service:
+  type: ClusterIP               # LB => external IP from your cloud
+  externalTrafficPolicy: null
+  externalIPs: []
+  http:
+    enabled: true
+    servicePort: 80                # LB port 80
+    containerPort: 9080            # APISIX pod container port for HTTP
+    additionalContainerPorts: []
+  tls:
+    servicePort: 443               # LB port 443
+  stream:
+    enabled: false
+    tcp: []
+    udp: []
+  labelsOverride: {}
+
+# Not using the chart-based Ingress setup for APISIX
+ingress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  tls: []
+
+control:
+  enabled: true
+  service:
+    annotations: {}
+    type: ClusterIP
+    externalIPs: []
+    ip: "127.0.0.1"
+    port: 9090
+    servicePort: 9090
+  ingress:
+    enabled: false
+    annotations: {}
+    hosts: []
+    tls: []
+
+metrics:
+  serviceMonitor:
+    enabled: false
+    namespace: ""
+    name: ""
+    interval: 15s
+    labels: {}
+    annotations: {}
+
+# ---------------------------------------------------------------------------------
+# Main APISIX configuration
+# ---------------------------------------------------------------------------------
+apisix:
+  enableIPv6: true
+  enableHTTP2: true
+  enableServerTokens: true
+  setIDFromPodUID: false
+
+  # Enable SSL (TLS) so APISIX can terminate HTTPS (containerPort=9443)
+  ssl:
+    enabled: true
+    containerPort: 9443
+    additionalContainerPorts: []
+    existingCASecret: ""
+    certCAFilename: ""
+    enableHTTP3: false
+    sslProtocols: "TLSv1.2 TLSv1.3"
+    fallbackSNI: ""
+
+  router:
+    http: radixtree_host_uri
+
+  fullCustomConfig:
+    enabled: false
+    config: {}
+
+  deployment:
+    mode: traditional
+    role: "traditional"
+
+  # Admin API config
+  admin:
+    enabled: true
+    type: ClusterIP
+    externalIPs: []
+    ip: 0.0.0.0
+    port: 9180
+    servicePort: 9180
+    cors: true
+
+    # WARNING: admin credentials + open allow ip => not production safe
+    credentials:
+      admin: edd1c9f034335f136f87ad84b625c8f1
+      viewer: 4054f7cf07e344346cd3f287985e76a2
+      secretName: ""
+      secretAdminKey: ""
+      secretViewerKey: ""
+
+    allow:
+      ipList:
+        - 127.0.0.1/24
+        - 0.0.0.0/0
+
+    ingress:
+      enabled: false
+      annotations: {}
+      hosts: []
+      tls: []
+
+  nginx:
+    workerRlimitNofile: "20480"
+    workerConnections: "10620"
+    workerProcesses: auto
+    enableCPUAffinity: true
+    keepaliveTimeout: 60s
+    envs: []
+    logs:
+      enableAccessLog: true
+      accessLog: "/dev/stdout"
+      accessLogFormat: '$remote_addr - $remote_user [$time_local] $http_host "$request" $status $body_bytes_sent $request_time "$http_referer" "$http_user_agent" $upstream_addr $upstream_status $upstream_response_time "$upstream_scheme://$upstream_host$upstream_uri"'
+      accessLogFormatEscape: default
+      errorLog: "/dev/stderr"
+      errorLogLevel: "warn"
+
+    configurationSnippet:
+      main: |
+      httpStart: |
+      httpEnd: |
+      httpSrv: |
+      httpAdmin: |
+      stream: |
+    customLuaSharedDicts: []
+
+  discovery:
+    enabled: false
+    registry: {}
+
+  dns:
+    resolvers:
+      - 127.0.0.1
+      - 172.20.0.10
+      - 114.114.114.114
+      - 223.5.5.5
+      - 1.1.1.1
+      - 8.8.8.8
+    validity: 30
+    timeout: 5
+
+  vault:
+    enabled: false
+    host: ""
+    timeout: 10
+    token: ""
+    prefix: ""
+
+  prometheus:
+    enabled: false
+    path: /apisix/prometheus/metrics
+    metricPrefix: apisix_
+    containerPort: 9091
+
+  plugins: []
+  stream_plugins: []
+  pluginAttrs: {}
+
+  extPlugin:
+    enabled: false
+    cmd: ["/path/to/apisix-plugin-runner/runner", "run"]
+
+  wasm:
+    enabled: false
+    plugins: []
+
+  customPlugins:
+    enabled: false
+    luaPath: "/opts/custom_plugins/?.lua"
+    plugins: []
+
+# ---------------------------------------------------------------------------------
+# ETCD: embedded, set to 1 replica for dev or 3 for production
+# ---------------------------------------------------------------------------------
+externalEtcd:
+  host: []
+  user: ""
+  password: ""
+  existingSecret: ""
+  secretPasswordKey: ""
+
+etcd:
+  enabled: true
+  prefix: "/apisix"
+  timeout: 30
+  auth:
+    rbac:
+      create: false
+      rootPassword: ""
+    tls:
+      enabled: false
+      existingSecret: ""
+      certFilename: ""
+      certKeyFilename: ""
+      verify: true
+      sni: ""
+
+  containerSecurityContext:
+    enabled: false
+
+  service:
+    port: 2379
+
+  replicaCount: 3
+
+dashboard:
+  enabled: false
+  config:
+    conf:
+      etcd:
+        endpoints:
+          - apisix-etcd:2379
+        prefix: "/apisix"
+        username: ~
+        password: ~
+
+# No built-in Ingress Controller from this chart
+ingress-controller:
+  enabled: false
+  config:
+    apisix:
+      adminAPIVersion: "v3"

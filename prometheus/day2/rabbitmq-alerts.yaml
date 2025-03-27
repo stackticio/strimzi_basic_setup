@@ -1,0 +1,68 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: rabbitmq-application-rules
+  namespace: prometheus
+spec:
+  groups:
+    - name: rabbitmq.rules
+      rules:
+        - alert: RabbitMQHighMemoryUsage
+          expr: erlang_vm_memory_bytes_total{job="rabbitmq", kind="system"} > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ instance labels.instance high memory usage"
+            description: "RabbitMQ memory usage is high, indicating potential issues with the instance labels.instance "
+
+        - alert: RabbitMQHighProcessUsage
+          expr: rabbitmq_erlang_processes_used{job="rabbitmq"} > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ instance labels.instance high process usage"
+            description: "RabbitMQ process usage is high, indicating potential issues with the instance labels.instance ."
+
+        - alert: RabbitMQHighQueueMessages
+          expr: rabbitmq_queue_messages{job="rabbitmq"} > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "RabbitMQ instancelabels.instance high message count in queue"
+            description: "RabbitMQ has a high number of messages queued, indicating potential backpressure or processing delays in instance labels.instance ."
+
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: rabbitmq-alertmanager-config
+  namespace: prometheus
+spec:
+  route:
+    groupBy: ['alertname', 'severity']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: 'slack-notifications'
+    routes:
+      - match:
+          severity: 'warning'
+        receiver: 'slack-notifications'
+      - match:
+          severity: 'critical'
+        receiver: 'slack-notifications'
+  receivers:
+    - name: 'slack-notifications'
+      slackConfigs:
+        - sendResolved: true
+          text: "Alert descritption: "
+          username: 'Alertmanager'
+          channel: '#alerts-channel'
+          apiURL:
+            name: 'slack-webhook-url'
+            key: 'url'
+
