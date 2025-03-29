@@ -1,6 +1,23 @@
 # basic_kafka_setup
 
 This is the output of the `basic_kafka_setup` system.
+This sample repository provides an **initial Kafka Strimzi setup**, complete with basic connectors, monitoring, security, and more. We used **Helm 0.45** to generate the initial YAML templates, then switched to pure **Kustomize** for secrets, ConfigMaps, deployments, and day-two customizations and operations.
+[kustomization.yaml](https://github.com/stackticio/strimzi_basic_setup/blob/main/k8s/deploy/base/kafka/kustomization.yaml) 
+ Enjoy!
+
+Quick Guide
+
+1. **Modify Secrets**  
+   Update any necessary secrets—such as your registry credentials—in the [registry.json](https://github.com/stackticio/strimzi_basic_setup/blob/main/k8s/deploy/base/kafka/secret/registry.json) file.
+
+2. **View Documentation**  
+   For more details and examples (e.g., Kafka-specific configuration), see the [Kafka docs](https://github.com/stackticio/strimzi_basic_setup/tree/main/doc/kafka).
+
+3. **Deploy**  
+   You can deploy with a single command, or integrate with your preferred GitOps workflow:
+   ```bash
+   kubectl apply -k k8s/deploy/overlays/dev/ --server-side=true --force-conflicts=true. 
+
 
 ## Design
 
