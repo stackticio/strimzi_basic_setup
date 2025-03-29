@@ -2,6 +2,20 @@
 
 This is the output of the `basic_kafka_setup` system.
 
+Quick Guide
+
+1. **Modify Secrets**  
+   Update any necessary secrets—such as your registry credentials—in the [registry.json](https://github.com/stackticio/strimzi_basic_setup/blob/main/k8s/deploy/base/kafka/secret/registry.json) file.
+
+2. **View Documentation**  
+   For more details and examples (e.g., Kafka-specific configuration), see the [Kafka docs](https://github.com/stackticio/strimzi_basic_setup/tree/main/doc/kafka).
+
+3. **Deploy**  
+   You can deploy with a single command, or integrate with your preferred GitOps workflow:
+   ```bash
+   kubectl apply -k k8s/deploy/overlays/dev/ --server-side=true --force-conflicts=true. 
+
+
 ## Design
 
 <img width="870" alt="image" src="https://github.com/user-attachments/assets/f8835a61-4b3b-491d-9006-b711ef760ef8" />
