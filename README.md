@@ -4,7 +4,8 @@ This is the output of the `basic_kafka_setup` system.
 
 ## Design
 
-![basic_kafka_setup](./doc/stacktic/system.svg)
+![Uploading image.png…]()
+
 
 ## Folder structure
 
