@@ -11,16 +11,16 @@ spec:
   ingress:
   - ports:
     - protocol: TCP
-      port: 9180
-    - protocol: TCP
-      port: 8080
-    - protocol: TCP
-      port: 2379
-    - protocol: TCP
-      port: 9000
-    - protocol: TCP
       port: 9080
     - protocol: TCP
       port: 2380
     - protocol: TCP
       port: 9443
+    - protocol: TCP
+      port: 8080
+    - protocol: TCP
+      port: 2379
+    - protocol: TCP
+      port: 9180
+    - protocol: TCP
+      port: 9000

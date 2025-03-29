@@ -14,22 +14,6 @@ resources:
   - monitor/pod-monitor.yaml
   - monitor/cm-connect-metrics.yaml
   
-secretGenerator:
-  - name: prometheus-user
-    namespace: strimzi
-    files:
-      - user.crt=secret/user.crt
-      - user.key=secret/user.key
-      - ca.crt=secret/ca.crt
-    type: Opaque
-
-  - name: kafka-bridge
-    namespace: strimzi
-    files:
-      - user.crt=secret/user.crt
-      - user.key=secret/user.key
-      - ca.crt=secret/ca.crt
-    type: Opaque
 
   - name: registry-credential
     namespace: strimzi
