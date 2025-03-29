@@ -1,0 +1,23 @@
+resources:
+  - namespace.yaml
+  - minio.yaml
+  - bucket.yaml
+  - clean-job.yaml
+
+
+
+secretGenerator:
+  - name: minio-credentials
+    namespace: minio
+    envs:
+      - secret/minio.env
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+labels:
+  - pairs:
+      stacktic.io/app: "minio"
+      stacktic.io/group: "storage"
+      stacktic.io/namespace: "minio"
+    includeTemplates: true

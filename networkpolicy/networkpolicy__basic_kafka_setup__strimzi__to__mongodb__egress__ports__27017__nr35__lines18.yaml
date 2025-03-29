@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: strimzi--to--mongodb--egress--ports--27017--nr35
+  namespace: strimzi
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          stacktic.io/namespace: mongodb
+    ports:
+    - protocol: TCP
+      port: 27017

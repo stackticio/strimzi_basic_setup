@@ -1,0 +1,262 @@
+# Chart Info:
+#   chart_name: kube-prometheus
+#   chart_repo: bitnami
+#   chart_version: 11.0.2
+#   app_version: 
+#   chart_release_date: 21/05/2024
+#   stacktic_update_date: 12/06/2024
+# https://github.com/bitnami/charts/tree/main/bitnami/kube-prometheus
+
+
+
+## Deploy a Prometheus instance
+prometheus:
+  enabled: true
+  replicaCount: 1
+  # Network Policy
+  networkPolicy:
+    enabled: false
+  # Resources
+  resources:
+    requests:
+      cpu: 500m
+      memory: 1024Mi
+    limits:
+      cpu: 750m
+      memory: 2048Mi
+  # Storage
+  persistence:
+    enabled: true
+    size: 24Gi
+  # Metrics
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+  # Logging
+  logLevel: debug
+
+  podMonitorSelector: {}
+  podMonitorNamespaceSelector: {}
+  probeSelector: {}
+  probeNamespaceSelector: {}
+  
+## Operator Parameters
+operator:
+  enabled: true
+  # Network Policy
+  networkPolicy:
+    enabled: false
+  # Resources
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 375m
+      memory: 384Mi
+  # Metrics
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    scrapeTimeout: 10s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+  # Logging
+  logLevel: info
+
+## Configuration for alertmanager
+alertmanager:
+  enabled: true
+  replicaCount: 1
+  # Network Policy
+  networkPolicy:
+    enabled: false
+  # Resources
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 375m
+      memory: 384Mi
+  # Storage
+  persistence:
+    enabled: true
+    size: 8Gi
+  # Metrics
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    scrapeTimeout: 10s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+  # Logging
+  logLevel: info
+  # Config
+  retention: 120h
+
+## Component scraping for kubelet and kubelet hosted cAdvisor
+kubelet:
+  enabled: true
+  namespace: kube-system
+  # Metrics
+  serviceMonitor:
+    interval: 15s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+
+## Blackbox Exporter Deployment Parameters
+blackboxExporter:
+  enabled: true
+  replicaCount: 1
+  # Network Policy
+  networkPolicy:
+    enabled: false
+  # Resources
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 150m
+      memory: 192Mi
+
+## Component scraping the kube-apiserver
+kubeApiServer:
+  enabled: true
+  # Metrics
+  serviceMonitor:
+    interval: 15s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+
+## Component scraping the kube-controller-manager
+kubeControllerManager:
+  enabled: true
+  namespace: kube-system
+  # Metrics
+  serviceMonitor:
+    interval: 15s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+
+## Component scraping kube scheduler
+kubeScheduler:
+  enabled: true
+  namespace: kube-system
+  # Metrics
+  serviceMonitor:
+    interval: 15s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+
+## Component scraping coreDns
+coreDns:
+  enabled: true
+  namespace: kube-system
+  # Metrics
+  serviceMonitor:
+    interval: 15s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+
+## Component scraping the kube-proxy
+kubeProxy:
+  enabled: true
+  namespace: kube-system
+  # Metrics
+  serviceMonitor:
+    interval: 15s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+
+## Exporters
+exporters:
+  node-exporter:
+    enabled: true
+  
+  kube-state-metrics:
+    enabled: true
+  ## Node Exporter deployment configuration
+node-exporter:
+  # Metrics
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    scrapeTimeout: 10s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+  # Network Policy
+  networkPolicy:
+    enabled: false
+ 
+## Kube State Metrics deployment configuration
+
+kube-state-metrics:
+  # Metrics
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    scrapeTimeout: 10s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "prometheus"
+      - action: replace
+        targetLabel: component_type
+        replacement: "prometheus"
+  # Network Policy
+  networkPolicy:
+    enabled: false

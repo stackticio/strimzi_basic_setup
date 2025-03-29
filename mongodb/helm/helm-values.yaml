@@ -1,0 +1,92 @@
+# Chart Info:
+#   chart_name: kong
+#   chart_repo: bitnami
+#   chart_version: 15.6.0
+#   app_version: 7.0.9
+#   chart_release_date: 24/05/2024
+#   stacktic_update_date: 29/05/2024
+
+# Architecture
+architecture: standalone
+
+# Configuration
+directoryPerDB: false
+enableJournal: true
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  automountServiceAccountToken: false
+
+rbac:
+  create: false
+  rules: []
+
+# Init DB
+initdbScriptsConfigMap: ""
+
+# Logging
+systemLogVerbosity: 0
+disableSystemLog: false
+
+# Authentication
+auth:
+  enabled: true
+  existingSecret: mongodb-auth-secret
+  #usernames: []  # list of custom users
+  #databases: []  # list of databases for custom users
+
+# Network Policy
+networkPolicy:
+  enabled: false
+
+# Storage
+persistence:
+  enabled: true
+  size: 8Gi
+
+# Resources
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 750m
+    memory: 768Mi
+
+# Metrics
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    namespace: prometheus
+    interval: 15s
+    scrapeTimeout: 10s
+    relabelings:
+      - action: replace
+        targetLabel: component_name
+        replacement: "mongodb"
+      - action: replace
+        targetLabel: component_type
+        replacement: "mongodb"
+
+## Service
+service:
+  ports:
+    mongodb: 27017
+
+## Arbiter
+arbiter:
+  enabled: true
+  # Resources
+  resources:
+    requests:
+      cpu: 500m
+      memory: 512Mi
+    limits:
+      cpu: 750m
+      memory: 768Mi
+
+## Hidden Replica
+hidden:
+  enabled: false

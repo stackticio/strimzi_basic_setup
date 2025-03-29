@@ -1,0 +1,21 @@
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: minio-sink-connector-kafkabucket
+  namespace: strimzi
+  labels:
+    strimzi.io/cluster: kafka-connect
+spec:
+  class: org.apache.camel.kafkaconnector.miniosink.CamelMiniosinkSinkConnector
+  #tasksMax: 1
+  config:
+    # The Kafka topic(s) to read from
+    topics: "topic-bucket"
+
+    # Kamelet-based Minio sink parameters
+    camel.kamelet.minio-sink.accessKey:  "min8chars1"
+    camel.kamelet.minio-sink.secretKey:  "min8chars1"
+    camel.kamelet.minio-sink.endpoint:   "http://minio.minio.svc.cluster.local:9000"
+    camel.kamelet.minio-sink.bucketName: "kafkabucket"
+    camel.kamelet.minio-sink.autoCreateBucket: "true"

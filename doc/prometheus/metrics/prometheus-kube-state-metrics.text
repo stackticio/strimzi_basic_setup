@@ -1,0 +1,490 @@
+# HELP kube_configmap_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_configmap_created [STABLE] Unix creation timestamp
+# HELP kube_configmap_info [STABLE] Information about configmap.
+# HELP kube_configmap_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_configmap_metadata_resource_version Resource version representing a specific version of the configmap.
+# HELP kube_cronjob_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_cronjob_created [STABLE] Unix creation timestamp
+# HELP kube_cronjob_info [STABLE] Info about cronjob.
+# HELP kube_cronjob_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_cronjob_metadata_resource_version [STABLE] Resource version representing a specific version of the cronjob.
+# HELP kube_cronjob_next_schedule_time [STABLE] Next time the cronjob should be scheduled. The time after lastScheduleTime, or after the cron job's creation time if it's never been scheduled. Use this to determine if the job is delayed.
+# HELP kube_cronjob_spec_failed_job_history_limit Failed job history limit tells the controller how many failed jobs should be preserved.
+# HELP kube_cronjob_spec_starting_deadline_seconds [STABLE] Deadline in seconds for starting the job if it misses scheduled time for any reason.
+# HELP kube_cronjob_spec_successful_job_history_limit Successful job history limit tells the controller how many completed jobs should be preserved.
+# HELP kube_cronjob_spec_suspend [STABLE] Suspend flag tells the controller to suspend subsequent executions.
+# HELP kube_cronjob_status_active [STABLE] Active holds pointers to currently running jobs.
+# HELP kube_cronjob_status_last_schedule_time [STABLE] LastScheduleTime keeps information of when was the last time the job was successfully scheduled.
+# HELP kube_cronjob_status_last_successful_time LastSuccessfulTime keeps information of when was the last time the job was completed successfully.
+# HELP kube_daemonset_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_daemonset_created [STABLE] Unix creation timestamp
+# HELP kube_daemonset_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_daemonset_metadata_generation [STABLE] Sequence number representing a specific generation of the desired state.
+# HELP kube_daemonset_status_current_number_scheduled [STABLE] The number of nodes running at least one daemon pod and are supposed to.
+# HELP kube_daemonset_status_desired_number_scheduled [STABLE] The number of nodes that should be running the daemon pod.
+# HELP kube_daemonset_status_number_available [STABLE] The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and available
+# HELP kube_daemonset_status_number_misscheduled [STABLE] The number of nodes running a daemon pod but are not supposed to.
+# HELP kube_daemonset_status_number_ready [STABLE] The number of nodes that should be running the daemon pod and have one or more of the daemon pod running and ready.
+# HELP kube_daemonset_status_number_unavailable [STABLE] The number of nodes that should be running the daemon pod and have none of the daemon pod running and available
+# HELP kube_daemonset_status_observed_generation [STABLE] The most recent generation observed by the daemon set controller.
+# HELP kube_daemonset_status_updated_number_scheduled [STABLE] The total number of nodes that are running updated daemon pod
+# HELP kube_deployment_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_deployment_created [STABLE] Unix creation timestamp
+# HELP kube_deployment_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_deployment_metadata_generation [STABLE] Sequence number representing a specific generation of the desired state.
+# HELP kube_deployment_spec_paused [STABLE] Whether the deployment is paused and will not be processed by the deployment controller.
+# HELP kube_deployment_spec_replicas [STABLE] Number of desired pods for a deployment.
+# HELP kube_deployment_spec_strategy_rollingupdate_max_surge [STABLE] Maximum number of replicas that can be scheduled above the desired number of replicas during a rolling update of a deployment.
+# HELP kube_deployment_spec_strategy_rollingupdate_max_unavailable [STABLE] Maximum number of unavailable replicas during a rolling update of a deployment.
+# HELP kube_deployment_status_condition [STABLE] The current status conditions of a deployment.
+# HELP kube_deployment_status_observed_generation [STABLE] The generation observed by the deployment controller.
+# HELP kube_deployment_status_replicas [STABLE] The number of replicas per deployment.
+# HELP kube_deployment_status_replicas_available [STABLE] The number of available replicas per deployment.
+# HELP kube_deployment_status_replicas_ready [STABLE] The number of ready replicas per deployment.
+# HELP kube_deployment_status_replicas_unavailable [STABLE] The number of unavailable replicas per deployment.
+# HELP kube_deployment_status_replicas_updated [STABLE] The number of updated replicas per deployment.
+# HELP kube_endpoint_address [STABLE] Information about Endpoint available and non available addresses.
+# HELP kube_endpoint_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_endpoint_created [STABLE] Unix creation timestamp
+# HELP kube_endpoint_info [STABLE] Information about endpoint.
+# HELP kube_endpoint_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_endpoint_ports [STABLE] (Deprecated since v2.14.0) Information about the Endpoint ports.
+# HELP kube_horizontalpodautoscaler_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_horizontalpodautoscaler_info Information about this autoscaler.
+# HELP kube_horizontalpodautoscaler_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_horizontalpodautoscaler_metadata_generation [STABLE] The generation observed by the HorizontalPodAutoscaler controller.
+# HELP kube_horizontalpodautoscaler_spec_max_replicas [STABLE] Upper limit for the number of pods that can be set by the autoscaler; cannot be smaller than MinReplicas.
+# HELP kube_horizontalpodautoscaler_spec_min_replicas [STABLE] Lower limit for the number of pods that can be set by the autoscaler, default 1.
+# HELP kube_horizontalpodautoscaler_spec_target_metric The metric specifications used by this autoscaler when calculating the desired replica count.
+# HELP kube_horizontalpodautoscaler_status_condition [STABLE] The condition of this autoscaler.
+# HELP kube_horizontalpodautoscaler_status_current_replicas [STABLE] Current number of replicas of pods managed by this autoscaler.
+# HELP kube_horizontalpodautoscaler_status_desired_replicas [STABLE] Desired number of replicas of pods managed by this autoscaler.
+# HELP kube_horizontalpodautoscaler_status_target_metric The current metric status used by this autoscaler when calculating the desired replica count.
+# HELP kube_ingress_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_ingress_created [STABLE] Unix creation timestamp
+# HELP kube_ingress_info [STABLE] Information about ingress.
+# HELP kube_ingress_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_ingress_metadata_resource_version Resource version representing a specific version of ingress.
+# HELP kube_ingress_path [STABLE] Ingress host, paths and backend service information.
+# HELP kube_ingress_tls [STABLE] Ingress TLS host and secret information.
+# HELP kube_job_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_job_complete [STABLE] The job has completed its execution.
+# HELP kube_job_created [STABLE] Unix creation timestamp
+# HELP kube_job_failed [STABLE] The job has failed its execution.
+# HELP kube_job_info [STABLE] Information about job.
+# HELP kube_job_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_job_owner [STABLE] Information about the Job's owner.
+# HELP kube_job_spec_active_deadline_seconds [STABLE] The duration in seconds relative to the startTime that the job may be active before the system tries to terminate it.
+# HELP kube_job_spec_completions [STABLE] The desired number of successfully finished pods the job should be run with.
+# HELP kube_job_spec_parallelism [STABLE] The maximum desired number of pods the job should run at any given time.
+# HELP kube_job_status_active [STABLE] The number of actively running pods.
+# HELP kube_job_status_completion_time [STABLE] CompletionTime represents time when the job was completed.
+# HELP kube_job_status_failed [STABLE] The number of pods which reached Phase Failed and the reason for failure.
+# HELP kube_job_status_start_time [STABLE] StartTime represents time when the job was acknowledged by the Job Manager.
+# HELP kube_job_status_succeeded [STABLE] The number of pods which reached Phase Succeeded.
+# HELP kube_job_status_suspended The number of pods which reached Phase Suspended.
+# HELP kube_lease_owner Information about the Lease's owner.
+# HELP kube_lease_renew_time Kube lease renew time.
+# HELP kube_mutatingwebhookconfiguration_created Unix creation timestamp.
+# HELP kube_mutatingwebhookconfiguration_info Information about the MutatingWebhookConfiguration.
+# HELP kube_mutatingwebhookconfiguration_metadata_resource_version Resource version representing a specific version of the MutatingWebhookConfiguration.
+# HELP kube_mutatingwebhookconfiguration_webhook_clientconfig_service Service used by the apiserver to connect to a mutating webhook.
+# HELP kube_namespace_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_namespace_created [STABLE] Unix creation timestamp
+# HELP kube_namespace_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_namespace_status_condition The condition of a namespace.
+# HELP kube_namespace_status_phase [STABLE] kubernetes namespace status phase.
+# HELP kube_networkpolicy_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_networkpolicy_created Unix creation timestamp of network policy
+# HELP kube_networkpolicy_labels Kubernetes labels converted to Prometheus labels.
+# HELP kube_networkpolicy_spec_egress_rules Number of egress rules on the networkpolicy
+# HELP kube_networkpolicy_spec_ingress_rules Number of ingress rules on the networkpolicy
+# HELP kube_node_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_node_created [STABLE] Unix creation timestamp
+# HELP kube_node_deletion_timestamp Unix deletion timestamp
+# HELP kube_node_info [STABLE] Information about a cluster node.
+# HELP kube_node_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_node_role The role of a cluster node.
+# HELP kube_node_spec_taint [STABLE] The taint of a cluster node.
+# HELP kube_node_spec_unschedulable [STABLE] Whether a node can schedule new pods.
+# HELP kube_node_status_addresses Node address information.
+# HELP kube_node_status_allocatable [STABLE] The allocatable for different resources of a node that are available for scheduling.
+# HELP kube_node_status_capacity [STABLE] The capacity for different resources of a node.
+# HELP kube_node_status_condition [STABLE] The condition of a cluster node.
+# HELP kube_persistentvolume_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_persistentvolume_capacity_bytes [STABLE] Persistentvolume capacity in bytes.
+# HELP kube_persistentvolume_claim_ref [STABLE] Information about the Persistent Volume Claim Reference.
+# HELP kube_persistentvolume_created Unix creation timestamp
+# HELP kube_persistentvolume_deletion_timestamp Unix deletion timestamp
+# HELP kube_persistentvolume_info [STABLE] Information about persistentvolume.
+# HELP kube_persistentvolume_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_persistentvolume_status_phase [STABLE] The phase indicates if a volume is available, bound to a claim, or released by a claim.
+# HELP kube_persistentvolume_volume_mode Volume Mode information for the PersistentVolume.
+# HELP kube_persistentvolumeclaim_access_mode [STABLE] The access mode(s) specified by the persistent volume claim.
+# HELP kube_persistentvolumeclaim_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_persistentvolumeclaim_created Unix creation timestamp
+# HELP kube_persistentvolumeclaim_deletion_timestamp Unix deletion timestamp
+# HELP kube_persistentvolumeclaim_info [STABLE] Information about persistent volume claim.
+# HELP kube_persistentvolumeclaim_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_persistentvolumeclaim_resource_requests_storage_bytes [STABLE] The capacity of storage requested by the persistent volume claim.
+# HELP kube_persistentvolumeclaim_status_condition Information about status of different conditions of persistent volume claim.
+# HELP kube_persistentvolumeclaim_status_phase [STABLE] The phase the persistent volume claim is currently in.
+# HELP kube_pod_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_pod_completion_time [STABLE] Completion time in unix timestamp for a pod.
+# HELP kube_pod_container_info [STABLE] Information about a container in a pod.
+# HELP kube_pod_container_resource_limits The number of requested limit resource by a container. It is recommended to use the kube_pod_resource_limits metric exposed by kube-scheduler instead, as it is more precise.
+# HELP kube_pod_container_resource_requests The number of requested request resource by a container. It is recommended to use the kube_pod_resource_requests metric exposed by kube-scheduler instead, as it is more precise.
+# HELP kube_pod_container_state_started [STABLE] Start time in unix timestamp for a pod container.
+# HELP kube_pod_container_status_last_terminated_exitcode Describes the exit code for the last container in terminated state.
+# HELP kube_pod_container_status_last_terminated_reason Describes the last reason the container was in terminated state.
+# HELP kube_pod_container_status_last_terminated_timestamp Last terminated time for a pod container in unix timestamp.
+# HELP kube_pod_container_status_ready [STABLE] Describes whether the containers readiness check succeeded.
+# HELP kube_pod_container_status_restarts_total [STABLE] The number of container restarts per container.
+# HELP kube_pod_container_status_running [STABLE] Describes whether the container is currently in running state.
+# HELP kube_pod_container_status_terminated [STABLE] Describes whether the container is currently in terminated state.
+# HELP kube_pod_container_status_terminated_reason Describes the reason the container is currently in terminated state.
+# HELP kube_pod_container_status_waiting [STABLE] Describes whether the container is currently in waiting state.
+# HELP kube_pod_container_status_waiting_reason [STABLE] Describes the reason the container is currently in waiting state.
+# HELP kube_pod_created [STABLE] Unix creation timestamp
+# HELP kube_pod_deletion_timestamp Unix deletion timestamp
+# HELP kube_pod_info [STABLE] Information about pod.
+# HELP kube_pod_init_container_info [STABLE] Information about an init container in a pod.
+# HELP kube_pod_init_container_resource_limits The number of requested limit resource by an init container.
+# HELP kube_pod_init_container_resource_requests The number of requested request resource by an init container.
+# HELP kube_pod_init_container_status_last_terminated_reason Describes the last reason the init container was in terminated state.
+# HELP kube_pod_init_container_status_ready [STABLE] Describes whether the init containers readiness check succeeded.
+# HELP kube_pod_init_container_status_restarts_total [STABLE] The number of restarts for the init container.
+# HELP kube_pod_init_container_status_running [STABLE] Describes whether the init container is currently in running state.
+# HELP kube_pod_init_container_status_terminated [STABLE] Describes whether the init container is currently in terminated state.
+# HELP kube_pod_init_container_status_terminated_reason Describes the reason the init container is currently in terminated state.
+# HELP kube_pod_init_container_status_waiting [STABLE] Describes whether the init container is currently in waiting state.
+# HELP kube_pod_init_container_status_waiting_reason Describes the reason the init container is currently in waiting state.
+# HELP kube_pod_ips Pod IP addresses
+# HELP kube_pod_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_pod_overhead_cpu_cores The pod overhead in regards to cpu cores associated with running a pod.
+# HELP kube_pod_overhead_memory_bytes The pod overhead in regards to memory associated with running a pod.
+# HELP kube_pod_owner [STABLE] Information about the Pod's owner.
+# HELP kube_pod_restart_policy [STABLE] Describes the restart policy in use by this pod.
+# HELP kube_pod_runtimeclass_name_info The runtimeclass associated with the pod.
+# HELP kube_pod_scheduler The scheduler for a pod.
+# HELP kube_pod_service_account The service account for a pod.
+# HELP kube_pod_spec_volumes_persistentvolumeclaims_info [STABLE] Information about persistentvolumeclaim volumes in a pod.
+# HELP kube_pod_spec_volumes_persistentvolumeclaims_readonly [STABLE] Describes whether a persistentvolumeclaim is mounted read only.
+# HELP kube_pod_start_time [STABLE] Start time in unix timestamp for a pod.
+# HELP kube_pod_status_container_ready_time Readiness achieved time in unix timestamp for a pod containers.
+# HELP kube_pod_status_initialized_time Initialized time in unix timestamp for a pod.
+# HELP kube_pod_status_phase [STABLE] The pods current phase.
+# HELP kube_pod_status_qos_class The pods current qosClass.
+# HELP kube_pod_status_ready [STABLE] Describes whether the pod is ready to serve requests.
+# HELP kube_pod_status_ready_time Readiness achieved time in unix timestamp for a pod.
+# HELP kube_pod_status_reason The pod status reasons
+# HELP kube_pod_status_scheduled [STABLE] Describes the status of the scheduling process for the pod.
+# HELP kube_pod_status_scheduled_time [STABLE] Unix timestamp when pod moved into scheduled status
+# HELP kube_pod_status_unschedulable [STABLE] Describes the unschedulable status for the pod.
+# HELP kube_pod_tolerations Information about the pod tolerations
+# HELP kube_poddisruptionbudget_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_poddisruptionbudget_created [STABLE] Unix creation timestamp
+# HELP kube_poddisruptionbudget_labels Kubernetes labels converted to Prometheus labels.
+# HELP kube_poddisruptionbudget_status_current_healthy [STABLE] Current number of healthy pods
+# HELP kube_poddisruptionbudget_status_desired_healthy [STABLE] Minimum desired number of healthy pods
+# HELP kube_poddisruptionbudget_status_expected_pods [STABLE] Total number of pods counted by this disruption budget
+# HELP kube_poddisruptionbudget_status_observed_generation [STABLE] Most recent generation observed when updating this PDB status
+# HELP kube_poddisruptionbudget_status_pod_disruptions_allowed [STABLE] Number of pod disruptions that are currently allowed
+# HELP kube_replicaset_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_replicaset_created [STABLE] Unix creation timestamp
+# HELP kube_replicaset_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_replicaset_metadata_generation [STABLE] Sequence number representing a specific generation of the desired state.
+# HELP kube_replicaset_owner [STABLE] Information about the ReplicaSet's owner.
+# HELP kube_replicaset_spec_replicas [STABLE] Number of desired pods for a ReplicaSet.
+# HELP kube_replicaset_status_fully_labeled_replicas [STABLE] The number of fully labeled replicas per ReplicaSet.
+# HELP kube_replicaset_status_observed_generation [STABLE] The generation observed by the ReplicaSet controller.
+# HELP kube_replicaset_status_ready_replicas [STABLE] The number of ready replicas per ReplicaSet.
+# HELP kube_replicaset_status_replicas [STABLE] The number of replicas per ReplicaSet.
+# HELP kube_resourcequota [STABLE] Information about resource quota.
+# HELP kube_resourcequota_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_resourcequota_created [STABLE] Unix creation timestamp
+# HELP kube_resourcequota_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_secret_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_secret_created [STABLE] Unix creation timestamp
+# HELP kube_secret_info [STABLE] Information about secret.
+# HELP kube_secret_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_secret_metadata_resource_version Resource version representing a specific version of secret.
+# HELP kube_secret_owner Information about the Secret's owner.
+# HELP kube_secret_type [STABLE] Type about secret.
+# HELP kube_service_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_service_created [STABLE] Unix creation timestamp
+# HELP kube_service_info [STABLE] Information about service.
+# HELP kube_service_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_service_spec_external_ip [STABLE] Service external ips. One series for each ip
+# HELP kube_service_spec_type [STABLE] Type about service.
+# HELP kube_service_status_load_balancer_ingress [STABLE] Service load balancer ingress status
+# HELP kube_statefulset_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_statefulset_created [STABLE] Unix creation timestamp
+# HELP kube_statefulset_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_statefulset_metadata_generation [STABLE] Sequence number representing a specific generation of the desired state for the StatefulSet.
+# HELP kube_statefulset_ordinals_start Start ordinal of the StatefulSet.
+# HELP kube_statefulset_persistentvolumeclaim_retention_policy Count of retention policy for StatefulSet template PVCs
+# HELP kube_statefulset_replicas [STABLE] Number of desired pods for a StatefulSet.
+# HELP kube_statefulset_status_current_revision [STABLE] Indicates the version of the StatefulSet used to generate Pods in the sequence [0,currentReplicas).
+# HELP kube_statefulset_status_observed_generation [STABLE] The generation observed by the StatefulSet controller.
+# HELP kube_statefulset_status_replicas [STABLE] The number of replicas per StatefulSet.
+# HELP kube_statefulset_status_replicas_available The number of available replicas per StatefulSet.
+# HELP kube_statefulset_status_replicas_current [STABLE] The number of current replicas per StatefulSet.
+# HELP kube_statefulset_status_replicas_ready [STABLE] The number of ready replicas per StatefulSet.
+# HELP kube_statefulset_status_replicas_updated [STABLE] The number of updated replicas per StatefulSet.
+# HELP kube_statefulset_status_update_revision [STABLE] Indicates the version of the StatefulSet used to generate Pods in the sequence [replicas-updatedReplicas,replicas)
+# HELP kube_storageclass_annotations Kubernetes annotations converted to Prometheus labels.
+# HELP kube_storageclass_created [STABLE] Unix creation timestamp
+# HELP kube_storageclass_info [STABLE] Information about storageclass.
+# HELP kube_storageclass_labels [STABLE] Kubernetes labels converted to Prometheus labels.
+# HELP kube_volumeattachment_created Unix creation timestamp
+# HELP kube_volumeattachment_info Information about volumeattachment.
+# HELP kube_volumeattachment_labels Kubernetes labels converted to Prometheus labels.
+# HELP kube_volumeattachment_spec_source_persistentvolume PersistentVolume source reference.
+# HELP kube_volumeattachment_status_attached Information about volumeattachment.
+# HELP kube_volumeattachment_status_attachment_metadata volumeattachment metadata.
+# TYPE kube_configmap_annotations gauge
+# TYPE kube_configmap_created gauge
+# TYPE kube_configmap_info gauge
+# TYPE kube_configmap_labels gauge
+# TYPE kube_configmap_metadata_resource_version gauge
+# TYPE kube_cronjob_annotations gauge
+# TYPE kube_cronjob_created gauge
+# TYPE kube_cronjob_info gauge
+# TYPE kube_cronjob_labels gauge
+# TYPE kube_cronjob_metadata_resource_version gauge
+# TYPE kube_cronjob_next_schedule_time gauge
+# TYPE kube_cronjob_spec_failed_job_history_limit gauge
+# TYPE kube_cronjob_spec_starting_deadline_seconds gauge
+# TYPE kube_cronjob_spec_successful_job_history_limit gauge
+# TYPE kube_cronjob_spec_suspend gauge
+# TYPE kube_cronjob_status_active gauge
+# TYPE kube_cronjob_status_last_schedule_time gauge
+# TYPE kube_cronjob_status_last_successful_time gauge
+# TYPE kube_daemonset_annotations gauge
+# TYPE kube_daemonset_created gauge
+# TYPE kube_daemonset_labels gauge
+# TYPE kube_daemonset_metadata_generation gauge
+# TYPE kube_daemonset_status_current_number_scheduled gauge
+# TYPE kube_daemonset_status_desired_number_scheduled gauge
+# TYPE kube_daemonset_status_number_available gauge
+# TYPE kube_daemonset_status_number_misscheduled gauge
+# TYPE kube_daemonset_status_number_ready gauge
+# TYPE kube_daemonset_status_number_unavailable gauge
+# TYPE kube_daemonset_status_observed_generation gauge
+# TYPE kube_daemonset_status_updated_number_scheduled gauge
+# TYPE kube_deployment_annotations gauge
+# TYPE kube_deployment_created gauge
+# TYPE kube_deployment_labels gauge
+# TYPE kube_deployment_metadata_generation gauge
+# TYPE kube_deployment_spec_paused gauge
+# TYPE kube_deployment_spec_replicas gauge
+# TYPE kube_deployment_spec_strategy_rollingupdate_max_surge gauge
+# TYPE kube_deployment_spec_strategy_rollingupdate_max_unavailable gauge
+# TYPE kube_deployment_status_condition gauge
+# TYPE kube_deployment_status_observed_generation gauge
+# TYPE kube_deployment_status_replicas gauge
+# TYPE kube_deployment_status_replicas_available gauge
+# TYPE kube_deployment_status_replicas_ready gauge
+# TYPE kube_deployment_status_replicas_unavailable gauge
+# TYPE kube_deployment_status_replicas_updated gauge
+# TYPE kube_endpoint_address gauge
+# TYPE kube_endpoint_annotations gauge
+# TYPE kube_endpoint_created gauge
+# TYPE kube_endpoint_info gauge
+# TYPE kube_endpoint_labels gauge
+# TYPE kube_endpoint_ports gauge
+# TYPE kube_horizontalpodautoscaler_annotations gauge
+# TYPE kube_horizontalpodautoscaler_info gauge
+# TYPE kube_horizontalpodautoscaler_labels gauge
+# TYPE kube_horizontalpodautoscaler_metadata_generation gauge
+# TYPE kube_horizontalpodautoscaler_spec_max_replicas gauge
+# TYPE kube_horizontalpodautoscaler_spec_min_replicas gauge
+# TYPE kube_horizontalpodautoscaler_spec_target_metric gauge
+# TYPE kube_horizontalpodautoscaler_status_condition gauge
+# TYPE kube_horizontalpodautoscaler_status_current_replicas gauge
+# TYPE kube_horizontalpodautoscaler_status_desired_replicas gauge
+# TYPE kube_horizontalpodautoscaler_status_target_metric gauge
+# TYPE kube_ingress_annotations gauge
+# TYPE kube_ingress_created gauge
+# TYPE kube_ingress_info gauge
+# TYPE kube_ingress_labels gauge
+# TYPE kube_ingress_metadata_resource_version gauge
+# TYPE kube_ingress_path gauge
+# TYPE kube_ingress_tls gauge
+# TYPE kube_job_annotations gauge
+# TYPE kube_job_complete gauge
+# TYPE kube_job_created gauge
+# TYPE kube_job_failed gauge
+# TYPE kube_job_info gauge
+# TYPE kube_job_labels gauge
+# TYPE kube_job_owner gauge
+# TYPE kube_job_spec_active_deadline_seconds gauge
+# TYPE kube_job_spec_completions gauge
+# TYPE kube_job_spec_parallelism gauge
+# TYPE kube_job_status_active gauge
+# TYPE kube_job_status_completion_time gauge
+# TYPE kube_job_status_failed gauge
+# TYPE kube_job_status_start_time gauge
+# TYPE kube_job_status_succeeded gauge
+# TYPE kube_job_status_suspended gauge
+# TYPE kube_lease_owner gauge
+# TYPE kube_lease_renew_time gauge
+# TYPE kube_mutatingwebhookconfiguration_created gauge
+# TYPE kube_mutatingwebhookconfiguration_info gauge
+# TYPE kube_mutatingwebhookconfiguration_metadata_resource_version gauge
+# TYPE kube_mutatingwebhookconfiguration_webhook_clientconfig_service gauge
+# TYPE kube_namespace_annotations gauge
+# TYPE kube_namespace_created gauge
+# TYPE kube_namespace_labels gauge
+# TYPE kube_namespace_status_condition gauge
+# TYPE kube_namespace_status_phase gauge
+# TYPE kube_networkpolicy_annotations gauge
+# TYPE kube_networkpolicy_created gauge
+# TYPE kube_networkpolicy_labels gauge
+# TYPE kube_networkpolicy_spec_egress_rules gauge
+# TYPE kube_networkpolicy_spec_ingress_rules gauge
+# TYPE kube_node_annotations gauge
+# TYPE kube_node_created gauge
+# TYPE kube_node_deletion_timestamp gauge
+# TYPE kube_node_info gauge
+# TYPE kube_node_labels gauge
+# TYPE kube_node_role gauge
+# TYPE kube_node_spec_taint gauge
+# TYPE kube_node_spec_unschedulable gauge
+# TYPE kube_node_status_addresses gauge
+# TYPE kube_node_status_allocatable gauge
+# TYPE kube_node_status_capacity gauge
+# TYPE kube_node_status_condition gauge
+# TYPE kube_persistentvolume_annotations gauge
+# TYPE kube_persistentvolume_capacity_bytes gauge
+# TYPE kube_persistentvolume_claim_ref gauge
+# TYPE kube_persistentvolume_created gauge
+# TYPE kube_persistentvolume_deletion_timestamp gauge
+# TYPE kube_persistentvolume_info gauge
+# TYPE kube_persistentvolume_labels gauge
+# TYPE kube_persistentvolume_status_phase gauge
+# TYPE kube_persistentvolume_volume_mode gauge
+# TYPE kube_persistentvolumeclaim_access_mode gauge
+# TYPE kube_persistentvolumeclaim_annotations gauge
+# TYPE kube_persistentvolumeclaim_created gauge
+# TYPE kube_persistentvolumeclaim_deletion_timestamp gauge
+# TYPE kube_persistentvolumeclaim_info gauge
+# TYPE kube_persistentvolumeclaim_labels gauge
+# TYPE kube_persistentvolumeclaim_resource_requests_storage_bytes gauge
+# TYPE kube_persistentvolumeclaim_status_condition gauge
+# TYPE kube_persistentvolumeclaim_status_phase gauge
+# TYPE kube_pod_annotations gauge
+# TYPE kube_pod_completion_time gauge
+# TYPE kube_pod_container_info gauge
+# TYPE kube_pod_container_resource_limits gauge
+# TYPE kube_pod_container_resource_requests gauge
+# TYPE kube_pod_container_state_started gauge
+# TYPE kube_pod_container_status_last_terminated_exitcode gauge
+# TYPE kube_pod_container_status_last_terminated_reason gauge
+# TYPE kube_pod_container_status_last_terminated_timestamp gauge
+# TYPE kube_pod_container_status_ready gauge
+# TYPE kube_pod_container_status_restarts_total counter
+# TYPE kube_pod_container_status_running gauge
+# TYPE kube_pod_container_status_terminated gauge
+# TYPE kube_pod_container_status_terminated_reason gauge
+# TYPE kube_pod_container_status_waiting gauge
+# TYPE kube_pod_container_status_waiting_reason gauge
+# TYPE kube_pod_created gauge
+# TYPE kube_pod_deletion_timestamp gauge
+# TYPE kube_pod_info gauge
+# TYPE kube_pod_init_container_info gauge
+# TYPE kube_pod_init_container_resource_limits gauge
+# TYPE kube_pod_init_container_resource_requests gauge
+# TYPE kube_pod_init_container_status_last_terminated_reason gauge
+# TYPE kube_pod_init_container_status_ready gauge
+# TYPE kube_pod_init_container_status_restarts_total counter
+# TYPE kube_pod_init_container_status_running gauge
+# TYPE kube_pod_init_container_status_terminated gauge
+# TYPE kube_pod_init_container_status_terminated_reason gauge
+# TYPE kube_pod_init_container_status_waiting gauge
+# TYPE kube_pod_init_container_status_waiting_reason gauge
+# TYPE kube_pod_ips gauge
+# TYPE kube_pod_labels gauge
+# TYPE kube_pod_overhead_cpu_cores gauge
+# TYPE kube_pod_overhead_memory_bytes gauge
+# TYPE kube_pod_owner gauge
+# TYPE kube_pod_restart_policy gauge
+# TYPE kube_pod_runtimeclass_name_info gauge
+# TYPE kube_pod_scheduler gauge
+# TYPE kube_pod_service_account gauge
+# TYPE kube_pod_spec_volumes_persistentvolumeclaims_info gauge
+# TYPE kube_pod_spec_volumes_persistentvolumeclaims_readonly gauge
+# TYPE kube_pod_start_time gauge
+# TYPE kube_pod_status_container_ready_time gauge
+# TYPE kube_pod_status_initialized_time gauge
+# TYPE kube_pod_status_phase gauge
+# TYPE kube_pod_status_qos_class gauge
+# TYPE kube_pod_status_ready gauge
+# TYPE kube_pod_status_ready_time gauge
+# TYPE kube_pod_status_reason gauge
+# TYPE kube_pod_status_scheduled gauge
+# TYPE kube_pod_status_scheduled_time gauge
+# TYPE kube_pod_status_unschedulable gauge
+# TYPE kube_pod_tolerations gauge
+# TYPE kube_poddisruptionbudget_annotations gauge
+# TYPE kube_poddisruptionbudget_created gauge
+# TYPE kube_poddisruptionbudget_labels gauge
+# TYPE kube_poddisruptionbudget_status_current_healthy gauge
+# TYPE kube_poddisruptionbudget_status_desired_healthy gauge
+# TYPE kube_poddisruptionbudget_status_expected_pods gauge
+# TYPE kube_poddisruptionbudget_status_observed_generation gauge
+# TYPE kube_poddisruptionbudget_status_pod_disruptions_allowed gauge
+# TYPE kube_replicaset_annotations gauge
+# TYPE kube_replicaset_created gauge
+# TYPE kube_replicaset_labels gauge
+# TYPE kube_replicaset_metadata_generation gauge
+# TYPE kube_replicaset_owner gauge
+# TYPE kube_replicaset_spec_replicas gauge
+# TYPE kube_replicaset_status_fully_labeled_replicas gauge
+# TYPE kube_replicaset_status_observed_generation gauge
+# TYPE kube_replicaset_status_ready_replicas gauge
+# TYPE kube_replicaset_status_replicas gauge
+# TYPE kube_resourcequota gauge
+# TYPE kube_resourcequota_annotations gauge
+# TYPE kube_resourcequota_created gauge
+# TYPE kube_resourcequota_labels gauge
+# TYPE kube_secret_annotations gauge
+# TYPE kube_secret_created gauge
+# TYPE kube_secret_info gauge
+# TYPE kube_secret_labels gauge
+# TYPE kube_secret_metadata_resource_version gauge
+# TYPE kube_secret_owner gauge
+# TYPE kube_secret_type gauge
+# TYPE kube_service_annotations gauge
+# TYPE kube_service_created gauge
+# TYPE kube_service_info gauge
+# TYPE kube_service_labels gauge
+# TYPE kube_service_spec_external_ip gauge
+# TYPE kube_service_spec_type gauge
+# TYPE kube_service_status_load_balancer_ingress gauge
+# TYPE kube_statefulset_annotations gauge
+# TYPE kube_statefulset_created gauge
+# TYPE kube_statefulset_labels gauge
+# TYPE kube_statefulset_metadata_generation gauge
+# TYPE kube_statefulset_ordinals_start gauge
+# TYPE kube_statefulset_persistentvolumeclaim_retention_policy gauge
+# TYPE kube_statefulset_replicas gauge
+# TYPE kube_statefulset_status_current_revision gauge
+# TYPE kube_statefulset_status_observed_generation gauge
+# TYPE kube_statefulset_status_replicas gauge
+# TYPE kube_statefulset_status_replicas_available gauge
+# TYPE kube_statefulset_status_replicas_current gauge
+# TYPE kube_statefulset_status_replicas_ready gauge
+# TYPE kube_statefulset_status_replicas_updated gauge
+# TYPE kube_statefulset_status_update_revision gauge
+# TYPE kube_storageclass_annotations gauge
+# TYPE kube_storageclass_created gauge
+# TYPE kube_storageclass_info gauge
+# TYPE kube_storageclass_labels gauge
+# TYPE kube_volumeattachment_created gauge
+# TYPE kube_volumeattachment_info gauge
+# TYPE kube_volumeattachment_labels gauge
+# TYPE kube_volumeattachment_spec_source_persistentvolume gauge
+# TYPE kube_volumeattachment_status_attached gauge
+# TYPE kube_volumeattachment_status_attachment_metadata gauge

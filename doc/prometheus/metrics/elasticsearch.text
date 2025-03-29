@@ -1,0 +1,352 @@
+# HELP elasticsearch_breakers_estimated_size_bytes Estimated size in bytes of breaker
+# HELP elasticsearch_breakers_limit_size_bytes Limit size in bytes for breaker
+# HELP elasticsearch_breakers_overhead Overhead of circuit breakers
+# HELP elasticsearch_breakers_tripped tripped for breaker
+# HELP elasticsearch_cluster_health_active_primary_shards The number of primary shards in your cluster. This is an aggregate total across all indices.
+# HELP elasticsearch_cluster_health_active_shards Aggregate total of all shards across all indices, which includes replica shards.
+# HELP elasticsearch_cluster_health_delayed_unassigned_shards Shards delayed to reduce reallocation overhead
+# HELP elasticsearch_cluster_health_initializing_shards Count of shards that are being freshly created.
+# HELP elasticsearch_cluster_health_number_of_data_nodes Number of data nodes in the cluster.
+# HELP elasticsearch_cluster_health_number_of_in_flight_fetch The number of ongoing shard info requests.
+# HELP elasticsearch_cluster_health_number_of_nodes Number of nodes in the cluster.
+# HELP elasticsearch_cluster_health_number_of_pending_tasks Cluster level changes which have not yet been executed
+# HELP elasticsearch_cluster_health_relocating_shards The number of shards that are currently moving from one node to another node.
+# HELP elasticsearch_cluster_health_status Whether all primary and replica shards are allocated.
+# HELP elasticsearch_cluster_health_task_max_waiting_in_queue_millis Tasks max time waiting in queue.
+# HELP elasticsearch_cluster_health_unassigned_shards The number of shards that exist in the cluster state, but cannot be found in the cluster itself.
+# HELP elasticsearch_clusterinfo_last_retrieval_failure_ts Timestamp of the last failed cluster info retrieval
+# HELP elasticsearch_clusterinfo_last_retrieval_success_ts Timestamp of the last successful cluster info retrieval
+# HELP elasticsearch_clusterinfo_up Up metric for the cluster info collector
+# HELP elasticsearch_clusterinfo_version_info Constant metric with ES version information as labels
+# HELP elasticsearch_exporter_build_info A metric with a constant '1' value labeled by version, revision, branch, goversion from which elasticsearch_exporter was built, and the goos and goarch for the build.
+# HELP elasticsearch_filesystem_data_available_bytes Available space on block device in bytes
+# HELP elasticsearch_filesystem_data_free_bytes Free space on block device in bytes
+# HELP elasticsearch_filesystem_data_size_bytes Size of block device in bytes
+# HELP elasticsearch_filesystem_io_stats_device_operations_count Count of disk operations
+# HELP elasticsearch_filesystem_io_stats_device_read_operations_count Count of disk read operations
+# HELP elasticsearch_filesystem_io_stats_device_read_size_kilobytes_sum Total kilobytes read from disk
+# HELP elasticsearch_filesystem_io_stats_device_write_operations_count Count of disk write operations
+# HELP elasticsearch_filesystem_io_stats_device_write_size_kilobytes_sum Total kilobytes written to disk
+# HELP elasticsearch_indexing_pressure_current_all_in_bytes Memory consumed, in bytes, by indexing requests in the coordinating, primary, or replica stage.
+# HELP elasticsearch_indexing_pressure_limit_in_bytes Configured memory limit, in bytes, for the indexing requests
+# HELP elasticsearch_indices_completion_size_in_bytes Completion in bytes
+# HELP elasticsearch_indices_docs Count of documents on this node
+# HELP elasticsearch_indices_docs_deleted Count of deleted documents on this node
+# HELP elasticsearch_indices_fielddata_evictions Evictions from field data
+# HELP elasticsearch_indices_fielddata_memory_size_bytes Field data cache memory usage in bytes
+# HELP elasticsearch_indices_filter_cache_evictions Evictions from filter cache
+# HELP elasticsearch_indices_filter_cache_memory_size_bytes Filter cache memory usage in bytes
+# HELP elasticsearch_indices_flush_time_seconds Cumulative flush time in seconds
+# HELP elasticsearch_indices_flush_total Total flushes
+# HELP elasticsearch_indices_get_exists_time_seconds Total time get exists in seconds
+# HELP elasticsearch_indices_get_exists_total Total get exists operations
+# HELP elasticsearch_indices_get_missing_time_seconds Total time of get missing in seconds
+# HELP elasticsearch_indices_get_missing_total Total get missing
+# HELP elasticsearch_indices_get_time_seconds Total get time in seconds
+# HELP elasticsearch_indices_get_total Total get
+# HELP elasticsearch_indices_indexing_delete_time_seconds_total Total time indexing delete in seconds
+# HELP elasticsearch_indices_indexing_delete_total Total indexing deletes
+# HELP elasticsearch_indices_indexing_index_time_seconds_total Cumulative index time in seconds
+# HELP elasticsearch_indices_indexing_index_total Total index calls
+# HELP elasticsearch_indices_indexing_is_throttled Indexing throttling
+# HELP elasticsearch_indices_indexing_throttle_time_seconds_total Cumulative indexing throttling time
+# HELP elasticsearch_indices_merges_current Current merges
+# HELP elasticsearch_indices_merges_current_size_in_bytes Size of a current merges in bytes
+# HELP elasticsearch_indices_merges_docs_total Cumulative docs merged
+# HELP elasticsearch_indices_merges_total Total merges
+# HELP elasticsearch_indices_merges_total_size_bytes_total Total merge size in bytes
+# HELP elasticsearch_indices_merges_total_throttled_time_seconds_total Total throttled time of merges in seconds
+# HELP elasticsearch_indices_merges_total_time_seconds_total Total time spent merging in seconds
+# HELP elasticsearch_indices_query_cache_cache_size Query cache cache size
+# HELP elasticsearch_indices_query_cache_cache_total Query cache cache count
+# HELP elasticsearch_indices_query_cache_count Query cache count
+# HELP elasticsearch_indices_query_cache_evictions Evictions from query cache
+# HELP elasticsearch_indices_query_cache_memory_size_bytes Query cache memory usage in bytes
+# HELP elasticsearch_indices_query_cache_total Query cache total count
+# HELP elasticsearch_indices_query_miss_count Query miss count
+# HELP elasticsearch_indices_refresh_time_seconds_total Total time spent refreshing in seconds
+# HELP elasticsearch_indices_refresh_total Total refreshes
+# HELP elasticsearch_indices_request_cache_count Request cache count
+# HELP elasticsearch_indices_request_cache_evictions Evictions from request cache
+# HELP elasticsearch_indices_request_cache_memory_size_bytes Request cache memory usage in bytes
+# HELP elasticsearch_indices_request_miss_count Request miss count
+# HELP elasticsearch_indices_search_fetch_time_seconds Total search fetch time in seconds
+# HELP elasticsearch_indices_search_fetch_total Total number of fetches
+# HELP elasticsearch_indices_search_query_time_seconds Total search query time in seconds
+# HELP elasticsearch_indices_search_query_total Total number of queries
+# HELP elasticsearch_indices_search_scroll_time_seconds Total scroll time in seconds
+# HELP elasticsearch_indices_search_scroll_total Total number of scrolls
+# HELP elasticsearch_indices_search_suggest_time_seconds Total suggest time in seconds
+# HELP elasticsearch_indices_search_suggest_total Total number of suggests
+# HELP elasticsearch_indices_segments_count Count of index segments on this node
+# HELP elasticsearch_indices_segments_doc_values_memory_in_bytes Count of doc values memory
+# HELP elasticsearch_indices_segments_fixed_bit_set_memory_in_bytes Count of fixed bit set
+# HELP elasticsearch_indices_segments_index_writer_memory_in_bytes Count of memory for index writer on this node
+# HELP elasticsearch_indices_segments_memory_bytes Current memory size of segments in bytes
+# HELP elasticsearch_indices_segments_norms_memory_in_bytes Count of memory used by norms
+# HELP elasticsearch_indices_segments_points_memory_in_bytes Point values memory usage in bytes
+# HELP elasticsearch_indices_segments_stored_fields_memory_in_bytes Count of stored fields memory
+# HELP elasticsearch_indices_segments_term_vectors_memory_in_bytes Term vectors memory usage in bytes
+# HELP elasticsearch_indices_segments_terms_memory_in_bytes Count of terms in memory for this node
+# HELP elasticsearch_indices_segments_version_map_memory_in_bytes Version map memory usage in bytes
+# HELP elasticsearch_indices_store_size_bytes Current size of stored index data in bytes
+# HELP elasticsearch_indices_store_throttle_time_seconds_total Throttle time for index store in seconds
+# HELP elasticsearch_indices_translog_operations Total translog operations
+# HELP elasticsearch_indices_translog_size_in_bytes Total translog size in bytes
+# HELP elasticsearch_indices_warmer_time_seconds_total Total warmer time in seconds
+# HELP elasticsearch_indices_warmer_total Total warmer count
+# HELP elasticsearch_jvm_buffer_pool_used_bytes JVM buffer currently used
+# HELP elasticsearch_jvm_gc_collection_seconds_count Count of JVM GC runs
+# HELP elasticsearch_jvm_gc_collection_seconds_sum GC run time in seconds
+# HELP elasticsearch_jvm_memory_committed_bytes JVM memory currently committed by area
+# HELP elasticsearch_jvm_memory_max_bytes JVM memory max
+# HELP elasticsearch_jvm_memory_pool_max_bytes JVM memory max by pool
+# HELP elasticsearch_jvm_memory_pool_peak_max_bytes JVM memory peak max by pool
+# HELP elasticsearch_jvm_memory_pool_peak_used_bytes JVM memory peak used by pool
+# HELP elasticsearch_jvm_memory_pool_used_bytes JVM memory currently used by pool
+# HELP elasticsearch_jvm_memory_used_bytes JVM memory currently used by area
+# HELP elasticsearch_jvm_uptime_seconds JVM process uptime in seconds
+# HELP elasticsearch_node_stats_json_parse_failures Number of errors while parsing JSON.
+# HELP elasticsearch_node_stats_total_scrapes Current total Elasticsearch node scrapes.
+# HELP elasticsearch_node_stats_up Was the last scrape of the Elasticsearch nodes endpoint successful.
+# HELP elasticsearch_nodes_roles Node roles
+# HELP elasticsearch_os_cpu_percent Percent CPU used by OS
+# HELP elasticsearch_os_load1 Shortterm load average
+# HELP elasticsearch_os_load15 Longterm load average
+# HELP elasticsearch_os_load5 Midterm load average
+# HELP elasticsearch_os_mem_actual_free_bytes Amount of free physical memory in bytes
+# HELP elasticsearch_os_mem_actual_used_bytes Amount of used physical memory in bytes
+# HELP elasticsearch_os_mem_free_bytes Amount of free physical memory in bytes
+# HELP elasticsearch_os_mem_used_bytes Amount of used physical memory in bytes
+# HELP elasticsearch_process_cpu_percent Percent CPU used by process
+# HELP elasticsearch_process_cpu_seconds_total Process CPU time in seconds
+# HELP elasticsearch_process_max_files_descriptors Max file descriptors
+# HELP elasticsearch_process_mem_resident_size_bytes Resident memory in use by process in bytes
+# HELP elasticsearch_process_mem_share_size_bytes Shared memory in use by process in bytes
+# HELP elasticsearch_process_mem_virtual_size_bytes Total virtual memory used in bytes
+# HELP elasticsearch_process_open_files_count Open file descriptors
+# HELP elasticsearch_scrape_duration_seconds elasticsearch_exporter: Duration of a collector scrape.
+# HELP elasticsearch_scrape_success elasticsearch_exporter: Whether a collector succeeded.
+# HELP elasticsearch_thread_pool_active_count Thread Pool threads active
+# HELP elasticsearch_thread_pool_completed_count Thread Pool operations completed
+# HELP elasticsearch_thread_pool_largest_count Thread Pool largest threads count
+# HELP elasticsearch_thread_pool_queue_count Thread Pool operations queued
+# HELP elasticsearch_thread_pool_rejected_count Thread Pool operations rejected
+# HELP elasticsearch_thread_pool_threads_count Thread Pool current threads count
+# HELP elasticsearch_transport_rx_packets_total Count of packets received
+# HELP elasticsearch_transport_rx_size_bytes_total Total number of bytes received
+# HELP elasticsearch_transport_tx_packets_total Count of packets sent
+# HELP elasticsearch_transport_tx_size_bytes_total Total number of bytes sent
+# HELP elasticsearch_version Elasticsearch version information.
+# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+# HELP go_goroutines Number of goroutines that currently exist.
+# HELP go_info Information about the Go environment.
+# HELP go_memstats_alloc_bytes Number of bytes allocated and still in use.
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated, even if freed.
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table.
+# HELP go_memstats_frees_total Total number of frees.
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata.
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and still in use.
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used.
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use.
+# HELP go_memstats_heap_objects Number of allocated objects.
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS.
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system.
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# HELP go_memstats_lookups_total Total number of pointer lookups.
+# HELP go_memstats_mallocs_total Total number of mallocs.
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures.
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system.
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures.
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system.
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place.
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations.
+# HELP go_memstats_stack_inuse_bytes Number of bytes in use by the stack allocator.
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator.
+# HELP go_memstats_sys_bytes Number of bytes obtained from system.
+# HELP go_threads Number of OS threads created.
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# HELP process_max_fds Maximum number of open file descriptors.
+# HELP process_open_fds Number of open file descriptors.
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# HELP promhttp_metric_handler_requests_in_flight Current number of scrapes being served.
+# HELP promhttp_metric_handler_requests_total Total number of scrapes by HTTP status code.
+# TYPE elasticsearch_breakers_estimated_size_bytes gauge
+# TYPE elasticsearch_breakers_limit_size_bytes gauge
+# TYPE elasticsearch_breakers_overhead counter
+# TYPE elasticsearch_breakers_tripped counter
+# TYPE elasticsearch_cluster_health_active_primary_shards gauge
+# TYPE elasticsearch_cluster_health_active_shards gauge
+# TYPE elasticsearch_cluster_health_delayed_unassigned_shards gauge
+# TYPE elasticsearch_cluster_health_initializing_shards gauge
+# TYPE elasticsearch_cluster_health_number_of_data_nodes gauge
+# TYPE elasticsearch_cluster_health_number_of_in_flight_fetch gauge
+# TYPE elasticsearch_cluster_health_number_of_nodes gauge
+# TYPE elasticsearch_cluster_health_number_of_pending_tasks gauge
+# TYPE elasticsearch_cluster_health_relocating_shards gauge
+# TYPE elasticsearch_cluster_health_status gauge
+# TYPE elasticsearch_cluster_health_task_max_waiting_in_queue_millis gauge
+# TYPE elasticsearch_cluster_health_unassigned_shards gauge
+# TYPE elasticsearch_clusterinfo_last_retrieval_failure_ts gauge
+# TYPE elasticsearch_clusterinfo_last_retrieval_success_ts gauge
+# TYPE elasticsearch_clusterinfo_up gauge
+# TYPE elasticsearch_clusterinfo_version_info gauge
+# TYPE elasticsearch_exporter_build_info gauge
+# TYPE elasticsearch_filesystem_data_available_bytes gauge
+# TYPE elasticsearch_filesystem_data_free_bytes gauge
+# TYPE elasticsearch_filesystem_data_size_bytes gauge
+# TYPE elasticsearch_filesystem_io_stats_device_operations_count counter
+# TYPE elasticsearch_filesystem_io_stats_device_read_operations_count counter
+# TYPE elasticsearch_filesystem_io_stats_device_read_size_kilobytes_sum counter
+# TYPE elasticsearch_filesystem_io_stats_device_write_operations_count counter
+# TYPE elasticsearch_filesystem_io_stats_device_write_size_kilobytes_sum counter
+# TYPE elasticsearch_indexing_pressure_current_all_in_bytes gauge
+# TYPE elasticsearch_indexing_pressure_limit_in_bytes gauge
+# TYPE elasticsearch_indices_completion_size_in_bytes counter
+# TYPE elasticsearch_indices_docs gauge
+# TYPE elasticsearch_indices_docs_deleted gauge
+# TYPE elasticsearch_indices_fielddata_evictions counter
+# TYPE elasticsearch_indices_fielddata_memory_size_bytes gauge
+# TYPE elasticsearch_indices_filter_cache_evictions counter
+# TYPE elasticsearch_indices_filter_cache_memory_size_bytes gauge
+# TYPE elasticsearch_indices_flush_time_seconds counter
+# TYPE elasticsearch_indices_flush_total counter
+# TYPE elasticsearch_indices_get_exists_time_seconds counter
+# TYPE elasticsearch_indices_get_exists_total counter
+# TYPE elasticsearch_indices_get_missing_time_seconds counter
+# TYPE elasticsearch_indices_get_missing_total counter
+# TYPE elasticsearch_indices_get_time_seconds counter
+# TYPE elasticsearch_indices_get_total counter
+# TYPE elasticsearch_indices_indexing_delete_time_seconds_total counter
+# TYPE elasticsearch_indices_indexing_delete_total counter
+# TYPE elasticsearch_indices_indexing_index_time_seconds_total counter
+# TYPE elasticsearch_indices_indexing_index_total counter
+# TYPE elasticsearch_indices_indexing_is_throttled gauge
+# TYPE elasticsearch_indices_indexing_throttle_time_seconds_total counter
+# TYPE elasticsearch_indices_merges_current gauge
+# TYPE elasticsearch_indices_merges_current_size_in_bytes gauge
+# TYPE elasticsearch_indices_merges_docs_total counter
+# TYPE elasticsearch_indices_merges_total counter
+# TYPE elasticsearch_indices_merges_total_size_bytes_total counter
+# TYPE elasticsearch_indices_merges_total_throttled_time_seconds_total counter
+# TYPE elasticsearch_indices_merges_total_time_seconds_total counter
+# TYPE elasticsearch_indices_query_cache_cache_size gauge
+# TYPE elasticsearch_indices_query_cache_cache_total counter
+# TYPE elasticsearch_indices_query_cache_count counter
+# TYPE elasticsearch_indices_query_cache_evictions counter
+# TYPE elasticsearch_indices_query_cache_memory_size_bytes gauge
+# TYPE elasticsearch_indices_query_cache_total counter
+# TYPE elasticsearch_indices_query_miss_count counter
+# TYPE elasticsearch_indices_refresh_time_seconds_total counter
+# TYPE elasticsearch_indices_refresh_total counter
+# TYPE elasticsearch_indices_request_cache_count counter
+# TYPE elasticsearch_indices_request_cache_evictions counter
+# TYPE elasticsearch_indices_request_cache_memory_size_bytes gauge
+# TYPE elasticsearch_indices_request_miss_count counter
+# TYPE elasticsearch_indices_search_fetch_time_seconds counter
+# TYPE elasticsearch_indices_search_fetch_total counter
+# TYPE elasticsearch_indices_search_query_time_seconds counter
+# TYPE elasticsearch_indices_search_query_total counter
+# TYPE elasticsearch_indices_search_scroll_time_seconds counter
+# TYPE elasticsearch_indices_search_scroll_total counter
+# TYPE elasticsearch_indices_search_suggest_time_seconds counter
+# TYPE elasticsearch_indices_search_suggest_total counter
+# TYPE elasticsearch_indices_segments_count gauge
+# TYPE elasticsearch_indices_segments_doc_values_memory_in_bytes gauge
+# TYPE elasticsearch_indices_segments_fixed_bit_set_memory_in_bytes gauge
+# TYPE elasticsearch_indices_segments_index_writer_memory_in_bytes gauge
+# TYPE elasticsearch_indices_segments_memory_bytes gauge
+# TYPE elasticsearch_indices_segments_norms_memory_in_bytes gauge
+# TYPE elasticsearch_indices_segments_points_memory_in_bytes gauge
+# TYPE elasticsearch_indices_segments_stored_fields_memory_in_bytes gauge
+# TYPE elasticsearch_indices_segments_term_vectors_memory_in_bytes gauge
+# TYPE elasticsearch_indices_segments_terms_memory_in_bytes gauge
+# TYPE elasticsearch_indices_segments_version_map_memory_in_bytes gauge
+# TYPE elasticsearch_indices_store_size_bytes gauge
+# TYPE elasticsearch_indices_store_throttle_time_seconds_total counter
+# TYPE elasticsearch_indices_translog_operations counter
+# TYPE elasticsearch_indices_translog_size_in_bytes gauge
+# TYPE elasticsearch_indices_warmer_time_seconds_total counter
+# TYPE elasticsearch_indices_warmer_total counter
+# TYPE elasticsearch_jvm_buffer_pool_used_bytes gauge
+# TYPE elasticsearch_jvm_gc_collection_seconds_count counter
+# TYPE elasticsearch_jvm_gc_collection_seconds_sum counter
+# TYPE elasticsearch_jvm_memory_committed_bytes gauge
+# TYPE elasticsearch_jvm_memory_max_bytes gauge
+# TYPE elasticsearch_jvm_memory_pool_max_bytes counter
+# TYPE elasticsearch_jvm_memory_pool_peak_max_bytes counter
+# TYPE elasticsearch_jvm_memory_pool_peak_used_bytes counter
+# TYPE elasticsearch_jvm_memory_pool_used_bytes gauge
+# TYPE elasticsearch_jvm_memory_used_bytes gauge
+# TYPE elasticsearch_jvm_uptime_seconds gauge
+# TYPE elasticsearch_node_stats_json_parse_failures counter
+# TYPE elasticsearch_node_stats_total_scrapes counter
+# TYPE elasticsearch_node_stats_up gauge
+# TYPE elasticsearch_nodes_roles gauge
+# TYPE elasticsearch_os_cpu_percent gauge
+# TYPE elasticsearch_os_load1 gauge
+# TYPE elasticsearch_os_load15 gauge
+# TYPE elasticsearch_os_load5 gauge
+# TYPE elasticsearch_os_mem_actual_free_bytes gauge
+# TYPE elasticsearch_os_mem_actual_used_bytes gauge
+# TYPE elasticsearch_os_mem_free_bytes gauge
+# TYPE elasticsearch_os_mem_used_bytes gauge
+# TYPE elasticsearch_process_cpu_percent gauge
+# TYPE elasticsearch_process_cpu_seconds_total counter
+# TYPE elasticsearch_process_max_files_descriptors gauge
+# TYPE elasticsearch_process_mem_resident_size_bytes gauge
+# TYPE elasticsearch_process_mem_share_size_bytes gauge
+# TYPE elasticsearch_process_mem_virtual_size_bytes gauge
+# TYPE elasticsearch_process_open_files_count gauge
+# TYPE elasticsearch_scrape_duration_seconds gauge
+# TYPE elasticsearch_scrape_success gauge
+# TYPE elasticsearch_thread_pool_active_count gauge
+# TYPE elasticsearch_thread_pool_completed_count counter
+# TYPE elasticsearch_thread_pool_largest_count gauge
+# TYPE elasticsearch_thread_pool_queue_count gauge
+# TYPE elasticsearch_thread_pool_rejected_count counter
+# TYPE elasticsearch_thread_pool_threads_count gauge
+# TYPE elasticsearch_transport_rx_packets_total counter
+# TYPE elasticsearch_transport_rx_size_bytes_total counter
+# TYPE elasticsearch_transport_tx_packets_total counter
+# TYPE elasticsearch_transport_tx_size_bytes_total counter
+# TYPE elasticsearch_version gauge
+# TYPE go_gc_duration_seconds summary
+# TYPE go_goroutines gauge
+# TYPE go_info gauge
+# TYPE go_memstats_alloc_bytes gauge
+# TYPE go_memstats_alloc_bytes_total counter
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+# TYPE go_memstats_frees_total counter
+# TYPE go_memstats_gc_sys_bytes gauge
+# TYPE go_memstats_heap_alloc_bytes gauge
+# TYPE go_memstats_heap_idle_bytes gauge
+# TYPE go_memstats_heap_inuse_bytes gauge
+# TYPE go_memstats_heap_objects gauge
+# TYPE go_memstats_heap_released_bytes gauge
+# TYPE go_memstats_heap_sys_bytes gauge
+# TYPE go_memstats_last_gc_time_seconds gauge
+# TYPE go_memstats_lookups_total counter
+# TYPE go_memstats_mallocs_total counter
+# TYPE go_memstats_mcache_inuse_bytes gauge
+# TYPE go_memstats_mcache_sys_bytes gauge
+# TYPE go_memstats_mspan_inuse_bytes gauge
+# TYPE go_memstats_mspan_sys_bytes gauge
+# TYPE go_memstats_next_gc_bytes gauge
+# TYPE go_memstats_other_sys_bytes gauge
+# TYPE go_memstats_stack_inuse_bytes gauge
+# TYPE go_memstats_stack_sys_bytes gauge
+# TYPE go_memstats_sys_bytes gauge
+# TYPE go_threads gauge
+# TYPE process_cpu_seconds_total counter
+# TYPE process_max_fds gauge
+# TYPE process_open_fds gauge
+# TYPE process_resident_memory_bytes gauge
+# TYPE process_start_time_seconds gauge
+# TYPE process_virtual_memory_bytes gauge
+# TYPE process_virtual_memory_max_bytes gauge
+# TYPE promhttp_metric_handler_requests_in_flight gauge
+# TYPE promhttp_metric_handler_requests_total counter

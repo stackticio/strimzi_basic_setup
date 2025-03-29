@@ -1,0 +1,789 @@
+default_context:
+  project_slug: "stacktic"
+  component:
+    group: "stacktic"
+    type: "stacktic"
+    name: "stacktic"
+    attributes:
+      namespace: "stacktic"
+      version: "0.0.1-SNAPSHOT"
+    links_to: {}
+    links_from: {}
+    parent: null
+  links_to: {}
+  links_from: {}
+  sub_components: {}
+  sub_comp_links_to: {}
+  sub_comp_links_from: {}
+  components:
+    jupyterhub:
+      group: "broker"
+      type: "jupyterhub"
+      name: "jupyterhub"
+      attributes:
+        password: "default_password"
+        namespace: "jupyterhub"
+        username: "default_username"
+        version: "1.0.0"
+      links_to:
+        topic-bucket:
+          group: "broker-kafka"
+          type: "jupyterhub-topic"
+          attributes: {}
+          component:
+            group: "kafka"
+            type: "topic"
+            name: "topic-bucket"
+            attributes:
+              kafka_partition_size: "1"
+              kafka_replication_factor: "2"
+              errors_handling: false
+            links_to: {}
+            links_from: {}
+            parent:
+              group: "kafka"
+              type: "kafka"
+              name: "kafka"
+              attributes:
+                namespace: "strimzi"
+                replicas: "2"
+                version: "3.7.1"
+                bridge: true
+                mtls: false
+              links_to: {}
+              links_from: {}
+              parent: null
+          from_component: null
+      links_from: {}
+      parent: null
+      sub_components: {}
+    postgresql:
+      group: "rel_db"
+      type: "postgresql"
+      name: "postgresql"
+      attributes:
+        admin_password: "default_password"
+        network_policy: false
+        overlay: "cluster-2"
+        namespace: "postgresql"
+        port: "5432"
+        rbac: true
+        chart_version_postgresql: "15.4.0"
+      links_to: {}
+      links_from: {}
+      parent: null
+      sub_components:
+        database:
+          group: "rel_db"
+          type: "database"
+          name: "database"
+          attributes:
+            database: "db1"
+            password: "pass_default1"
+            username: "user"
+          links_to: {}
+          links_from:
+            topic-psql:
+              group: "kafka-rel_db"
+              type: "topic-database"
+              attributes:
+                sink_query: "INSERT INTO my_table(kafka_key, kafka_value)"
+              component:
+                group: "kafka"
+                type: "topic"
+                name: "topic-psql"
+                attributes:
+                  kafka_partition_size: "1"
+                  kafka_replication_factor: "2"
+                  errors_handling: false
+                links_to: {}
+                links_from: {}
+                parent:
+                  group: "kafka"
+                  type: "kafka"
+                  name: "kafka"
+                  attributes:
+                    namespace: "strimzi"
+                    replicas: "2"
+                    version: "3.7.1"
+                    bridge: true
+                    mtls: false
+                  links_to: {}
+                  links_from: {}
+                  parent: null
+              to_component: null
+          parent:
+            group: "rel_db"
+            type: "postgresql"
+            name: "postgresql"
+            attributes:
+              admin_password: "default_password"
+              network_policy: false
+              overlay: "cluster-2"
+              namespace: "postgresql"
+              port: "5432"
+              rbac: true
+              chart_version_postgresql: "15.4.0"
+            links_to: {}
+            links_from: {}
+            parent: null
+    grafana:
+      group: "dataviz"
+      type: "grafana"
+      name: "grafana"
+      attributes:
+        admin_password: "default_password"
+        namespace: "grafana"
+        service_type: "ClusterIP"
+        chart_version_grafana: "11.2.0"
+      links_to:
+        prometheus:
+          group: "dataviz-temporal_db"
+          type: "grafana-prometheus"
+          attributes: {}
+          component:
+            group: "temporal_db"
+            type: "prometheus"
+            name: "prometheus"
+            attributes:
+              push_gateway: true
+              namespace: "prometheus"
+              kube_state_metrics_enabled: true
+              configmap: "opsgenie_api_key=\"api_key'\"\r\nopsgenie_api_url=\"https://api.opsgenie.com/\"\
+                \r\npagerduty_url=\"\""
+              chart_version_prometheus: "10.2.3"
+              smtp_host: "smtp.example.com:587"
+              smtp_user: "user"
+              smtp_password: "pass1_default"
+              slack_api: "slack.api.com"
+              from: "notification@alert.com"
+            links_to: {}
+            links_from: {}
+            parent: null
+          from_component: null
+      links_from: {}
+      parent: null
+      sub_components: {}
+    cert-manager:
+      group: "platform"
+      type: "cert_manager"
+      name: "cert-manager"
+      attributes:
+        email_contact: "somemail@emil.com"
+        issuer: "selfsigned"
+        acme_url: "https://acme-api/directory"
+        namespace: "cert-manager"
+        ca_crt: "-----BEGIN CERTIFICATE--"
+        rbac: true
+        tls_key: "-----BEGIN CERTIFICATE--"
+        tls_crt: "-----BEGIN CERTIFICATE--"
+        chart_version_certmgr: "1.16.2"
+      links_to: {}
+      links_from: {}
+      parent: null
+      sub_components: {}
+    kafka:
+      group: "kafka"
+      type: "kafka"
+      name: "kafka"
+      attributes:
+        namespace: "strimzi"
+        replicas: "2"
+        version: "3.7.1"
+        bridge: true
+        mtls: false
+      links_to: {}
+      links_from:
+        prometheus:
+          group: "temporal_db-kafka"
+          type: "prometheus-kafka"
+          attributes: {}
+          component:
+            group: "temporal_db"
+            type: "prometheus"
+            name: "prometheus"
+            attributes:
+              push_gateway: true
+              namespace: "prometheus"
+              kube_state_metrics_enabled: true
+              configmap: "opsgenie_api_key=\"api_key'\"\r\nopsgenie_api_url=\"https://api.opsgenie.com/\"\
+                \r\npagerduty_url=\"\""
+              chart_version_prometheus: "10.2.3"
+              smtp_host: "smtp.example.com:587"
+              smtp_user: "user"
+              smtp_password: "pass1_default"
+              slack_api: "slack.api.com"
+              from: "notification@alert.com"
+            links_to: {}
+            links_from: {}
+            parent: null
+          to_component: null
+      parent: null
+      sub_components:
+        topic-mongo:
+          group: "kafka"
+          type: "topic"
+          name: "topic-mongo"
+          attributes:
+            kafka_partition_size: "1"
+            kafka_replication_factor: "2"
+            errors_handling: false
+          links_to:
+            mongo-db:
+              group: "kafka-doc_db"
+              type: "topic-mongo_db"
+              attributes: {}
+              component:
+                group: "doc_db"
+                type: "mongo_db"
+                name: "mongo-db"
+                attributes:
+                  collector_name: "collection_name"
+                  database: "mongodb"
+                  password: "password_default1"
+                  username: "mongo"
+                links_to: {}
+                links_from: {}
+                parent:
+                  group: "doc_db"
+                  type: "mongodb"
+                  name: "mongodb"
+                  attributes:
+                    admin_password: "default_password"
+                    network_policy: false
+                    namespace: "mongodb"
+                    port: "27017"
+                    rbac: true
+                    chart_version_mongodb: "15.6.0"
+                  links_to: {}
+                  links_from: {}
+                  parent: null
+              from_component: null
+          links_from: {}
+          parent:
+            group: "kafka"
+            type: "kafka"
+            name: "kafka"
+            attributes:
+              namespace: "strimzi"
+              replicas: "2"
+              version: "3.7.1"
+              bridge: true
+              mtls: false
+            links_to: {}
+            links_from: {}
+            parent: null
+        topic-bucket:
+          group: "kafka"
+          type: "topic"
+          name: "topic-bucket"
+          attributes:
+            kafka_partition_size: "1"
+            kafka_replication_factor: "2"
+            errors_handling: false
+          links_to:
+            data-bucket:
+              group: "kafka-storage"
+              type: "topic-bucket"
+              attributes: {}
+              component:
+                group: "storage"
+                type: "bucket"
+                name: "data-bucket"
+                attributes:
+                  access_key: "min8chars1"
+                  bucket: "kafkabucket"
+                  public: true
+                  secret_key: "min8chars1"
+                links_to: {}
+                links_from: {}
+                parent:
+                  group: "storage"
+                  type: "minio"
+                  name: "minio"
+                  attributes:
+                    access_key: "change_access_key"
+                    network_policy: false
+                    namespace: "minio"
+                    port: "9000"
+                    secret_key: "change_secret_key"
+                    chart_version_minio: "14.6.0"
+                  links_to: {}
+                  links_from: {}
+                  parent: null
+              from_component: null
+          links_from:
+            jupyterhub:
+              group: "broker-kafka"
+              type: "jupyterhub-topic"
+              attributes: {}
+              component:
+                group: "broker"
+                type: "jupyterhub"
+                name: "jupyterhub"
+                attributes:
+                  password: "default_password"
+                  namespace: "jupyterhub"
+                  username: "default_username"
+                  version: "1.0.0"
+                links_to: {}
+                links_from: {}
+                parent: null
+              to_component: null
+          parent:
+            group: "kafka"
+            type: "kafka"
+            name: "kafka"
+            attributes:
+              namespace: "strimzi"
+              replicas: "2"
+              version: "3.7.1"
+              bridge: true
+              mtls: false
+            links_to: {}
+            links_from: {}
+            parent: null
+        bridge:
+          group: "kafka"
+          type: "bridge"
+          name: "bridge"
+          attributes: {}
+          links_to: {}
+          links_from:
+            apisix:
+              group: "gateway-kafka"
+              type: "apisix-bridge"
+              attributes:
+                cors: "false"
+                rate_limiting: "false"
+                subdomain: "bridge"
+                whitelist: "false"
+                proxy_rewrite: "false"
+                headers: "X-Forwarded-Proto: https  X-Forwarded-Port: 443"
+                ip_whitelist: "0.0.0.0/0  127.0.0.0/24"
+              component:
+                group: "gateway"
+                type: "apisix"
+                name: "apisix"
+                attributes:
+                  namespace: "ingress-apisix"
+                  dashboard: true
+                links_to: {}
+                links_from: {}
+                parent: null
+              to_component: null
+          parent:
+            group: "kafka"
+            type: "kafka"
+            name: "kafka"
+            attributes:
+              namespace: "strimzi"
+              replicas: "2"
+              version: "3.7.1"
+              bridge: true
+              mtls: false
+            links_to: {}
+            links_from: {}
+            parent: null
+        topic-psql:
+          group: "kafka"
+          type: "topic"
+          name: "topic-psql"
+          attributes:
+            kafka_partition_size: "1"
+            kafka_replication_factor: "2"
+            errors_handling: false
+          links_to:
+            database:
+              group: "kafka-rel_db"
+              type: "topic-database"
+              attributes:
+                sink_query: "INSERT INTO my_table(kafka_key, kafka_value)"
+              component:
+                group: "rel_db"
+                type: "database"
+                name: "database"
+                attributes:
+                  database: "db1"
+                  password: "pass_default1"
+                  username: "user"
+                links_to: {}
+                links_from: {}
+                parent:
+                  group: "rel_db"
+                  type: "postgresql"
+                  name: "postgresql"
+                  attributes:
+                    admin_password: "default_password"
+                    network_policy: false
+                    overlay: "cluster-2"
+                    namespace: "postgresql"
+                    port: "5432"
+                    rbac: true
+                    chart_version_postgresql: "15.4.0"
+                  links_to: {}
+                  links_from: {}
+                  parent: null
+              from_component: null
+          links_from: {}
+          parent:
+            group: "kafka"
+            type: "kafka"
+            name: "kafka"
+            attributes:
+              namespace: "strimzi"
+              replicas: "2"
+              version: "3.7.1"
+              bridge: true
+              mtls: false
+            links_to: {}
+            links_from: {}
+            parent: null
+    minio:
+      group: "storage"
+      type: "minio"
+      name: "minio"
+      attributes:
+        access_key: "change_access_key"
+        network_policy: false
+        namespace: "minio"
+        port: "9000"
+        secret_key: "change_secret_key"
+        chart_version_minio: "14.6.0"
+      links_to: {}
+      links_from:
+        apisix:
+          group: "gateway-storage"
+          type: "apisix-minio"
+          attributes:
+            cors: false
+            rate_limiting: false
+            subdomain: "minio"
+            whitelist: false
+            proxy_rewrite: "false"
+            headers: "X-Forwarded-Proto: https \r\nX-Forwarded-Port: 443 "
+            ip_whitelist: "0.0.0.0/0 \r\n127.0.0.0/24"
+            cors_headers: "Default Value"
+          component:
+            group: "gateway"
+            type: "apisix"
+            name: "apisix"
+            attributes:
+              namespace: "ingress-apisix"
+              dashboard: true
+            links_to: {}
+            links_from: {}
+            parent: null
+          to_component: null
+      parent: null
+      sub_components:
+        data_bucket:
+          group: "storage"
+          type: "bucket"
+          name: "data-bucket"
+          attributes:
+            access_key: "min8chars1"
+            bucket: "kafkabucket"
+            public: true
+            secret_key: "min8chars1"
+          links_to: {}
+          links_from:
+            topic-bucket:
+              group: "kafka-storage"
+              type: "topic-bucket"
+              attributes: {}
+              component:
+                group: "kafka"
+                type: "topic"
+                name: "topic-bucket"
+                attributes:
+                  kafka_partition_size: "1"
+                  kafka_replication_factor: "2"
+                  errors_handling: false
+                links_to: {}
+                links_from: {}
+                parent:
+                  group: "kafka"
+                  type: "kafka"
+                  name: "kafka"
+                  attributes:
+                    namespace: "strimzi"
+                    replicas: "2"
+                    version: "3.7.1"
+                    bridge: true
+                    mtls: false
+                  links_to: {}
+                  links_from: {}
+                  parent: null
+              to_component: null
+          parent:
+            group: "storage"
+            type: "minio"
+            name: "minio"
+            attributes:
+              access_key: "change_access_key"
+              network_policy: false
+              namespace: "minio"
+              port: "9000"
+              secret_key: "change_secret_key"
+              chart_version_minio: "14.6.0"
+            links_to: {}
+            links_from: {}
+            parent: null
+    apisix:
+      group: "gateway"
+      type: "apisix"
+      name: "apisix"
+      attributes:
+        namespace: "ingress-apisix"
+        dashboard: true
+      links_to:
+        minio:
+          group: "gateway-storage"
+          type: "apisix-minio"
+          attributes:
+            cors: false
+            rate_limiting: false
+            subdomain: "minio"
+            whitelist: false
+            proxy_rewrite: "false"
+            headers: "X-Forwarded-Proto: https \r\nX-Forwarded-Port: 443 "
+            ip_whitelist: "0.0.0.0/0 \r\n127.0.0.0/24"
+            cors_headers: "Default Value"
+          component:
+            group: "storage"
+            type: "minio"
+            name: "minio"
+            attributes:
+              access_key: "change_access_key"
+              network_policy: false
+              namespace: "minio"
+              port: "9000"
+              secret_key: "change_secret_key"
+              chart_version_minio: "14.6.0"
+            links_to: {}
+            links_from: {}
+            parent: null
+          from_component: null
+        bridge:
+          group: "gateway-kafka"
+          type: "apisix-bridge"
+          attributes:
+            cors: "false"
+            rate_limiting: "false"
+            subdomain: "bridge"
+            whitelist: "false"
+            proxy_rewrite: "false"
+            headers: "X-Forwarded-Proto: https  X-Forwarded-Port: 443"
+            ip_whitelist: "0.0.0.0/0  127.0.0.0/24"
+          component:
+            group: "kafka"
+            type: "bridge"
+            name: "bridge"
+            attributes: {}
+            links_to: {}
+            links_from: {}
+            parent:
+              group: "kafka"
+              type: "kafka"
+              name: "kafka"
+              attributes:
+                namespace: "strimzi"
+                replicas: "2"
+                version: "3.7.1"
+                bridge: true
+                mtls: false
+              links_to: {}
+              links_from: {}
+              parent: null
+          from_component: null
+      links_from: {}
+      parent: null
+      sub_components: {}
+    prometheus:
+      group: "temporal_db"
+      type: "prometheus"
+      name: "prometheus"
+      attributes:
+        push_gateway: true
+        namespace: "prometheus"
+        kube_state_metrics_enabled: true
+        configmap: "opsgenie_api_key=\"api_key'\"\r\nopsgenie_api_url=\"https://api.opsgenie.com/\"\
+          \r\npagerduty_url=\"\""
+        chart_version_prometheus: "10.2.3"
+        smtp_host: "smtp.example.com:587"
+        smtp_user: "user"
+        smtp_password: "pass1_default"
+        slack_api: "slack.api.com"
+        from: "notification@alert.com"
+      links_to:
+        mongodb:
+          group: "temporal_db-doc_db"
+          type: "prometheus-mongodb"
+          attributes: {}
+          component:
+            group: "doc_db"
+            type: "mongodb"
+            name: "mongodb"
+            attributes:
+              admin_password: "default_password"
+              network_policy: false
+              namespace: "mongodb"
+              port: "27017"
+              rbac: true
+              chart_version_mongodb: "15.6.0"
+            links_to: {}
+            links_from: {}
+            parent: null
+          from_component: null
+        kafka:
+          group: "temporal_db-kafka"
+          type: "prometheus-kafka"
+          attributes: {}
+          component:
+            group: "kafka"
+            type: "kafka"
+            name: "kafka"
+            attributes:
+              namespace: "strimzi"
+              replicas: "2"
+              version: "3.7.1"
+              bridge: true
+              mtls: false
+            links_to: {}
+            links_from: {}
+            parent: null
+          from_component: null
+      links_from:
+        grafana:
+          group: "dataviz-temporal_db"
+          type: "grafana-prometheus"
+          attributes: {}
+          component:
+            group: "dataviz"
+            type: "grafana"
+            name: "grafana"
+            attributes:
+              admin_password: "default_password"
+              namespace: "grafana"
+              service_type: "ClusterIP"
+              chart_version_grafana: "11.2.0"
+            links_to: {}
+            links_from: {}
+            parent: null
+          to_component: null
+      parent: null
+      sub_components: {}
+    mongodb:
+      group: "doc_db"
+      type: "mongodb"
+      name: "mongodb"
+      attributes:
+        admin_password: "default_password"
+        network_policy: false
+        namespace: "mongodb"
+        port: "27017"
+        rbac: true
+        chart_version_mongodb: "15.6.0"
+      links_to: {}
+      links_from:
+        prometheus:
+          group: "temporal_db-doc_db"
+          type: "prometheus-mongodb"
+          attributes: {}
+          component:
+            group: "temporal_db"
+            type: "prometheus"
+            name: "prometheus"
+            attributes:
+              push_gateway: true
+              namespace: "prometheus"
+              kube_state_metrics_enabled: true
+              configmap: "opsgenie_api_key=\"api_key'\"\r\nopsgenie_api_url=\"https://api.opsgenie.com/\"\
+                \r\npagerduty_url=\"\""
+              chart_version_prometheus: "10.2.3"
+              smtp_host: "smtp.example.com:587"
+              smtp_user: "user"
+              smtp_password: "pass1_default"
+              slack_api: "slack.api.com"
+              from: "notification@alert.com"
+            links_to: {}
+            links_from: {}
+            parent: null
+          to_component: null
+      parent: null
+      sub_components:
+        mongo_db:
+          group: "doc_db"
+          type: "mongo_db"
+          name: "mongo-db"
+          attributes:
+            collector_name: "collection_name"
+            database: "mongodb"
+            password: "password_default1"
+            username: "mongo"
+          links_to: {}
+          links_from:
+            topic-mongo:
+              group: "kafka-doc_db"
+              type: "topic-mongo_db"
+              attributes: {}
+              component:
+                group: "kafka"
+                type: "topic"
+                name: "topic-mongo"
+                attributes:
+                  kafka_partition_size: "1"
+                  kafka_replication_factor: "2"
+                  errors_handling: false
+                links_to: {}
+                links_from: {}
+                parent:
+                  group: "kafka"
+                  type: "kafka"
+                  name: "kafka"
+                  attributes:
+                    namespace: "strimzi"
+                    replicas: "2"
+                    version: "3.7.1"
+                    bridge: true
+                    mtls: false
+                  links_to: {}
+                  links_from: {}
+                  parent: null
+              to_component: null
+          parent:
+            group: "doc_db"
+            type: "mongodb"
+            name: "mongodb"
+            attributes:
+              admin_password: "default_password"
+              network_policy: false
+              namespace: "mongodb"
+              port: "27017"
+              rbac: true
+              chart_version_mongodb: "15.6.0"
+            links_to: {}
+            links_from: {}
+            parent: null
+  configuration:
+    system_name: "basic_kafka_setup"
+    build_namespace: "build"
+    build_branch: "main"
+    domain: "apps.source-lab.io"
+    registry_host: "index.docker.io"
+    registry_auth_uri: "https://index.docker.io/v1/"
+    registry_project: "stacktic"
+    registry_username: "stacktic"
+    registry_password: "XXX"
+    registry_email: "a.sauer@stacktic.io"
+    registry_auth: "XXX"
+    git_host: "github.com"
+    git_project: "strimzi_basic_setup"
+    git_owner: "stackticio"
+    git_branch: "stacktic"
+    git_username: "stackticio"
+    git_password: "XXX"
+    sops_enabled: false
+    sops_age_recipients: ""
+    sops_age_secret_key: ""

@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: 
+    ingress-apisix--internet--any--ingress--ports--2379-2380-8080-9000-9080-9180-9443--nr67
+  namespace: ingress-apisix
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - ports:
+    - protocol: TCP
+      port: 9080
+    - protocol: TCP
+      port: 2380
+    - protocol: TCP
+      port: 9443
+    - protocol: TCP
+      port: 9180
+    - protocol: TCP
+      port: 9000

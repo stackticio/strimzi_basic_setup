@@ -1,0 +1,15 @@
+resources:
+  - namespace.yaml
+  - cert-manager.yaml
+  - selfsigned-issuer.yaml
+  - certificate.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+labels:
+  - pairs:
+      stacktic.io/app: "cert-manager"
+      stacktic.io/group: "platform"
+      stacktic.io/namespace: "cert-manager"
+    includeTemplates: true

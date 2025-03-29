@@ -1,0 +1,72 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: python-application-rules
+  namespace: prometheus
+spec:
+  groups:
+    - name: python.rules
+      rules:
+        - alert: PythonHighCpuUsage
+          expr: process_cpu_seconds_total{job="python"} > 186
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High CPU usage detected for Python application"
+            description: "The Python application has exceeded 186 seconds of CPU time, indicating high CPU usage."
+
+        - alert: PythonHighMemoryUsage
+          expr: process_resident_memory_bytes{job="python"} > 60000000
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High memory usage detected for Python application"
+            description: "The Python application's memory usage has exceeded 60MB."
+
+        - alert: PythonHighGCGeneration0Collections
+          expr: python_gc_collections_total{generation="0", job="python"} > 6800
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High number of GC generation 0 collections for Python application"
+            description: "The Python application has a high number of garbage collection operations for generation 0, indicating potential inefficiency in memory management."
+
+        - alert: PythonHighGCGeneration2ObjectsCollected
+          expr: python_gc_objects_collected_total{generation="2", job="python"} > 40
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High number of objects collected by GC generation 2 for Python application"
+            description: "The Python application has collected more than 40 objects in garbage collection generation 2, potentially indicating memory pressure."
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: python-alertmanager-config
+  namespace: prometheus
+spec:
+  route:
+    groupBy: ['alertname', 'severity']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: 'slack-notifications'
+    routes:
+      - match:
+          severity: 'warning'
+        receiver: 'slack-notifications'
+  receivers:
+    - name: 'slack-notifications'
+      slackConfigs:
+        - sendResolved: true
+          text: " .CommonAnnotations.description  "
+          username: 'Alertmanager'
+          channel: '#alerts-channel'
+          apiURL:
+            name: 'slack-webhook-url'
+            key: 'url'

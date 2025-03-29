@@ -1,0 +1,31 @@
+resources:
+  - namespace.yaml
+  - mongodb.yaml
+  - sub_comp_db-job.yaml
+  - clean-job.yaml
+
+secretGenerator:
+  - name: mongodb-auth-secret
+    namespace: mongodb
+    envs:
+      - secret/mongodb.env
+    options:
+      disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: mongodb-init-script
+    namespace: mongodb
+    files:
+      - init-mongo.js=config/init-mongo.js
+    options:
+      disableNameSuffixHash: true
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+labels:
+  - pairs:
+      stacktic.io/app: "mongodb"
+      stacktic.io/group: "doc_db"
+      stacktic.io/namespace: "mongodb"
+    includeTemplates: true

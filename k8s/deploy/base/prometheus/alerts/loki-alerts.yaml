@@ -1,0 +1,122 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: loki-application-rules
+  namespace: "prometheus"
+spec:
+  groups:
+    - name: loki.rules
+      rules:
+        # 1) LokiHighDistributorInFlightRequests
+        # loki_inflight_requests: Current number of inflight requests (all components, but typical for Distributors).
+        - alert: LokiHighDistributorInFlightRequests
+          expr: loki_inflight_requests > 50
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki: Too many inflight requests"
+            description: "loki_inflight_requests is above 50 for 5 minutes, indicating possible overload or slow requests."
+
+        # 2) LokiDistributorDNSFailures
+        # loki_dns_failures_total: The number of DNS lookup failures.
+        - alert: LokiDistributorDNSFailures
+          expr: increase(loki_dns_failures_total[5m]) > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki: Frequent DNS lookup failures in last 5m"
+            description: "More than 5 DNS failures in 5 minutes could indicate networking or DNS issues."
+
+        # 3) LokiIngesterHighMemory
+        # process_resident_memory_bytes{app="loki-ingester"}: Ingesters' memory usage
+        - alert: LokiIngesterHighMemory
+          expr: process_resident_memory_bytes{app="loki-ingester"} > 2e+09
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki Ingester using >2GB memory"
+            description: "process_resident_memory_bytes has exceeded 2GB for 5 minutes, indicating potential memory pressure."
+
+        # 4) LokiIngesterChunkAge
+        # loki_ingester_chunk_age_seconds: Distribution of chunk ages (when stored)
+        - alert: LokiIngesterOldChunks
+          expr: histogram_quantile(0.95, rate(loki_ingester_chunk_age_seconds_bucket[5m])) > 3600
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki Ingester chunks older than 1h (p95)"
+            description: "95th percentile chunk age is over 1 hour, which may indicate delayed flushing or backlogged writes."
+
+        # 5) LokiIngesterFlushFailures
+        # loki_ingester_chunks_flush_failures_total: Number of flush failures
+        - alert: LokiIngesterFlushFailures
+          expr: increase(loki_ingester_chunks_flush_failures_total[5m]) > 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Loki Ingester flush failures"
+            description: "Flush failures occurred in the last 5 minutes, potential ingestion or storage issue."
+
+        # 6) LokiQuerierHighTailers
+        # loki_querier_tail_active: Number of active tailers
+        - alert: LokiQuerierTooManyTailers
+          expr: loki_querier_tail_active > 20
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki Querier has >20 active tailers"
+            description: "Excessive tailers might indicate heavy real-time usage or possible resource overload."
+
+        # 7) LokiLowIndexCacheHitRatio
+        # loki_querier_index_cache_gets_total & loki_querier_index_cache_hits_total => hit ratio
+        - alert: LokiLowIndexCacheHitRatio
+          expr: (
+            1 - (increase(loki_querier_index_cache_hits_total[5m])
+                 / increase(loki_querier_index_cache_gets_total[5m]))
+          ) > 0.8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki Querier index cache hit ratio <20%"
+            description: "Index cache hit ratio is below 20% for 5 minutes, leading to more expensive queries."
+
+        # 8) LokiQueryFrontendQueueHigh
+        # loki_query_frontend_queue_duration_seconds: Time spent by requests in the frontend queue
+        - alert: LokiQueryFrontendQueueHigh
+          expr: histogram_quantile(0.90, rate(loki_query_frontend_queue_duration_seconds_bucket[5m])) > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki Query Frontend queue time p90 > 5s"
+            description: "Requests are spending >5 seconds in the queue (p90), indicating potential concurrency or capacity issues."
+
+        # 9) LokiQueryFrontendRetries
+        # loki_query_frontend_retries: Number of times a request is retried
+        - alert: LokiQueryFrontendHighRetries
+          expr: histogram_quantile(0.90, rate(loki_query_frontend_retries_bucket[5m])) > 3
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki Query Frontend seeing high retry attempts"
+            description: "The 90th percentile of retries is above 3 in the last 5 minutes, suggesting frequent backend failures."
+
+        # 10) LokiProcessHighCPU
+        # process_cpu_seconds_total{app="loki-querier"} => CPU usage for Querier (example)
+        # We'll approximate by measuring rate and comparing to # of CPU cores (omitted). For simplicity, check raw rate:
+        - alert: LokiProcessHighCPU
+          expr: increase(process_cpu_seconds_total{app="loki-querier"}[5m]) > 300
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Loki high CPU usage"
+            description: "CPU usage over 300 CPU-seconds in last 5 minutes indicates a consistently heavy load on Loki process."

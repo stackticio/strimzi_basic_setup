@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: backup-checker
+  namespace: "mongodb"
+  labels:
+    app.kubernetes.io/name: "mongodb"
+spec:
+  containers:
+  - name: backup-checker
+    image: busybox
+    command: ["/bin/sh", "-c", "sleep 3600"]
+    volumeMounts:
+    - name: backup-storage
+      mountPath: /backup
+  volumes:
+  - name: backup-storage
+    persistentVolumeClaim:
+      claimName: mongodb-backup-pvc

@@ -1,0 +1,57 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: postgresql-application-rules
+  namespace: prometheus
+spec:
+  groups:
+    - name: postgresql.rules
+      rules:
+        - alert: PostgreSQLHighMemoryUsage
+          expr: process_resident_memory_bytes{job="postgresql-metrics"} > 1.5e+07
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL instance high memory usage"
+            description: "PostgreSQL memory usage is high, indicating potential issues."
+
+        - alert: PostgreSQLDatabaseSize
+          expr: pg_database_size_bytes{datname="postgres"} > 7.5e6
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "PostgreSQL database 'postgres' size is large"
+            description: "The size of the 'postgres' database is larger than expected, indicating potential storage issues."
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: postgresql-alertmanager-config
+  namespace: prometheus
+spec:
+  route:
+    groupBy: ['alertname', 'severity']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: 'slack-notifications'
+    routes:
+      - match:
+          severity: 'warning'
+        receiver: 'slack-notifications'
+      - match:
+          severity: 'critical'
+        receiver: 'slack-notifications'
+  receivers:
+    - name: 'slack-notifications'
+      slackConfigs:
+        - sendResolved: true
+          text: "Alert description: "
+          username: 'Alertmanager'
+          channel: '#alerts-channel'
+          apiURL:
+            name: 'slack-webhook-url'
+            key: 'url'

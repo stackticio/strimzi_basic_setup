@@ -1,0 +1,156 @@
+# HELP alertmanager_alerts How many alerts by state.
+# HELP alertmanager_alerts_invalid_total The total number of received alerts that were invalid.
+# HELP alertmanager_alerts_received_total The total number of received alerts.
+# HELP alertmanager_build_info A metric with a constant '1' value labeled by version, revision, branch, goversion from which alertmanager was built, and the goos and goarch for the build.
+# HELP alertmanager_cluster_enabled Indicates whether the clustering is enabled or not.
+# HELP alertmanager_config_hash Hash of the currently loaded alertmanager configuration.
+# HELP alertmanager_config_last_reload_success_timestamp_seconds Timestamp of the last successful configuration reload.
+# HELP alertmanager_config_last_reload_successful Whether the last configuration reload attempt was successful.
+# HELP alertmanager_dispatcher_aggregation_groups Number of active aggregation groups
+# HELP alertmanager_dispatcher_alert_processing_duration_seconds Summary of latencies for the processing of alerts.
+# HELP alertmanager_http_concurrency_limit_exceeded_total Total number of times an HTTP request failed because the concurrency limit was reached.
+# HELP alertmanager_http_request_duration_seconds Histogram of latencies for HTTP requests.
+# HELP alertmanager_http_requests_in_flight Current number of HTTP requests being processed.
+# HELP alertmanager_http_response_size_bytes Histogram of response size for HTTP requests.
+# HELP alertmanager_inhibition_rules Number of configured inhibition rules.
+# HELP alertmanager_integrations Number of configured integrations.
+# HELP alertmanager_marked_alerts How many alerts by state are currently marked in the Alertmanager regardless of their expiry.
+# HELP alertmanager_nflog_gc_duration_seconds Duration of the last notification log garbage collection cycle.
+# HELP alertmanager_nflog_gossip_messages_propagated_total Number of received gossip messages that have been further gossiped.
+# HELP alertmanager_nflog_maintenance_errors_total How many maintenances were executed for the notification log that failed.
+# HELP alertmanager_nflog_maintenance_total How many maintenances were executed for the notification log.
+# HELP alertmanager_nflog_queries_total Number of notification log queries were received.
+# HELP alertmanager_nflog_query_duration_seconds Duration of notification log query evaluation.
+# HELP alertmanager_nflog_query_errors_total Number notification log received queries that failed.
+# HELP alertmanager_nflog_snapshot_duration_seconds Duration of the last notification log snapshot.
+# HELP alertmanager_nflog_snapshot_size_bytes Size of the last notification log snapshot in bytes.
+# HELP alertmanager_notification_latency_seconds The latency of notifications in seconds.
+# HELP alertmanager_notification_requests_failed_total The total number of failed notification requests.
+# HELP alertmanager_notification_requests_total The total number of attempted notification requests.
+# HELP alertmanager_notifications_failed_total The total number of failed notifications.
+# HELP alertmanager_notifications_total The total number of attempted notifications.
+# HELP alertmanager_receivers Number of configured receivers.
+# HELP alertmanager_silences How many silences by state.
+# HELP alertmanager_silences_gc_duration_seconds Duration of the last silence garbage collection cycle.
+# HELP alertmanager_silences_gossip_messages_propagated_total Number of received gossip messages that have been further gossiped.
+# HELP alertmanager_silences_maintenance_errors_total How many maintenances were executed for silences that failed.
+# HELP alertmanager_silences_maintenance_total How many maintenances were executed for silences.
+# HELP alertmanager_silences_queries_total How many silence queries were received.
+# HELP alertmanager_silences_query_duration_seconds Duration of silence query evaluation.
+# HELP alertmanager_silences_query_errors_total How many silence received queries did not succeed.
+# HELP alertmanager_silences_snapshot_duration_seconds Duration of the last silence snapshot.
+# HELP alertmanager_silences_snapshot_size_bytes Size of the last silence snapshot in bytes.
+# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+# HELP go_goroutines Number of goroutines that currently exist.
+# HELP go_info Information about the Go environment.
+# HELP go_memstats_alloc_bytes Number of bytes allocated and still in use.
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated, even if freed.
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table.
+# HELP go_memstats_frees_total Total number of frees.
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata.
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and still in use.
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used.
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use.
+# HELP go_memstats_heap_objects Number of allocated objects.
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS.
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system.
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# HELP go_memstats_lookups_total Total number of pointer lookups.
+# HELP go_memstats_mallocs_total Total number of mallocs.
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures.
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system.
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures.
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system.
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place.
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations.
+# HELP go_memstats_stack_inuse_bytes Number of bytes in use by the stack allocator.
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator.
+# HELP go_memstats_sys_bytes Number of bytes obtained from system.
+# HELP go_threads Number of OS threads created.
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# HELP process_max_fds Maximum number of open file descriptors.
+# HELP process_open_fds Number of open file descriptors.
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# HELP promhttp_metric_handler_requests_in_flight Current number of scrapes being served.
+# HELP promhttp_metric_handler_requests_total Total number of scrapes by HTTP status code.
+# TYPE alertmanager_alerts gauge
+# TYPE alertmanager_alerts_invalid_total counter
+# TYPE alertmanager_alerts_received_total counter
+# TYPE alertmanager_build_info gauge
+# TYPE alertmanager_cluster_enabled gauge
+# TYPE alertmanager_config_hash gauge
+# TYPE alertmanager_config_last_reload_success_timestamp_seconds gauge
+# TYPE alertmanager_config_last_reload_successful gauge
+# TYPE alertmanager_dispatcher_aggregation_groups gauge
+# TYPE alertmanager_dispatcher_alert_processing_duration_seconds summary
+# TYPE alertmanager_http_concurrency_limit_exceeded_total counter
+# TYPE alertmanager_http_request_duration_seconds histogram
+# TYPE alertmanager_http_requests_in_flight gauge
+# TYPE alertmanager_http_response_size_bytes histogram
+# TYPE alertmanager_inhibition_rules gauge
+# TYPE alertmanager_integrations gauge
+# TYPE alertmanager_marked_alerts gauge
+# TYPE alertmanager_nflog_gc_duration_seconds summary
+# TYPE alertmanager_nflog_gossip_messages_propagated_total counter
+# TYPE alertmanager_nflog_maintenance_errors_total counter
+# TYPE alertmanager_nflog_maintenance_total counter
+# TYPE alertmanager_nflog_queries_total counter
+# TYPE alertmanager_nflog_query_duration_seconds histogram
+# TYPE alertmanager_nflog_query_errors_total counter
+# TYPE alertmanager_nflog_snapshot_duration_seconds summary
+# TYPE alertmanager_nflog_snapshot_size_bytes gauge
+# TYPE alertmanager_notification_latency_seconds histogram
+# TYPE alertmanager_notification_requests_failed_total counter
+# TYPE alertmanager_notification_requests_total counter
+# TYPE alertmanager_notifications_failed_total counter
+# TYPE alertmanager_notifications_total counter
+# TYPE alertmanager_receivers gauge
+# TYPE alertmanager_silences gauge
+# TYPE alertmanager_silences_gc_duration_seconds summary
+# TYPE alertmanager_silences_gossip_messages_propagated_total counter
+# TYPE alertmanager_silences_maintenance_errors_total counter
+# TYPE alertmanager_silences_maintenance_total counter
+# TYPE alertmanager_silences_queries_total counter
+# TYPE alertmanager_silences_query_duration_seconds histogram
+# TYPE alertmanager_silences_query_errors_total counter
+# TYPE alertmanager_silences_snapshot_duration_seconds summary
+# TYPE alertmanager_silences_snapshot_size_bytes gauge
+# TYPE go_gc_duration_seconds summary
+# TYPE go_goroutines gauge
+# TYPE go_info gauge
+# TYPE go_memstats_alloc_bytes gauge
+# TYPE go_memstats_alloc_bytes_total counter
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+# TYPE go_memstats_frees_total counter
+# TYPE go_memstats_gc_sys_bytes gauge
+# TYPE go_memstats_heap_alloc_bytes gauge
+# TYPE go_memstats_heap_idle_bytes gauge
+# TYPE go_memstats_heap_inuse_bytes gauge
+# TYPE go_memstats_heap_objects gauge
+# TYPE go_memstats_heap_released_bytes gauge
+# TYPE go_memstats_heap_sys_bytes gauge
+# TYPE go_memstats_last_gc_time_seconds gauge
+# TYPE go_memstats_lookups_total counter
+# TYPE go_memstats_mallocs_total counter
+# TYPE go_memstats_mcache_inuse_bytes gauge
+# TYPE go_memstats_mcache_sys_bytes gauge
+# TYPE go_memstats_mspan_inuse_bytes gauge
+# TYPE go_memstats_mspan_sys_bytes gauge
+# TYPE go_memstats_next_gc_bytes gauge
+# TYPE go_memstats_other_sys_bytes gauge
+# TYPE go_memstats_stack_inuse_bytes gauge
+# TYPE go_memstats_stack_sys_bytes gauge
+# TYPE go_memstats_sys_bytes gauge
+# TYPE go_threads gauge
+# TYPE process_cpu_seconds_total counter
+# TYPE process_max_fds gauge
+# TYPE process_open_fds gauge
+# TYPE process_resident_memory_bytes gauge
+# TYPE process_start_time_seconds gauge
+# TYPE process_virtual_memory_bytes gauge
+# TYPE process_virtual_memory_max_bytes gauge
+# TYPE promhttp_metric_handler_requests_in_flight gauge
+# TYPE promhttp_metric_handler_requests_total counter

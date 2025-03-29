@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-restore
+  namespace: "mongodb"
+  labels:
+    app.kubernetes.io/name: "mongodb"
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "mongodb"
+    spec:
+      containers:
+      - name: mongodb-restore
+        image: docker.io/bitnami/mongodb:4.4.10-debian-10-r0
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          mongorestore --host mongodb.mongodb.svc.cluster.local --authenticationDatabase admin -u root -p "$MONGODB_ROOT_PASSWORD" --gzip --archive=/backup/mongodb-backup.gz
+        env:
+        - name: MONGODB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-auth-secret
+              key: mongodb-root-password
+        volumeMounts:
+        - name: backup-storage
+          mountPath: /backup
+      restartPolicy: OnFailure
+      volumes:
+      - name: backup-storage
+        persistentVolumeClaim:
+          claimName: mongodb-backup-pvc

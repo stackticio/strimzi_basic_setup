@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: job-cleanup-sa
+  namespace: postgresql
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: job-cleanup-role
+  namespace: postgresql
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["list", "delete"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: job-cleanup-rolebinding
+  namespace: postgresql
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: job-cleanup-role
+subjects:
+  - kind: ServiceAccount
+    name: job-cleanup-sa
+    namespace: postgresql
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: job-cleanup-cronjob
+  namespace: postgresql
+spec:
+  schedule: "*/4 * * * *"  # runs every 4 minutes
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 0
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: job-cleanup-sa
+          restartPolicy: Never
+          containers:
+            - name: delete-completed-jobs
+              image: bitnami/kubectl:1.32.1-debian-12-r6
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  echo "Looking for completed jobs in postgresql..."
+                  # List only jobs that have succeeded at least once
+                  kubectl get jobs -n postgresql -o jsonpath='{range .items[?(@.status.succeeded==1)]}{.metadata.name}{"\n"}{end}' > /tmp/completed_jobs.txt
+
+                  if [ -s /tmp/completed_jobs.txt ]; then
+                    echo "Deleting these completed jobs:"
+                    cat /tmp/completed_jobs.txt
+                    xargs -r -n 1 kubectl delete job -n postgresql < /tmp/completed_jobs.txt
+                  else
+                    echo "No completed jobs found."
+                  fi
+

@@ -1,0 +1,97 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: data-bucket-user-bucket-job
+  namespace: minio
+spec:
+  template:
+    spec:
+      containers:
+        - name: data-bucket-user-bucket-job
+          image: minio/mc:RELEASE.2024-08-26T10-49-58Z 
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              # Set alias using HTTP (adjust protocol as needed)
+              sleep 60
+              mc alias set myminio http://minio.minio.svc.cluster.local:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASSWORD
+              
+              # Wait for MinIO endpoint to become available
+              until mc admin info myminio; do
+                echo 'Waiting for MinIO to become available...'
+                sleep 30
+              done
+              sleep 10
+              # Check if user exists before adding
+              if ! mc admin user info myminio min8chars1 > /dev/null 2>&1; then
+                mc admin user add myminio min8chars1 min8chars1
+              else
+                echo "User min8chars1 already exists. Updating SECRET_KEY"
+                mc admin user add myminio min8chars1 min8chars1
+              fi
+              
+              sleep 3
+              # Create policy JSON inline
+              POLICY_NAME="data-bucket_policy"
+              echo '{
+                "Version": "2012-10-17",
+                "Statement": [
+                  {
+                    "Effect": "Allow",
+                    "Action": [
+                      "s3:GetBucketLocation",
+                      "s3:ListBucket"
+                    ],
+                    "Resource": [
+                      "arn:aws:s3:::kafkabucket"
+                    ]
+                  },
+                  {
+                    "Effect": "Allow",
+                    "Action": [
+                      "s3:GetObject",
+                      "s3:PutObject"
+                    ],
+                    "Resource": [
+                      "arn:aws:s3:::kafkabucket/*"
+                    ]
+                  }
+                ]
+              }' > /tmp/policy.json
+              sleep 3
+              # Check if policy exists before creating
+              if ! mc admin policy info myminio $POLICY_NAME > /dev/null 2>&1; then
+                mc admin policy create myminio $POLICY_NAME /tmp/policy.json
+              else
+                echo "Policy $POLICY_NAME already exists."
+              fi
+              
+              sleep 3
+              # Attach policy to user
+              mc admin policy attach myminio $POLICY_NAME --user min8chars1
+              sleep 3
+              # Check if the bucket exists
+              if ! mc ls myminio/kafkabucket > /dev/null 2>&1; then
+                mc mb myminio/kafkabucket
+                echo "Bucket 'kafkabucket' created successfully."
+              else
+                echo "Bucket 'kafkabucket' already exists."
+              fi
+              mc anonymous set public myminio/kafkabucket
+              sleep 5
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: root-user
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio-credentials
+                  key: root-password
+      restartPolicy: Never
+  backoffLimit: 4
+---
+

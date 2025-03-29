@@ -1,0 +1,35 @@
+resources:
+  - namespace.yaml
+  - apisix.yaml
+  - apisix-controller.yaml
+  - apisix-dashboard.yaml
+  - route.yaml
+  - crd/ApisixClusterConfig.yaml
+  - crd/ApisixPluginConfig.yaml
+  - crd/ApisixUpstream.yaml
+  - crd/ApisixConsumer.yaml
+  - crd/ApisixRoute.yaml
+  - crd/ApisixGlobalRule.yaml
+  - crd/ApisixTls.yaml
+  #- standard-install.yaml
+  
+  
+namespace: ingress-apisix
+
+secretGenerator:
+  - name: kong-admin-secret
+    envs:
+      - secret/kong.env
+  - name: kong-postgresql-secret
+    envs:
+      - secret/postgresql.env
+
+labels:
+  - pairs:
+      stacktic.io/app: "apisix"
+      stacktic.io/group: "gateway"
+      stacktic.io/namespace: "ingress-apisix"
+    includeTemplates: true
+
+generatorOptions:
+  disableNameSuffixHash: true

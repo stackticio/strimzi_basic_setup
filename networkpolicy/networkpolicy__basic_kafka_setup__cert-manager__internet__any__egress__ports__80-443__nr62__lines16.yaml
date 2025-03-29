@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cert-manager--internet--any--egress--ports--80-443--nr62
+  namespace: cert-manager
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - ports:
+    - protocol: TCP
+      port: 443
+      port: 443
+    - protocol: TCP
+    - protocol: TCP
+      port: 443

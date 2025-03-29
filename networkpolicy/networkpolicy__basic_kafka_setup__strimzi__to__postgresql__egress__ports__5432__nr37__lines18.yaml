@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: strimzi--to--postgresql--egress--ports--5432--nr37
+  namespace: strimzi
+spec:
+  podSelector: {}
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          stacktic.io/namespace: postgresql
+    ports:
+    - protocol: TCP
+      port: 5432

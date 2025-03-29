@@ -1,0 +1,16 @@
+resources:
+  - namespace.yaml
+
+secretGenerator:
+  - name: registry-credential
+    namespace: build
+    files:
+      - .dockerconfigjson=secret/registry.json
+    type: kubernetes.io/dockerconfigjson
+  - name: git-credential
+    namespace: build
+    envs:
+      - secret/git.env
+
+generatorOptions:
+  disableNameSuffixHash: true

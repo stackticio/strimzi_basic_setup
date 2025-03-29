@@ -1,0 +1,121 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: keycloak-application-rules
+  namespace: "prometheus"
+spec:
+  groups:
+    - name: keycloak.rules
+      rules:
+
+        # 1) High CPU Usage
+        # process_cpu_usage is a fraction [0..1] of CPU usage for the Keycloak JVM.
+        - alert: KeycloakHighCPUUsage
+          expr: process_cpu_usage > 0.8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak (): High CPU usage"
+            description: "Keycloak's CPU usage has exceeded 80%  for 5 minutes."
+
+        # 2) High Heap Memory Usage
+        # base_memory_usedHeap_bytes / base_memory_maxHeap_bytes => fraction of used vs max
+        - alert: KeycloakHighHeapMemory
+          expr: (base_memory_usedHeap_bytes / base_memory_maxHeap_bytes) > 0.9
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak (): High heap memory usage"
+            description: "Heap usage is above 90% of the max. Potentially low on Java heap memory."
+
+        # 3) Frequent GC Invocations
+        # base_gc counts total collections. If it increases by >50 in 5m, we consider it frequent.
+        - alert: KeycloakFrequentGC
+          expr: increase(base_gc[5m]) > 50
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak (): Frequent GC runs"
+            description: "Keycloak GC triggered more than 50 times in 5 minutes, indicating possible memory churn."
+
+        # 4) High Number of Active HTTP Requests
+        # http_server_active_requests: active in-flight requests
+        - alert: KeycloakHighHTTPRequests
+          expr: http_server_active_requests > 50
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak (): High number of active HTTP requests"
+            description: "More than 50 concurrent active requests for 5 minutes, indicating potential overload."
+
+        # 5) High Request Latency (Max)
+        # If http_server_requests_seconds_max is > 1 second, we consider it high latency
+        - alert: KeycloakHighRequestLatency
+          expr: http_server_requests_seconds_max > 1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak (): High HTTP request latency"
+            description: "Max request time has exceeded 1 second in the last 5 minutes."
+
+        # 6) Low Database Pool Availability
+        # agroal_available_count: number of idle (available) DB connections
+        - alert: KeycloakLowDBPoolAvailability
+          expr: agroal_available_count < 2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak (): Low DB pool availability"
+            description: "Fewer than 2 available connections in the DB pool, may lead to connection timeouts."
+
+        # 7) High Average DB Blocking Time
+        # agroal_blocking_time_average_milliseconds: average wait time to get a DB connection
+        - alert: KeycloakHighDBWaitTime
+          expr: agroal_blocking_time_average_milliseconds > 200
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak (): High DB connection wait time"
+            description: "Average blocking time is over 200ms, indicating the DB or pool might be overloaded."
+
+        # 8) Frequent Connection Leaks
+        # agroal_leak_detection_count increments when a leak is detected
+        # If it increases > 0 in 5m => at least 1 leak event
+        - alert: KeycloakConnectionLeaks
+          expr: increase(agroal_leak_detection_count[5m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak (): Connection leak detected"
+            description: "Agroal leak detection fired at least once in the last 5 minutes."
+
+        # 9) High Thread Count
+        # base_thread_count: total live threads in the JVM
+        - alert: KeycloakHighThreadCount
+          expr: base_thread_count > 300
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak (): High thread count"
+            description: "Over 300 JVM threads are in use, possibly indicating concurrency or resource issues."
+
+        # 10) Node Recently (Re)Started
+        # base_jvm_uptime in milliseconds. If <300s => restarted in the last 5 minutes
+        # base_jvm_uptime is a gauge in ms, so 300s = 300,000 ms
+        - alert: KeycloakNodeRecentlyRestarted
+          expr: base_jvm_uptime < 300000
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Keycloak: Node restarted recently"
+            description: "Keycloak's JVM uptime is under 5 minutes, indicating a recent restart."

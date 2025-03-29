@@ -1,0 +1,66 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: mongodb-application-rules
+  namespace: "prometheus"
+spec:
+  groups:
+    - name: mongodb.rules
+      rules:
+        - alert: MongoDBHighMemoryUsage
+          expr: mongodb_memory{type="resident"} > 13
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "MongoDB instance labels.instance  high memory usage"
+            description: "MongoDB memory usage is high, indicating potential issues with the instance labels.instance ."
+
+        - alert: MongoDBHighWriteLatency
+          expr: mongodb_ss_opLatencies_latency{op_type="writes"} > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "MongoDB instance labels.instance  high write latency"
+            description: "MongoDB write latency is high, indicating potential performance issues with the instance labels.instance ."
+
+        - alert: MongoDBHighReadLatency
+          expr: mongodb_ss_opLatencies_latency{op_type="reads"} > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "MongoDB instance labels.instance  high read latency"
+            description: "MongoDB read latency is high, indicating potential performance issues with the instancelabels.instance ."
+
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: mongodb-alertmanager-config
+  namespace: "prometheus"
+spec:
+  route:
+    groupBy: ['alertname', 'severity']
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: 'slack-notifications'
+    routes:
+      - match:
+          severity: 'warning'
+        receiver: 'slack-notifications'
+      - match:
+          severity: 'critical'
+        receiver: 'slack-notifications'
+  receivers:
+    - name: 'slack-notifications'
+      slackConfigs:
+        - sendResolved: true
+          text: "Alert description "
+          username: 'Alertmanager'
+          channel: '#alerts-channel'
+          apiURL:
+            name: 'slack-webhook-url'
+            key: 'url'

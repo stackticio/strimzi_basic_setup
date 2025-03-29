@@ -1,0 +1,28 @@
+-- Adding Comment
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init-scripts
+  namespace: postgresql
+data:
+  init_db.sql: |
+    -- Ensure the 'demo' schema exists
+    CREATE SCHEMA IF NOT EXISTS demo;
+
+    -- Create 'products' table within the 'demo' schema
+    CREATE TABLE IF NOT EXISTS demo.products (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        price DECIMAL(10, 2) NOT NULL,
+        UNIQUE(name)  -- This ensures the 'name' column is unique
+    );
+
+    -- Insert sample data into 'products' table
+    -- 'ON CONFLICT (name) DO NOTHING' avoids inserting duplicates based on 'name'
+    INSERT INTO demo.products (name, price) VALUES
+    ('Product 1', 19.99),
+    ('Product 2', 29.99),
+    ('Product 3', 39.99)
+    ON CONFLICT (name) DO NOTHING;
+
+    -- Add more INSERT statements as needed, following the pattern above

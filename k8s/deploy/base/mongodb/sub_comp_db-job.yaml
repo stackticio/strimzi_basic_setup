@@ -1,0 +1,65 @@
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongodb-create-mongodb-mongodb-job
+  namespace: mongodb
+  labels:
+    app.kubernetes.io/name: "mongodb"
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: "mongodb"
+        job-name: mongodb-create-mongodb-mongodb-job
+    spec:
+      containers:
+        - name: mongodb-create-databases
+          image: docker.io/bitnami/mongodb:4.4.10-debian-10-r0
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -x
+              RETRIES=8
+              until mongo --host mongodb.mongodb.svc.cluster.local --authenticationDatabase admin -u root -p "$MONGODB_ROOT_PASSWORD" --eval "print('waiting for mongo')" || [ $RETRIES -eq 0 ]; do
+                echo "Waiting for MongoDB to be ready, retries left: $RETRIES"
+                sleep 15
+                let RETRIES=RETRIES-1
+              done
+              
+              mongo --host mongodb.mongodb.svc.cluster.local --authenticationDatabase admin -u root -p "$MONGODB_ROOT_PASSWORD" <<EOF
+              var dbName = "mongodb";
+              var userName = "mongo";
+              var userPass = "password_default1";
+              var collectionName = "collection_name";
+
+              try {
+                if (db.getSiblingDB(dbName).getCollectionNames().length === 0) {
+                  print("Creating database '" + dbName + "' and user...");
+                  db = db.getSiblingDB(dbName);
+                  db.createUser({
+                    user: userName,
+                    pwd: userPass,
+                    roles: [{ role: "readWrite", db: dbName }]
+                  });
+                  print("User '" + userName + "' created with readWrite role.");
+                } else {
+                  print("Database '" + dbName + "' and user already exist.");
+                }
+
+                db.createCollection(collectionName);
+                print("Collection '" + collectionName + "' created in database '" + dbName + "'.");
+              } catch (e) {
+                print("Error during setup for database '" + dbName + "': " + e);
+              }
+              EOF
+              
+              echo "MongoDB command exit status: $?"
+          env:
+            - name: MONGODB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-auth-secret
+                  key: mongodb-root-password
+      restartPolicy: Never

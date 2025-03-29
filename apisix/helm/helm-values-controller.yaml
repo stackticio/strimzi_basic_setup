@@ -1,0 +1,136 @@
+nameOverride: ""
+fullnameOverride: ""
+
+labelsOverride: {}
+annotations: {}
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name: ""
+  automountServiceAccountToken: true
+
+replicaCount: 1
+
+image:
+  repository: apache/apisix-ingress-controller
+  pullPolicy: IfNotPresent
+  tag: "1.8.3"
+
+podAnnotations: {}
+priorityClassName: ""
+imagePullSecrets: []
+clusterDomain: cluster.local
+
+# The Ingress Controller "service:" is just a ClusterIP on port 8080
+service:
+  port: 8080
+
+config:
+  etcdserver:
+    enabled: true
+    image:
+      repository: apache/apisix
+      pullPolicy: IfNotPresent
+      tag: 3.5.0-debian
+
+  logLevel: "debug"
+  logOutput: "stderr"
+
+  # Webhook certs if needed (often these defaults are fine)
+  certFile: "/etc/webhook/certs/cert.pem"
+  keyFile: "/etc/webhook/certs/key.pem"
+
+  httpListen: ":8080"
+  httpsListen: ":8443"
+
+  ingressPublishService: "ingress-apisix/apisix-gateway"
+  ingressStatusAddress: []
+  enableProfiling: true
+  apisixResourceSyncInterval: "1h"
+  pluginMetadataCM: ""
+
+  kubernetes:
+    kubeconfig: ""
+    resyncInterval: "6h"
+    namespaceSelector: [""]
+    electionId: "ingress-apisix-leader"
+    ingressClass: "apisix"
+    ingressVersion: "networking/v1"
+    watchEndpointSlices: false
+    apisixRouteVersion: "apisix.apache.org/v2"
+    enableGatewayAPI: false
+    apiVersion: "apisix.apache.org/v2"
+
+  # The controller points to APISIX Admin in "ingress-apisix" namespace, port 9180
+  apisix:
+    serviceName: apisix-admin
+    serviceNamespace: ingress-apisix
+    servicePort: 9180
+    adminKey: "edd1c9f034335f136f87ad84b625c8f1"
+    clusterName: "default"
+    adminAPIVersion: "v3"
+    existingSecret: ""
+    existingSecretAdminKeyKey: ""
+
+resources: {}
+
+initContainer:
+  image: busybox
+  tag: 1.28
+
+autoscaling:
+  enabled: false
+  version: v2
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+updateStrategy: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+topologySpreadConstraints: []
+
+serviceMonitor:
+  enabled: false
+  namespace: "monitoring"
+  interval: 15s
+  labels: {}
+  annotations: {}
+  metricRelabelings: {}
+
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 90%
+  maxUnavailable: 1
+
+podSecurityContext: {}
+securityContext: {}
+
+gateway:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  externalIPs: []
+  nginx:
+    workerRlimitNofile: "20480"
+    workerConnections: "10620"
+    workerProcesses: auto
+    errorLog: stderr
+    errorLogLevel: warn
+  resources: {}
+  securityContext: {}
+  tls:
+    enabled: true        # no LB for HTTPS from the controller
+    servicePort: 443
+    containerPort: 9443
+    additionalContainerPorts: []
+    existingCASecret: ""
+    certCAFilename: ""
+    http2:
+      enabled: true
+    sslProtocols: "TLSv1.2 TLSv1.3"
+    fallbackSNI: ""

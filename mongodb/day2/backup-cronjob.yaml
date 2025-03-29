@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongodb-backup-cronjob
+  namespace: "mongodb"
+  labels:
+    app.kubernetes.io/name: "mongodb"
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: "mongodb"
+        spec:
+          containers:
+          - name: mongodb-backup
+            image: docker.io/bitnami/mongodb:4.4.10-debian-10-r0
+            command: ["/bin/bash", "-c"]
+            args:
+            - |
+              mongodump --host mongodb.mongodb.svc.cluster.local --authenticationDatabase admin -u root -p "$MONGODB_ROOT_PASSWORD" --archive=/backup/mongodb-backup-$(date +%Y%m%d%H%M%S).gz --gzip
+            env:
+            - name: MONGODB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb-auth-secret
+                  key: mongodb-root-password
+            volumeMounts:
+            - name: backup-storage
+              mountPath: /backup
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: mongodb-backup-pvc

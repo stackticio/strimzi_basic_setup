@@ -1,0 +1,126 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cert-manager-application-rules
+  namespace: "prometheus"
+spec:
+  groups:
+    - name: cert-manager.rules
+      rules:
+        # 1) CertManagerControllerSyncErrors
+        # controller_runtime_reconcile_errors_total: total reconciliation errors per controller.
+        - alert: CertManagerControllerSyncErrors
+          expr: increase(controller_runtime_reconcile_errors_total{controller="cert-manager"}[5m]) > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cert-Manager: High reconciliation errors"
+            description: "More than 5 errors in 5 minutes for the cert-manager controller, indicating possible issues with certificate requests, issuers, or other resources."
+
+        # 2) CertManagerLeaderElectionFlicker
+        # leader_election_master_status: 1 if instance is leader, 0 otherwise
+        # This is a heuristic to detect frequent leader changes in 5m (not typical).
+        - alert: CertManagerLeaderElectionFlicker
+          expr: changes(leader_election_master_status{name=~".*cert-manager.*"}[5m]) > 2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cert-Manager: Frequent leader election changes"
+            description: "Leader election is changing more than twice in 5 minutes, potentially indicating instability or conflicting pods."
+
+        # 3) CertManagerCertificateExpiringSoon
+        # certmanager_certificate_expiration_timestamp_seconds: The date after which the certificate expires (Unix time).
+        # Check if any certificate is within ~3 days of expiration.
+        - alert: CertManagerCertificateExpiringSoon
+          expr: (certmanager_certificate_expiration_timestamp_seconds - time()) < 3 * 24 * 3600
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cert-Manager: Certificate expiring in <3 days"
+            description: "One or more certificates will expire in under 3 days. Consider renewing or investigating reasons for delayed renewal."
+
+        # 4) CertManagerCertificateNotReady
+        # certmanager_certificate_ready_status: The ready status of the certificate (1=Ready, 0=NotReady).
+        - alert: CertManagerCertificateNotReady
+          expr: certmanager_certificate_ready_status == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cert-Manager: Certificate not ready"
+            description: "A certificate is reported as NotReady for 10 minutes, indicating issues in issuance or renewal."
+
+        # 5) CertManagerCertificateHighRenewInterval
+        # certmanager_certificate_renewal_timestamp_seconds: #seconds before expiry a cert should renew.
+        # If (renewal_timestamp_seconds - now) < a short timeframe => might be set incorrectly (or a short renew window).
+        # This is just an example: if renewal is set to happen less than 12h before expiration.
+        - alert: CertManagerCertificateHighRenewInterval
+          expr: (
+            (certmanager_certificate_expiration_timestamp_seconds - certmanager_certificate_renewal_timestamp_seconds) < 43200
+          )
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cert-Manager: Short renewal interval (<12h window)"
+            description: "Certificate's renewal window is less than 12 hours from expiration. Possibly suboptimal or incorrectly configured renewal strategy."
+
+        # 6) CertManagerWebhookPanics
+        # controller_runtime_webhook_panics_total: total number of webhook panics.
+        - alert: CertManagerWebhookPanics
+          expr: increase(controller_runtime_webhook_panics_total[5m]) > 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Cert-Manager: Webhook panic"
+            description: "Webhook panic in the last 5 minutes, indicating a serious runtime error in the webhook server."
+
+        # 7) CertManagerReadCertificateErrors
+        # certwatcher_read_certificate_errors_total: total number of certificate read errors
+        - alert: CertManagerReadCertificateErrors
+          expr: increase(certwatcher_read_certificate_errors_total[5m]) > 3
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cert-Manager: Certificate read errors"
+            description: "Multiple read errors in the last 5 minutes, might indicate file system or permission issues on cert files."
+
+        # 8) CertManagerHighWorkqueueDepth
+        # workqueue_depth{name=~"cert-manager.*"}: current depth of a named workqueue
+        - alert: CertManagerHighWorkqueueDepth
+          expr: workqueue_depth{name=~"cert-manager.*"} > 100
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cert-Manager: Workqueue backlog > 100"
+            description: "Workqueue backlog is above 100 for cert-manager. Possibly the controller is overloaded or blocked."
+
+        # 9) CertManagerReconcileTime
+        # controller_runtime_reconcile_time_seconds: histogram for reconcile times
+        # Checking if 90th percentile is above, say, 10s
+        - alert: CertManagerReconcileTime
+          expr: histogram_quantile(0.90, rate(controller_runtime_reconcile_time_seconds_bucket{controller="cert-manager"}[5m])) > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cert-Manager: 90th percentile reconciliation time >10s"
+            description: "Reconciliation tasks taking too long could indicate issues with external dependencies (e.g., ACME server) or excessive queue."
+
+        # 10) CertManagerHighCPUUsage
+        # process_cpu_seconds_total => approximate CPU usage
+        # E.g., if we exceed 60 CPU-seconds in 5m => ~0.2 cores average or more
+        - alert: CertManagerHighCPUUsage
+          expr: increase(process_cpu_seconds_total{job=~".*cert-manager.*"}[5m]) > 60
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Cert-Manager: High CPU usage"
+            description: "process_cpu_seconds_total for cert-manager exceeds 60 in last 5 minutes, indicating sustained high CPU usage."

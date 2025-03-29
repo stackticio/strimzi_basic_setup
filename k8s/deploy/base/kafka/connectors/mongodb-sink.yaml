@@ -1,0 +1,49 @@
+
+
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaConnector
+metadata:
+  name: mongodb-sink-connector
+  namespace: strimzi
+  labels:
+    strimzi.io/cluster: kafka-connect
+spec:
+  class: com.mongodb.kafka.connect.MongoSinkConnector
+  tasksMax: 1
+  config:
+    topics: "topic-mongo"
+    # MongoDB connection settings
+    connection.uri: "mongodb://mongo:password_default1@mongodb.mongodb.svc.cluster.local:27017/?authSource=mongodb"
+
+    # MongoDB database and collection to write data to
+    database: "mongodb"
+    collection: "collection_name"
+
+    key.converter: org.apache.kafka.connect.storage.StringConverter
+    key.converter.schemas.enable: "false"
+
+    value.converter: org.apache.kafka.connect.json.JsonConverter
+    value.converter.schemas.enable: "false"
+
+    document.id.strategy: com.mongodb.kafka.connect.sink.processor.id.strategy.ProvidedInValueStrategy
+
+    consumer.override.group.id: "mongo-sink-latest-group"
+    consumer.override.auto.offset.reset: "latest"
+
+    # Overwrite partial/timeseries to null or remove them
+    document.id.strategy.partial.key.projection.list: null
+    document.id.strategy.partial.key.projection.type: null
+    document.id.strategy.partial.value.projection.list: null
+    document.id.strategy.partial.value.projection.type: null
+    timeseries.timefield: null
+    timeseries.metafield: null
+    timeseries.granularity: null
+
+
+
+
+
+
+
+

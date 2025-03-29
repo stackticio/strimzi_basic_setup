@@ -1,0 +1,134 @@
+# Chart Info:
+#   chart_name: postgresql
+#   chart_repo: bitnami
+#   chart_version: 15.4.0
+#   app_version: 16.3.0
+#   chart_release_date: 21/05/2024
+#   stacktic_update_date: 29/05/2024
+rbac:
+  create: true
+  ## @param rbac.rules Custom RBAC rules to set
+  ## e.g:
+  ## rules:
+  ##   - apiGroups:
+  ##       - ""
+  ##     resources:
+  ##       - pods
+  ##     verbs:
+  ##       - get
+  ##       - list
+  ##
+  rules: []
+
+# PostgreSQL architecture
+architecture: standalone
+
+# Replication configuration
+replication:
+  synchronousCommit: "off"
+  numSynchronousReplicas: 0
+
+# Credentials
+auth:
+  existingSecret: "postgresql-admin-password"
+  database: postgres
+
+## Primary pods
+primary:
+  # Init DB
+  initdb:
+    scriptsSecret: "postgresql-initdb"
+  # Network Policy
+  networkPolicy:
+    enabled: false
+  # Service
+  service:
+    ports:
+      postgresql: 5432
+  # Resources
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 375m
+      memory: 384Mi
+  # Persistence storage
+  persistence:
+    enabled: true
+    size: 8Gi
+  # Anti-Affinity - Prefer to not schedule primary postgresql on the same node as read
+  affinity:
+    podAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - keycloak
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - postgresql
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                    - primary
+                    - read
+            topologyKey: kubernetes.io/hostname
+  # Logging
+  # extendedConfiguration: |
+  #   log_min_messages = DEBUG1
+  #   log_statement = 'all'
+
+## Read replica pods
+readReplicas:
+  replicaCount: 1
+  # Network Policy
+  networkPolicy:
+    enabled: false
+  # Resources
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 375m
+      memory: 384Mi
+  # Persistence storage
+  persistence:
+    enabled: true
+    size: 8Gi
+  # Anti-Affinity - Prefer to not schedule read postgresql on the same node as primary or another read
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 1
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                    - keycloak
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - postgresql
+                - key: app.kubernetes.io/component
+                  operator: In
+                  values:
+                    - primary
+                    - read
+            topologyKey: kubernetes.io/hostname
+  # Logging
+  # extendedConfiguration: |  
+  #   log_min_messages = DEBUG1
+  #   log_statement = 'all'
+
+

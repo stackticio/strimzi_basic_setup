@@ -1,0 +1,87 @@
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: postgres-create-database-job
+  namespace: postgresql
+  labels:
+    app.kubernetes.io/name: postgres
+    stacktic.io/app: postgresql
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres
+        job-name: postgres-create-database-job
+    spec:
+      containers:
+        - name: postgres-create-databases
+          image: docker.io/bitnami/postgresql:11.13.0
+          command: ["/bin/bash","-c"]
+          args:
+            - |
+              set -x
+              RETRIES=8
+              until pg_isready -h postgresql.postgresql.svc.cluster.local -U postgres || [ $RETRIES -eq 0 ]; do
+                echo "Waiting for PostgreSQL to be ready, retries left: $RETRIES"
+                sleep 15
+                RETRIES=$((RETRIES-1))
+              done
+
+              if [ $RETRIES -eq 0 ]; then
+                echo "PostgreSQL is not ready after multiple attempts. Exiting."
+                exit 1
+              fi
+
+              echo "Attempting to create database 'db1' and user 'user'..."
+
+              # Create database if it doesn't exist
+              echo "Checking and creating database 'db1' if it doesn't exist..."
+              PGPASSWORD="default_password" psql -h postgresql.postgresql.svc.cluster.local -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'db1'" | grep -q 1 || \
+              PGPASSWORD="default_password" psql -h postgresql.postgresql.svc.cluster.local -U postgres -c "CREATE DATABASE \"db1\" OWNER postgres;"
+
+              # Create user if not exists, else alter password
+              echo "Updating or creating user 'user'..."
+              PGPASSWORD="default_password" psql -h postgresql.postgresql.svc.cluster.local -U postgres -c "
+              DO \$\$ 
+              BEGIN 
+                IF EXISTS (SELECT FROM pg_roles WHERE rolname = 'user') THEN 
+                  ALTER USER \"user\" WITH PASSWORD 'pass_default1'; 
+                  RAISE NOTICE 'Password updated for user: user';
+                ELSE 
+                  CREATE USER \"user\" WITH PASSWORD 'pass_default1'; 
+                  RAISE NOTICE 'User user created with specified password';
+                END IF; 
+              END 
+              \$\$;"
+
+              # Grant privileges
+              echo "Granting privileges to user 'user'..."
+              PGPASSWORD="default_password" psql -h postgresql.postgresql.svc.cluster.local -U postgres -c "
+              GRANT ALL PRIVILEGES ON DATABASE \"db1\" TO \"user\";
+              GRANT CREATE, USAGE ON SCHEMA public TO \"user\";
+              ALTER DATABASE \"db1\" OWNER TO \"user\";
+              ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO \"user\";"
+
+              # Verify user and password
+              echo "Verifying password for user 'user'..."
+              PGPASSWORD="pass_default1" psql -h postgresql.postgresql.svc.cluster.local -U "user" -d "db1" -c "\q"
+              if [ $? -ne 0 ]; then
+                echo "Password verification failed for user 'user'. Exiting."
+                exit 1
+              else
+                echo "Password verified successfully for user 'user'."
+              fi
+
+              # Final verification of roles and privileges
+              echo "Checking roles and privileges for 'user'..."
+              PGPASSWORD="default_password" psql -h postgresql.postgresql.svc.cluster.local -U postgres -c "\du user"
+
+              echo "Script execution completed successfully."
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "default_password"
+      restartPolicy: Never
+  backoffLimit: 4
+
