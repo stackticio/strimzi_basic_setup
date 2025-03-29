@@ -4,7 +4,7 @@ This is the output of the `basic_kafka_setup` system.
 
 ## Design
 
-![Uploading image.png…]()
+<img width="870" alt="image" src="https://github.com/user-attachments/assets/f8835a61-4b3b-491d-9006-b711ef760ef8" />
 
 
 ## Folder structure
