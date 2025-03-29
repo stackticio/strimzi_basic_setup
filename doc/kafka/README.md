@@ -49,25 +49,32 @@
 Stacktic Kafka template is based on Strimzi operator (https://strimzi.io), that facilitates the deployment and operation of Apache Kafka related services.
 By default, the template is set with a strict security approach.
 
-- mTLS Configuration
-The setup is mTLS-ready using a user secret. If you want to fully enable mTLS, simply set port 9092 to use mTLS (e.g., mtls = true).
-https://github.com/stackticio/strimzi_basic_setup/blob/stacktic/k8s/deploy/base/kafka/kafka-cluster.yaml
+---
 
-- Connector Configuration
-A ConfigMap (treated as a secret) contains all the environment variables for the connectors. If you prefer not to store secrets directly in the Kafka connector definitions, you can use environment variables instead.
-https://github.com/stackticio/strimzi_basic_setup/blob/stacktic/k8s/deploy/base/kafka/secret/cloud.env
+### mTLS Configuration
+The setup is mTLS-ready using a user secret. If you want to fully enable mTLS, simply set port `9092` to use mTLS (e.g., `mtls = true`).  
+[View Kafka Cluster YAML](https://github.com/stackticio/strimzi_basic_setup/blob/stacktic/k8s/deploy/base/kafka/kafka-cluster.yaml)
 
-- Kafka Image
-By default, this setup builds the Kafka image. If you prefer, you can switch to a pre-built image. The default configuration uses a public image, but you can also replace it with a private image of your choice.
-https://github.com/stackticio/strimzi_basic_setup/blob/stacktic/k8s/deploy/base/kafka/connectors/kafka-connect.yaml
+---
 
-- quick deploy
-modify secrets
-https://github.com/stackticio/strimzi_basic_setup/blob/stacktic/k8s/deploy/base/kafka/secret/registry.json
-and run: kubectl apply -k k8s/deploy/overlay/dev
+### Connector Configuration
+A ConfigMap (handled like a secret) holds environment variables for the connectors. If you prefer not to store secrets directly in the Kafka connector definitions, you can use environment variables instead.  
+[View Cloud ENV Secret](https://github.com/stackticio/strimzi_basic_setup/blob/stacktic/k8s/deploy/base/kafka/secret/cloud.env)
 
-- Ops
-Stacktic uses a Helm chart to generate a base YAML template, which it then transforms into a Kustomize-compatible structure. This results in two layers of automation: one provided by Helm (for template generation) and another by Kustomize (the native operational method for managing Strimzi).
+---
+
+### Kafka Image
+By default, this setup builds the Kafka image. If you prefer, you can switch to a pre-built image. The default configuration uses a public image, but you can replace it with a private image of your choice.  
+[View Kafka Connect YAML](https://github.com/stackticio/strimzi_basic_setup/blob/stacktic/k8s/deploy/base/kafka/connectors/kafka-connect.yaml)
+
+---
+
+### Quick Deploy
+1. Modify the secrets in  
+   [registry.json](https://github.com/stackticio/strimzi_basic_setup/blob/stacktic/k8s/deploy/base/kafka/secret/registry.json)
+2. Run:
+   ```bash
+   kubectl apply -k k8s/deploy/overlay/dev
 
 #### Versions
 - minio connector: https://camel.apache.org/camel-kafka-connector/4.8.x/reference/connectors/camel-minio-sink-kafka-sink-connector.html)
