@@ -49,6 +49,15 @@
 Stacktic Kafka template is based on Strimzi operator (https://strimzi.io), that facilitates the deployment and operation of Apache Kafka related services.
 By default, the template is set with a strict security approach.
 
+mTLS Configuration
+The setup is mTLS-ready using a user secret. If you want to fully enable mTLS, simply set port 9092 to use mTLS (e.g., mtls = true).
+
+Connector Configuration
+A ConfigMap (treated as a secret) contains all the environment variables for the connectors. If you prefer not to store secrets directly in the Kafka connector definitions, you can use environment variables instead.
+
+Kafka Image
+By default, this setup builds the Kafka image. If you prefer, you can switch to a pre-built image. The default configuration uses a public image, but you can also replace it with a private image of your choice.
+
 #### Versions
 - minio connector: https://camel.apache.org/camel-kafka-connector/4.8.x/reference/connectors/camel-minio-sink-kafka-sink-connector.html)
 - psql connector:  https://camel.apache.org/camel-kafka-connector/4.8.x/reference/connectors/camel-postgresql-sink-kafka-sink-connector.html)
