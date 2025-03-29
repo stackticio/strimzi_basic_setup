@@ -261,6 +261,37 @@ bash -c "psql -h postgresql.postgresql.svc.cluster.local -p 5432 -U user -d db1 
 
 ###  Useful debug Commands:
 ```
+ kubectl get pods -n strimzi
+
+NAME                                        READY   STATUS    RESTARTS   AGE
+kafka-bridge-bridge-5d9b5fc95-vr4xj         1/1     Running   0          34h
+kafka-broker-kafka-0                        1/1     Running   0          33h
+kafka-broker-kafka-1                        1/1     Running   0          33h
+kafka-broker-kafka-2                        1/1     Running   0          33h
+kafka-connect-connect-0                     1/1     Running   0          34h
+kafka-controller-kafka-3                    1/1     Running   0          33h
+kafka-controller-kafka-4                    1/1     Running   0          33h
+kafka-controller-kafka-5                    1/1     Running   0          33h
+kafka-entity-operator-d45fbb66c-j6dfv       2/2     Running   0          33h
+kafka-kafka-exporter-d8b5d668d-nswck        1/1     Running   0          33h
+strimzi-cluster-operator-5db67c5c6b-9wklk   1/1     Running   0          2d3h
+assafsauer@Assafs-MacBook-Pro dev %
+
+ kubectl get kafkaconnectors -n strimzi 
+NAME                               CLUSTER         CONNECTOR CLASS                                                                   MAX TASKS   READY
+minio-sink-connector-kafkabucket   kafka-connect   org.apache.camel.kafkaconnector.miniosink.CamelMiniosinkSinkConnector                         True
+mongodb-sink-connector             kafka-connect   com.mongodb.kafka.connect.MongoSinkConnector                                      1           True
+psql-sink-connector-database       kafka-connect   org.apache.camel.kafkaconnector.postgresqlsink.CamelPostgresqlsinkSinkConnector   1           True
+ 
+ kubectl get kafkatopics -n strimzi 
+NAME                      CLUSTER   PARTITIONS   REPLICATION FACTOR   READY
+connect-cluster-configs   kafka     1            2                    True
+connect-cluster-offsets   kafka     1            2                    True
+connect-cluster-status    kafka     1            2                    True
+topic-bucket              kafka     1            2                    True
+topic-mongo               kafka     1            2                    True
+topic-psql                kafka     1            2                    True
+ 
 kubectl exec -it kafka-broker-kafka-0 -n strimzi -- bash
 
 # 1) List all consumer groups
